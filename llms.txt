@@ -1,0 +1,39 @@
+# OpenZilo
+
+> OpenZilo is a Python 3.10+ SDK and CLI for compatible BLE rings. This index points coding agents to the repository's maintained documentation. The SDK API is defined by `src/openzilo.py` and its `__all__` list.
+
+Current SDK release: 0.5.0. Documented device protocol baseline: v4, firmware `V2.000.0001.0015`. Firmware and SDK versions evolve independently. Hardware dependent behavior must be checked on the target device.
+
+The [OpenZilo website](https://openzilo.com) describes a broader platform. Do not infer Python PPG APIs or a TypeScript package from its product concepts; use this repository's public API guide and `src/openzilo.py.__all__` for implemented SDK features.
+
+## Start here
+
+- [README (English)](https://raw.githubusercontent.com/ziloai/openzilo/main/README.md): install, first commands, requirements, and project status.
+- [README (简体中文)](https://raw.githubusercontent.com/ziloai/openzilo/main/README.zh-CN.md): Chinese quick start and navigation.
+- [Python SDK guide (简体中文)](https://raw.githubusercontent.com/ziloai/openzilo/main/docs/python-sdk.zh-CN.md): public types, functions, parameters, return values, exceptions, and examples.
+- [Protocol reference (简体中文)](https://raw.githubusercontent.com/ziloai/openzilo/main/docs/protocol.zh-CN.md): v4 packet format and command bodies used by the SDK.
+- [Architecture and data flow (简体中文)](https://raw.githubusercontent.com/ziloai/openzilo/main/docs/architecture.zh-CN.md): BLE framing, recording transfer, audio decoding, and IMU events.
+- [Coding agent setup](https://raw.githubusercontent.com/ziloai/openzilo/main/docs/ai-tools.md): how to use this SDK with Codex, Claude Code, and other coding tools.
+
+## Website and research
+
+- [OpenZilo website](https://openzilo.com): product and platform overview.
+- [Development kits](https://openzilo.com/buy): ordering and reservation information.
+- [ComBodied Agents paper](https://arxiv.org/abs/2608.10915): research featured on the OpenZilo website; [PDF](https://arxiv.org/pdf/2608.10915).
+
+## Source and examples
+
+- [Public SDK module](https://raw.githubusercontent.com/ziloai/openzilo/main/src/openzilo.py): authoritative implementation and `__all__`.
+- [Examples](https://github.com/ziloai/openzilo/tree/main/examples): scan, system information, audio download, and IMU streaming.
+- [Security policy](https://raw.githubusercontent.com/ziloai/openzilo/main/SECURITY.md): private vulnerability reporting.
+- [MPL-2.0 software license](https://raw.githubusercontent.com/ziloai/openzilo/main/LICENSE): current software and documentation license.
+- [CERN-OHL-W-2.0 hardware license](https://raw.githubusercontent.com/ziloai/openzilo/main/LICENSES/CERN-OHL-W-2.0.txt): hardware design license.
+
+## Agent integration notes
+
+- Install from a Git clone with `python -m pip install -e .`; the package is not yet published to PyPI.
+- Import with `import openzilo as sdk` or use `python -m openzilo --help`.
+- `sdk.OpenZiloClient` is the connected BLE session; pass it to high-level functions such as `sdk.get_system_info(client)`.
+- `ffmpeg` is only required when converting Speex recordings to WAV.
+- `audio-clear` permanently erases device recordings and requires `--yes`.
+- Codex, Cursor, and OpenCode use `AGENTS.md`. Claude Code uses `CLAUDE.md` and Gemini CLI uses `GEMINI.md`, both importing `AGENTS.md`. GitHub Copilot uses `.github/copilot-instructions.md` for repository guidance. This `llms.txt` remains a documentation index and is not automatically consumed as a plugin or MCP server.

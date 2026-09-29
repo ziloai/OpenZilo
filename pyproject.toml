@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OpenZilo"
+version = "0.5.0"
+description = "OpenZilo Python SDK"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MPL-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "OpenZilo" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = ["bleak>=0.21"]
+
+[project.urls]
+Homepage = "https://github.com/ziloai/openzilo"
+Repository = "https://github.com/ziloai/openzilo"
+
+[tool.setuptools]
+py-modules = ["openzilo"]
+package-dir = { "" = "src" }

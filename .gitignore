@@ -1,0 +1,28 @@
+# Python bytecode and test artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and build outputs
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# Local IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+
+# Downloaded/generated audio and archives
+*.wav
+*.ogg
+*.spx
+audio/
+*.zip
