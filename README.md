@@ -4,7 +4,7 @@
 
 <h1 align="center">OpenZilo Python SDK</h1>
 
-<p align="center">Audio, motion, and gesture input from an OpenZilo BLE ring.</p>
+<p align="center">Open-source wearable hardware for building Combodied AI.</p>
 
 <p align="center">
   <a href="https://github.com/ziloai/openzilo/actions/workflows/ci.yml"><img src="https://github.com/ziloai/openzilo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -16,12 +16,70 @@
 <p align="center">
   <a href="https://openzilo.com">Website</a> ·
   <a href="https://openzilo.com/buy">Get the Kit</a> ·
+  <a href="#development-kits">Development kits</a> ·
   <a href="#coding-agents">Coding agents</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="README.zh-CN.md">简体中文</a>
 </p>
 
-This repository contains the Python SDK and CLI for scanning and connecting to a ring, reading device information, downloading recordings, converting Speex to WAV, and receiving IMU and gesture events. It documents protocol v4 on firmware `V2.000.0001.0015`. Check device behavior on your own hardware.
+OpenZilo is an open development platform for building always-available AI experiences with wearable hardware.
+
+Starting with smart rings, OpenZilo provides developers with hardware, firmware, SDKs, and reference applications for connecting **voice, gestures, physiological signals, AI agents, computers, robots, and the physical world**.
+
+This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex to WAV, and receiving IMU and gesture events.
+
+It documents protocol v4 on firmware `V2.000.0001.0015`. Check device behavior on your own hardware.
+
+## Development Kits
+
+OpenZilo currently includes two development kits: **OpenZilo Q** and **OpenZilo X**.
+
+Choose **Q** for voice-first development with dual microphones.  
+Choose **X** when your prototype also needs physiological sensing.
+
+| Sensor configuration | OpenZilo Q | OpenZilo X |
+| --- | --- | --- |
+| Microphones | **2** | **1** |
+| IMU | **Included** | **Included** |
+| PPG sensor | — | **Included** |
+
+### OpenZilo Q
+
+**Voice + Gesture Development Kit**
+
+Built for:
+
+- AI agents
+- voice interaction
+- gesture control
+- robotics
+- computers and mobile devices
+- experimental human–AI interfaces
+
+### OpenZilo X
+
+**Voice + Gesture + Physiological Sensing Development Kit**
+
+Adds physiological sensing for building:
+
+- health-aware AI agents
+- context-aware applications
+- multimodal interaction
+- personal sensing experiments
+- wearable AI research
+
+## What can you build?
+
+OpenZilo is designed as an open interaction layer rather than a closed consumer device.
+
+Use it to build:
+
+- **AI Agents** — invoke and interact with agents through voice and gestures
+- **Robotics** — connect wearable input to robots and physical systems
+- **Desktop & Mobile** — create new shortcuts, workflows, and AI interfaces
+- **AR / XR** — explore subtle wearable interaction for spatial computing
+- **Health-aware AI** — combine physiological signals with personal context
+- **Experimental Interfaces** — build interactions we have not imagined yet
 
 ## Coding agents
 
@@ -36,11 +94,17 @@ Open the cloned repository in your tool. The project instructions point to the S
 | <img src="docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](GEMINI.md) |
 | <img src="docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](AGENTS.md) |
 
-Try: “Read `llms.txt` and the Python SDK guide. Write a script using exported `openzilo` APIs that scans for a ring and prints its model, firmware version, and battery level.” See the [setup guide](docs/ai-tools.md) for installation links and using these docs from another repository.
+Try:
+
+> “Read `llms.txt` and the Python SDK guide. Write a script using exported `openzilo` APIs that scans for a ring and prints its model, firmware version, and battery level.”
+
+See the [setup guide](docs/ai-tools.md) for installation links and using these docs from another repository.
 
 ## Quick start
 
-You need Python 3.10+ and a BLE adapter. On Linux, you also need BlueZ and Bluetooth access. Install from the repository:
+You need Python 3.10+ and a BLE adapter. On Linux, you also need BlueZ and Bluetooth access.
+
+Install from the repository:
 
 ```bash
 git clone https://github.com/ziloai/openzilo.git
@@ -50,7 +114,9 @@ python -m openzilo scan --timeout 10
 python -m openzilo info --address AA:BB:CC:DD:EE:FF
 ```
 
-Replace the example address with one returned by `scan`. In Python:
+Replace the example address with one returned by `scan`.
+
+In Python:
 
 ```python
 import asyncio
@@ -66,11 +132,15 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-See the [examples](examples/) for audio download and IMU streaming. Install `ffmpeg` if you need Speex-to-WAV conversion. `audio-clear` deletes recordings from the device and requires `--yes`.
+See the [examples](examples/) for audio download and IMU streaming.
+
+Install `ffmpeg` if you need Speex-to-WAV conversion. `audio-clear` deletes recordings from the device and requires `--yes`.
 
 ## Research and partners
 
-[ComBodied Agents: a New Paradigm of Human-Centric Agentic AI](https://arxiv.org/abs/2608.10915) is featured on the [OpenZilo website](https://openzilo.com). [PDF](https://arxiv.org/pdf/2608.10915) · [Hugging Face Papers](https://huggingface.co/papers/2608.10915)
+[ComBodied Agents: a New Paradigm of Human-Centric Agentic AI](https://arxiv.org/abs/2608.10915) is featured on the [OpenZilo website](https://openzilo.com).
+
+[PDF](https://arxiv.org/pdf/2608.10915) · [Hugging Face Papers](https://huggingface.co/papers/2608.10915)
 
 <p align="center"><a href="https://openzilo.com"><img src="docs/assets/partners-panel.png" alt="OpenZilo research and industry partners" width="1000"></a></p>
 
@@ -87,7 +157,7 @@ If you find OpenZilo or the ComBodied Agents paradigm useful in your research, p
 }
 ```
 
-## Get Featured on OpenZilo GitHub Trend
+# Get Featured on OpenZilo GitHub Trend
 
 Want your project to appear on the **OpenZilo homepage GitHub Trend**?
 
