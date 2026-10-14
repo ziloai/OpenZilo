@@ -15,7 +15,7 @@ from typing import Any, DefaultDict
 from ._errors import ProtocolError, TimeoutError, TransportError
 from ._tasks import acquire_before, await_before, start_background_task
 from ._protocol import encode_packet, Packet, PacketStream, TimeCommand
-from ._transport import BleDeviceInfo, NusClient
+from ._transport import BleDeviceInfo, DEFAULT_SCAN_TIMEOUT_S, NusClient
 
 _logger = logging.getLogger(__name__)
 DEFAULT_COMMAND_TIMEOUT_S = 10.0
@@ -30,6 +30,9 @@ class OpenZiloClient:
         self,
         *,
         address: str | None = None,
+        device: BleDeviceInfo | None = None,
+        scan_timeout_s: float = DEFAULT_SCAN_TIMEOUT_S,
+        connect_timeout_s: float = 30.0,
         command_timeout_s: float = DEFAULT_COMMAND_TIMEOUT_S,
         transport: NusClient | None = None,
         receive_queue_size: int = 256,
@@ -37,7 +40,10 @@ class OpenZiloClient:
         if not isinstance(receive_queue_size, int) or receive_queue_size < 1:
             raise ValueError("receive_queue_size must be a positive integer")
         self.command_timeout_s = command_timeout_s
-        self.transport = transport or NusClient(address=address)
+        self.transport = transport if transport is not None else NusClient(
+            address=address, device=device, scan_timeout_s=scan_timeout_s,
+            connect_timeout_s=connect_timeout_s,
+        )
         self._stream = PacketStream()
         self._queues: DefaultDict[int, asyncio.Queue[Packet]] = defaultdict(
             lambda: asyncio.Queue(maxsize=receive_queue_size)

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import logging
 from pathlib import Path
 
 from ._transport import DEFAULT_SCAN_TIMEOUT_S
@@ -38,7 +39,9 @@ from ._live_audio import receive_live_audio_file
 
 
 def add_connection_args(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--address", required=True, help="BLE MAC address of the ring.")
+    parser.add_argument("--address", required=True, help="BLE device address/identifier (macOS UUID).")
+    parser.add_argument("--scan-timeout", type=float, default=DEFAULT_SCAN_TIMEOUT_S)
+    parser.add_argument("--connect-timeout", type=float, default=30.0)
 
 
 def add_audio_decode_args(parser: argparse.ArgumentParser) -> None:
@@ -64,16 +67,25 @@ def pcm_config_from_args(args: argparse.Namespace) -> PcmConfig:
 
 
 async def cmd_scan(args: argparse.Namespace) -> None:
-    devices = await scan_rings(address=args.address, timeout_s=args.timeout)
+    seen = {}
+
+    def changed(devices):
+        for device in devices:
+            if seen.get(device.address) != device:
+                name = device.name or "Ring (name pending)"
+                print(f"name={name!r} address={device.address} rssi={device.rssi} "
+                      f"matched_service={device.matched_service}", flush=True)
+                seen[device.address] = device
+
+    devices = await scan_rings(address=args.address, timeout_s=args.timeout,
+                               on_devices_changed=changed)
     if not devices:
         print("No matching devices found.")
-        return
-    for device in devices:
-        print(f"name={device.name!r} address={device.address} rssi={device.rssi}")
 
 
 async def cmd_connect(args: argparse.Namespace) -> None:
-    client = await connect_ring(address=args.address)
+    client = await connect_ring(address=args.address, scan_timeout_s=args.scan_timeout,
+                                connect_timeout_s=args.connect_timeout)
     try:
         print(f"connected: {client.is_connected}")
     finally:
@@ -81,7 +93,8 @@ async def cmd_connect(args: argparse.Namespace) -> None:
 
 
 async def cmd_info(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         enable_time_sync(client)
         info = await get_system_info(client)
 
@@ -97,7 +110,8 @@ async def cmd_info(args: argparse.Namespace) -> None:
 
 
 async def cmd_time_sync(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         enable_time_sync(client)
         print(f"time sync auto-response enabled for {args.seconds:g}s")
         await asyncio.sleep(args.seconds)
@@ -105,13 +119,15 @@ async def cmd_time_sync(args: argparse.Namespace) -> None:
 
 
 async def cmd_audio_count(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         count = await get_audio_file_count(client)
     print(f"audio file count: {count}")
 
 
 async def cmd_audio_download(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         count = await get_audio_file_count(client)
         print(f"audio file count: {count}")
         info, data = await download_audio_file(
@@ -139,7 +155,8 @@ async def cmd_audio_download(args: argparse.Namespace) -> None:
 
 
 async def cmd_audio_receive(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         print("Connected. Make a recording; waiting for local save or legacy automatic upload.", flush=True)
         index, data = await receive_auto_audio_file(client, timeout_s=args.timeout)
     bundle = save_audio_bundle(file_index=index, data=data, output_path=args.output, ffmpeg_path=args.ffmpeg)
@@ -147,7 +164,8 @@ async def cmd_audio_receive(args: argparse.Namespace) -> None:
 
 
 async def cmd_audio_live(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         print("Live-only capture: the ring will NOT save this recording to Flash. "
               "Subscribing now...", flush=True)
         recording = await receive_live_audio_file(
@@ -166,7 +184,8 @@ async def cmd_ota_update(args: argparse.Namespace) -> None:
     # Reject corrupt or invalid input before opening a BLE session.
     data = _validate_firmware_package(args.firmware.read_bytes(), args.version, args.sha256)
     print("OTA transfer progress is not installation confirmation; keep the ring nearby.")
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         info = await update_firmware(
             client, data, version=args.version, sha256=args.sha256,
             expected_model=args.model, progress=ProgressPrinter(prefix="OTA transfer"),
@@ -196,20 +215,23 @@ async def cmd_audio_clear(args: argparse.Namespace) -> None:
     if not args.yes:
         raise SystemExit("Refusing to clear audio files without --yes.")
 
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         await clear_audio_files(client)
     print("audio files cleared")
 
 
 async def cmd_log_storage(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         storage = await get_log_storage(client)
     print(f"page_size: {storage.page_size}")
     print(f"total_len: {storage.total_len}")
 
 
 async def cmd_log_read(args: argparse.Namespace) -> None:
-    async with OpenZiloClient(address=args.address) as client:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
         data = await read_log_chunk(client, args.index, args.offset, args.size)
 
     if args.output:
@@ -228,7 +250,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     scan = subparsers.add_parser("scan", help="Scan nearby devices.")
-    scan.add_argument("--address", default=None, help="BLE MAC address to filter.")
+    scan.add_argument("--address", default=None, help="Target device address/identifier; return as soon as found.")
     scan.add_argument("--timeout", type=float, default=DEFAULT_SCAN_TIMEOUT_S)
     scan.set_defaults(func=cmd_scan)
 
@@ -327,6 +349,7 @@ def build_parser() -> argparse.ArgumentParser:
 async def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     await args.func(args)
 
 

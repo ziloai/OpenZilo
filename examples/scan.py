@@ -1,14 +1,18 @@
 # SPDX-License-Identifier: MPL-2.0
-"""Scan for compatible OpenZilo devices."""
-
+"""Display ring candidates immediately without choosing a connection target."""
 import asyncio
-
 import openzilo as sdk
 
 
-async def main() -> None:
-    for device in await sdk.scan_rings(timeout_s=10):
-        print(f"{device.address}  name={device.name!r}  rssi={device.rssi}")
+def changed(devices):
+    for device in devices:
+        print(device.name or "Ring (name pending)", device.address,
+              device.rssi, device.matched_service)
+
+
+async def main():
+    devices = await sdk.scan_rings(on_devices_changed=changed)
+    print(f"Final candidate count: {len(devices)}")
 
 
 if __name__ == "__main__":

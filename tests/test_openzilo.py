@@ -120,6 +120,10 @@ class CompatibilityTests(unittest.IsolatedAsyncioTestCase):
         class FakeBleakClient:
             def __init__(self, *_args, **_kwargs):
                 self.disconnected = False
+                self.is_connected = True
+                service = SimpleNamespace(get_characteristic=lambda uuid: SimpleNamespace(
+                    properties=["write-without-response", "notify"]))
+                self.services = SimpleNamespace(get_service=lambda uuid: service)
                 links.append(self)
 
             async def connect(self):
@@ -131,14 +135,10 @@ class CompatibilityTests(unittest.IsolatedAsyncioTestCase):
             async def disconnect(self):
                 self.disconnected = True
 
-        class FakeScanner:
-            @staticmethod
-            async def find_device_by_filter(*_args, **_kwargs):
-                return None
-
-        fake_bleak = SimpleNamespace(BleakClient=FakeBleakClient, BleakScanner=FakeScanner)
+        fake_bleak = SimpleNamespace(BleakClient=FakeBleakClient)
         with mock.patch.dict(sys.modules, {"bleak": fake_bleak}):
-            transport = sdk.NusClient(address="00:00:00:00:00:01")
+            transport = sdk.NusClient(device=sdk.BleDeviceInfo(
+                None, "00:00:00:00:00:01", _native_device=object()))
             with self.assertRaises(sdk.TransportError):
                 await transport.connect()
         self.assertTrue(links[0].disconnected)

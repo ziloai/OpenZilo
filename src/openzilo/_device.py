@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from ._protocol import (
@@ -44,23 +44,31 @@ async def scan_rings(
     *,
     address: str | None = None,
     timeout_s: float = DEFAULT_SCAN_TIMEOUT_S,
+    on_devices_changed: Callable[[list[BleDeviceInfo]], None] | None = None,
 ) -> list[BleDeviceInfo]:
-    """Scan nearby BLE devices and optionally filter by MAC address."""
+    """Scan ring candidates, or locate an explicit device address/identifier."""
     return await OpenZiloClient.discover(
         address=address,
         timeout_s=timeout_s,
+        on_devices_changed=on_devices_changed,
     )
 
 
 async def connect_ring(
     *,
     address: str | None = None,
+    device: BleDeviceInfo | None = None,
+    scan_timeout_s: float = DEFAULT_SCAN_TIMEOUT_S,
+    connect_timeout_s: float = 30.0,
     command_timeout_s: float = DEFAULT_COMMAND_TIMEOUT_S,
     auto_time_sync: bool = False,
 ) -> OpenZiloClient:
     """Create and connect a OpenZiloClient."""
     client = OpenZiloClient(
         address=address,
+        device=device,
+        scan_timeout_s=scan_timeout_s,
+        connect_timeout_s=connect_timeout_s,
         command_timeout_s=command_timeout_s,
     )
     await client.connect()
