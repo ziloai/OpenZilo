@@ -589,12 +589,12 @@ def decode_speex_to_pcm(
 _OP2C_HEADER = struct.pack("<4sHHHH", b"OP2C", 1, 2, 16000, 320)
 
 
-def _validate_opus_packet(packet: bytes) -> None:
+def _validate_opus_packet(packet: bytes, *, channels: int = 2) -> None:
     if not 1 <= len(packet) <= 100:
         raise AudioDecodeError("Opus packet length must be 1..100 bytes")
     toc = packet[0]
-    if not toc & 4:
-        raise AudioDecodeError("Opus packet must contain stereo audio")
+    if channels not in (1, 2) or bool(toc & 4) != (channels == 2):
+        raise AudioDecodeError("Opus packet channels do not match the recording")
     # Same TOC duration calculation as libopus opus_packet_get_samples_per_frame.
     if toc & 0x80:
         samples = (16000 << ((toc >> 3) & 3)) // 400
@@ -611,11 +611,19 @@ def _validate_opus_packet(packet: bytes) -> None:
         raise AudioDecodeError("Opus packet must contain 20 ms per channel")
 
 
-def parse_opus_recording(data: Any) -> list[bytes]:
-    """Parse a version-1, 16 kHz stereo OP2C file; reject truncation and padding."""
-    source = _ensure_bytes(data)
-    if source[:12] != _OP2C_HEADER:
+def _opus_recording_channels(source: bytes) -> int:
+    if len(source) < 12:
         raise AudioDecodeError("Unsupported or truncated OP2C header")
+    magic, version, channels, rate, frames = struct.unpack_from("<4sHHHH", source)
+    if magic != b"OP2C" or version != 1 or channels not in (1, 2) or (rate, frames) != (16000, 320):
+        raise AudioDecodeError("Unsupported OP2C header")
+    return channels
+
+
+def parse_opus_recording(data: Any) -> list[bytes]:
+    """Parse version-1, 16 kHz mono/stereo OP2C; reject truncation and padding."""
+    source = _ensure_bytes(data)
+    channels = _opus_recording_channels(source)
     packets = []
     offset = 12
     while offset < len(source):
@@ -626,31 +634,34 @@ def parse_opus_recording(data: Any) -> list[bytes]:
         if not 1 <= length <= 100 or offset + length > len(source):
             raise AudioDecodeError("Invalid or truncated Opus packet")
         packet = source[offset:offset + length]
-        _validate_opus_packet(packet)
+        _validate_opus_packet(packet, channels=channels)
         packets.append(packet)
         offset += length
     return packets
 
 
-def build_opus_recording(packets: list[bytes]) -> bytes:
-    """Package consecutive stereo 20 ms Opus packets as a firmware OP2C file."""
-    chunks = [_OP2C_HEADER]
+def build_opus_recording(packets: list[bytes], *, channels: int = 2) -> bytes:
+    """Package consecutive mono/stereo 20 ms Opus packets as an OP2C file."""
+    if isinstance(channels, bool) or channels not in (1, 2):
+        raise ValueError("channels must be 1 or 2")
+    chunks = [struct.pack("<4sHHHH", b"OP2C", 1, channels, 16000, 320)]
     for packet in packets:
         packet = bytes(packet)
-        _validate_opus_packet(packet)
+        _validate_opus_packet(packet, channels=channels)
         chunks.append(struct.pack("<H", len(packet)) + packet)
     return b"".join(chunks)
 
 
 def decode_opus_to_pcm(data: Any, *, ffmpeg_path: str = "ffmpeg") -> OpusDecodeResult:
-    """Decode OP2C into 16 kHz, stereo, signed 16-bit PCM with fresh decoder state."""
+    """Decode OP2C into 16 kHz mono/stereo signed 16-bit PCM."""
     packets = parse_opus_recording(data)
-    config = PcmConfig(sample_rate=16000, channels=2, bit_depth=16)
+    channels = _opus_recording_channels(_ensure_bytes(data))
+    config = PcmConfig(sample_rate=16000, channels=channels, bit_depth=16)
     if not packets:
-        return OpusDecodeResult(b"", config, packet_count=0)
+        return OpusDecodeResult(b"", config, packet_count=0, source_type="opus-mono" if channels == 1 else "opus-stereo")
     # Ogg Opus granules always use 48 kHz. OP2C has no pre-skip metadata;
     # preserve every decoded sample just like the firmware reference decoder.
-    header = struct.pack("<8sBBHIhB", b"OpusHead", 1, 2, 0, 16000, 0, 0)
+    header = struct.pack("<8sBBHIhB", b"OpusHead", 1, channels, 0, 16000, 0, 0)
     vendor = b"openzilo-python"
     tags = b"OpusTags" + struct.pack("<I", len(vendor)) + vendor + struct.pack("<I", 0)
     pages = [
@@ -665,9 +676,9 @@ def decode_opus_to_pcm(data: Any, *, ffmpeg_path: str = "ffmpeg") -> OpusDecodeR
     pcm = _decode_ogg_with_ffmpeg(
         b"".join(pages), pcm_config=config, ffmpeg_path=ffmpeg_path, codec="Opus",
     )
-    if len(pcm) != len(packets) * 320 * 2 * 2:
+    if len(pcm) != len(packets) * 320 * channels * 2:
         raise AudioDecodeError("Opus decoder returned an unexpected PCM length")
-    return OpusDecodeResult(pcm, config, packet_count=len(packets))
+    return OpusDecodeResult(pcm, config, packet_count=len(packets), source_type="opus-mono" if channels == 1 else "opus-stereo")
 
 
 def build_playable_audio(
@@ -701,7 +712,7 @@ def build_playable_audio(
             extension="wav", mime="audio/wav", play_mode="opus-decode", label="WAV",
             pcm_config=decoded_opus.pcm_config, source_type=decoded_opus.source_type,
             source_extension="op2c", source_mime="application/octet-stream",
-            description="Decoded stereo Opus as 16 kHz, 2-channel, 16-bit WAV.",
+            description=f"Decoded Opus as 16 kHz, {decoded_opus.pcm_config.channels}-channel, 16-bit WAV.",
         )
 
     decoded = decode_speex_to_pcm(

@@ -110,7 +110,9 @@ class StreamTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(sdk.ProtocolError, "consumer queue overflow"):
             async with sdk.open_live_audio_stream(peer.client, output="opus", queue_size=2,
                                                   timeout_s=1) as stream:
-                await asyncio.sleep(0.05)
+                # Wait for the producer, without consuming, so Windows timer
+                # granularity cannot let the consumer drain the queue early.
+                await asyncio.wait_for(stream._done.wait(), timeout=2)
                 async for _ in stream:
                     pass
         self.assertFalse(stream.complete)

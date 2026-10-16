@@ -48,6 +48,19 @@ from ._device import (
 from ._ota import (
     update_firmware,
 )
+from ._recording import (
+    AudioDisconnectPolicy,
+    AudioOutput,
+    AudioRecordingConfig,
+    AudioRecordingState,
+    AudioRecordingStatus,
+    get_audio_recording_config,
+    get_audio_recording_status,
+    set_audio_recording_config,
+    start_audio_recording,
+    stop_audio_recording,
+    wait_audio_recording_finished,
+)
 from ._codec import (
     AudioBundle,
     build_audio_bundle_paths,
@@ -135,6 +148,17 @@ from ._sensor import (
 )
 
 __all__ = [
+    "AudioDisconnectPolicy",
+    "AudioOutput",
+    "AudioRecordingConfig",
+    "AudioRecordingState",
+    "AudioRecordingStatus",
+    "get_audio_recording_config",
+    "get_audio_recording_status",
+    "set_audio_recording_config",
+    "start_audio_recording",
+    "stop_audio_recording",
+    "wait_audio_recording_finished",
     "AudioBundle",
     "AudioDataFrame",
     "AudioDecodeError",
