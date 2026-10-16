@@ -151,6 +151,8 @@ async def update_firmware(
             raise ValueError(f"{name} must be finite and greater than zero")
     if client._firmware_update_active:
         raise ProtocolError("A firmware update is already running on this client")
+    if client._recording_active:
+        raise ProtocolError("Confirm recording completion with get_audio_recording_status before OTA")
     if client._live_audio_subscribed:
         raise ProtocolError("Disable live audio subscription before updating firmware")
     if (client._audio_owner is not None or client._write_lock.locked()

@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import asyncio
 import logging
+import math
+from dataclasses import replace
 from pathlib import Path
 
 from ._transport import DEFAULT_SCAN_TIMEOUT_S
@@ -36,6 +38,13 @@ from ._audio import (
     receive_auto_audio_file,
 )
 from ._live_audio import receive_live_audio_file
+from ._recording import (
+    AudioOutput, AudioDisconnectPolicy, get_audio_recording_config,
+    set_audio_recording_config, get_audio_recording_status,
+    start_audio_recording, stop_audio_recording, wait_audio_recording_finished,
+)
+
+_logger = logging.getLogger(__name__)
 
 
 def add_connection_args(parser: argparse.ArgumentParser) -> None:
@@ -166,8 +175,7 @@ async def cmd_audio_receive(args: argparse.Namespace) -> None:
 async def cmd_audio_live(args: argparse.Namespace) -> None:
     async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
                               connect_timeout_s=args.connect_timeout) as client:
-        print("Live-only capture: the ring will NOT save this recording to Flash. "
-              "Subscribing now...", flush=True)
+        print("Subscribing to live audio. Flash retention follows the ring's recording configuration.", flush=True)
         recording = await receive_live_audio_file(
             client, timeout_s=args.timeout,
             on_subscribed=lambda: print("Subscribed. Hold the record button now; release to finish.", flush=True),
@@ -178,6 +186,90 @@ async def cmd_audio_live(args: argparse.Namespace) -> None:
         output_path=args.output, ffmpeg_path=args.ffmpeg,
     )
     print(f"Saved {bundle.raw_path} and {bundle.play_path}: {bundle.play_description}")
+
+
+async def _apply_recording_args(client: OpenZiloClient, args: argparse.Namespace):
+    config = await get_audio_recording_config(client)
+    changes = {}
+    for name in ("channels", "bitrate", "gain_left_q8", "gain_right_q8", "max_duration_ms"):
+        if getattr(args, name, None) is not None:
+            changes[name] = getattr(args, name)
+    if getattr(args, "destination", None) is not None:
+        changes["output"] = {"auto": AudioOutput.AUTO, "flash": AudioOutput.FLASH,
+                             "live": AudioOutput.LIVE, "both": AudioOutput.LIVE_AND_FLASH}[args.destination]
+    if getattr(args, "disconnect", None) is not None:
+        changes["disconnect_policy"] = {"stop": AudioDisconnectPolicy.STOP,
+                                        "save": AudioDisconnectPolicy.CONTINUE_SAVING}[args.disconnect]
+    return await set_audio_recording_config(client, replace(config, **changes)) if changes else config
+
+
+async def cmd_audio_config(args: argparse.Namespace) -> None:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
+        print(await _apply_recording_args(client, args))
+
+
+async def cmd_audio_status(args: argparse.Namespace) -> None:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
+        print(await get_audio_recording_status(client))
+
+
+async def cmd_audio_stop(args: argparse.Namespace) -> None:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
+        await stop_audio_recording(client, args.session_id, cancel=args.cancel)
+        print(await wait_audio_recording_finished(client, args.session_id))
+
+
+async def cmd_audio_record(args: argparse.Namespace) -> None:
+    if not math.isfinite(args.seconds) or not 0.02 <= args.seconds <= 60:
+        raise ValueError("seconds must be 0.02..60")
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout) as client:
+        config = await _apply_recording_args(client, args)
+        session = None
+        stopper = None
+
+        async def timed_stop():
+            await asyncio.sleep(args.seconds)
+            await stop_audio_recording(client, session)
+
+        async def subscribed():
+            nonlocal session, stopper
+            session = await start_audio_recording(client)
+            print(f"Recording session {session}", flush=True)
+            stopper = asyncio.create_task(timed_stop())
+
+        try:
+            if config.output in (AudioOutput.LIVE, AudioOutput.LIVE_AND_FLASH):
+                recording = await receive_live_audio_file(client, on_subscribed=subscribed)
+                data = recording.data
+            else:
+                session = await start_audio_recording(client)
+                print(f"Recording session {session}", flush=True)
+                stopper = asyncio.create_task(timed_stop())
+                await stopper
+                status = await wait_audio_recording_finished(client, session)
+                if status.file_index is None:
+                    raise RuntimeError("Recording ended without a saved file")
+                _, data = await download_audio_file(client, status.file_index)
+            if stopper is not None:
+                await stopper
+            status = await wait_audio_recording_finished(client, session)
+            print(status)
+        finally:
+            if stopper is not None and not stopper.done():
+                stopper.cancel()
+                await asyncio.gather(stopper, return_exceptions=True)
+            if session is not None and client.is_connected:
+                try:
+                    await stop_audio_recording(client, session)
+                except Exception as exc:
+                    _logger.warning("Could not confirm stop of session %s; query status before reuse: %s", session, exc)
+    bundle = save_audio_bundle(file_index=status.file_index if status.saved else session,
+                               data=data, output_path=args.output, ffmpeg_path=args.ffmpeg)
+    print(f"Saved {bundle.raw_path} and {bundle.play_path}")
 
 
 async def cmd_ota_update(args: argparse.Namespace) -> None:
@@ -277,6 +369,38 @@ def build_parser() -> argparse.ArgumentParser:
     add_connection_args(audio_count)
     audio_count.set_defaults(func=cmd_audio_count)
 
+    def recording_options(command):
+        command.add_argument("--destination", choices=("auto", "flash", "live", "both"))
+        command.add_argument("--disconnect", choices=("stop", "save"))
+        command.add_argument("--channels", type=int, choices=(1, 2))
+        command.add_argument("--bitrate", type=int)
+        command.add_argument("--gain-left-q8", type=int)
+        command.add_argument("--gain-right-q8", type=int)
+        command.add_argument("--max-duration-ms", type=int)
+
+    audio_config = subparsers.add_parser("audio-config", help="Read/set volatile recording defaults (extended firmware).")
+    add_connection_args(audio_config)
+    recording_options(audio_config)
+    audio_config.set_defaults(func=cmd_audio_config)
+
+    audio_status = subparsers.add_parser("audio-status", help="Read the latest recording session state.")
+    add_connection_args(audio_status)
+    audio_status.set_defaults(func=cmd_audio_status)
+
+    audio_stop = subparsers.add_parser("audio-stop", help="Stop/cancel a recording session and confirm completion.")
+    add_connection_args(audio_stop)
+    audio_stop.add_argument("session_id", type=int)
+    audio_stop.add_argument("--cancel", action="store_true")
+    audio_stop.set_defaults(func=cmd_audio_stop)
+
+    audio_record = subparsers.add_parser("audio-record", help="Remotely record, stop and save the result.")
+    add_connection_args(audio_record)
+    recording_options(audio_record)
+    audio_record.set_defaults(destination="flash", disconnect="stop", func=cmd_audio_record)
+    audio_record.add_argument("output", type=Path)
+    audio_record.add_argument("--seconds", type=float, default=5.0)
+    audio_record.add_argument("--ffmpeg", default="ffmpeg")
+
     audio_download = subparsers.add_parser(
         "audio-download",
         help="Download one audio file.",
@@ -290,7 +414,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     for name, handler, description in (
         ("audio-receive", cmd_audio_receive, "Wait for a saved recording and download it (old/new firmware)."),
-        ("audio-live", cmd_audio_live, "Receive one live stereo Opus recording; the ring makes no Flash copy."),
+        ("audio-live", cmd_audio_live, "Receive live Opus; Flash retention follows device configuration."),
     ):
         audio_receive = subparsers.add_parser(name, help=description)
         add_connection_args(audio_receive)

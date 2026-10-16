@@ -181,6 +181,7 @@ OpenZilo automatically discovers and surfaces GitHub projects building around th
 
 ## Documentation
 
+- [Recording control](docs/recording-control.md): experimental session control and audio configuration for matching extended firmware
 - [Python SDK guide](docs/python-sdk.zh-CN.md): public API and examples
 - [BLE protocol reference](docs/protocol.zh-CN.md): packet format and implemented commands
 - [Architecture and data flow](docs/architecture.zh-CN.md): recording transfer, audio decoding, and events

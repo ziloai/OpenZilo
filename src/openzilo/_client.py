@@ -55,6 +55,8 @@ class OpenZiloClient:
         self._audio_owner: asyncio.Task[Any] | None = None
         self._firmware_update_owner: object | None = None
         self._live_audio_subscribed = False
+        self._recording_active = False
+        self._recording_control_lock = asyncio.Lock()
         self._live_subscription_lock = asyncio.Lock()
         self._receive_queue_size = receive_queue_size
         self._disconnected = asyncio.Event()
