@@ -1,4 +1,4 @@
 # Documentation may be published before the SDK release. This does not bump the package.
 [release]
 version = "0.6.1"
-status = "upcoming"
+status = "released"
