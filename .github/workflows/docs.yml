@@ -2,7 +2,10 @@ name: Documentation
 
 on:
   push:
+    branches-ignore: [docs-site]
   pull_request:
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -10,37 +13,104 @@ permissions:
 
 jobs:
   build:
+    if: github.event_name != 'release' || (!github.event.release.prerelease && !github.event.release.draft)
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      commit: ${{ steps.identity.outputs.commit }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
       - uses: astral-sh/setup-uv@v10.3.0
         with:
           python-version: '3.12'
       - run: uv sync --locked --group docs
-      - name: Build Chinese and English documentation with Zensical
-        run: uv run --group docs python tools/build_docs.py
+      - name: Select and validate documentation channel
+        id: identity
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [ "$EVENT_NAME" = release ]; then
+            uv run --group docs python tools/build_docs.py --channel stable --release-tag "$RELEASE_TAG"
+            echo "version=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          else
+            uv run --group docs python tools/build_docs.py --channel dev
+            echo 'version=dev' >> "$GITHUB_OUTPUT"
+          fi
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Check pages, translations, language links and search indexes
         run: uv run --group docs python tools/check_docs.py
-      - name: Upload Pages artifact
-        if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
-        uses: actions/upload-pages-artifact@v3
+      - name: Check documentation version publishing
+        run: uv run --group docs python -m unittest discover -s tests -p test_docs_publishing.py -v
+      - uses: actions/upload-artifact@v4
         with:
+          name: documentation-build
           path: build/docs/html
+          include-hidden-files: true
 
-  deploy:
-    if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
+  publish:
+    if: >-
+      github.event_name == 'release' ||
+      (github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
     needs: build
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       pages: write
       id-token: write
+    # Serialize archive reads, deployment and archive writes together.
     concurrency:
-      group: github-pages
+      group: documentation-pages-publish
       cancel-in-progress: false
+      queue: max
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: documentation-build
+          path: build/docs/html
+      - name: Restore documentation archive
+        run: |
+          mkdir -p build/docs/site
+          git ls-remote --heads origin refs/heads/docs-site > build/docs/archive-ref
+          if [ -s build/docs/archive-ref ]; then
+            git fetch origin refs/heads/docs-site:refs/remotes/origin/docs-site
+            git worktree add --detach build/docs/archive origin/docs-site
+            rsync -a --exclude=.git build/docs/archive/ build/docs/site/
+          else
+            git worktree add --detach build/docs/archive HEAD
+            git -C build/docs/archive switch --orphan docs-site
+          fi
+      - name: Preserve releases and update the stable default
+        env:
+          DOCS_VERSION: ${{ needs.build.outputs.version }}
+          SOURCE_COMMIT: ${{ needs.build.outputs.commit }}
+        run: >-
+          python tools/assemble_docs.py
+          --site build/docs/site --incoming build/docs/html
+          --version "$DOCS_VERSION" --commit "$SOURCE_COMMIT"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/docs/site
       - name: Deploy documentation
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Save archive after successful deployment
+        run: |
+          rsync -a --delete --exclude=.git build/docs/site/ build/docs/archive/
+          git -C build/docs/archive config user.name 'github-actions[bot]'
+          git -C build/docs/archive config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C build/docs/archive add --all
+          if ! git -C build/docs/archive diff --cached --quiet; then
+            git -C build/docs/archive commit -m 'Update versioned documentation'
+            git -C build/docs/archive push origin HEAD:refs/heads/docs-site
+          fi
