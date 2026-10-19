@@ -1,0 +1,4491 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/protocol.html">
+      
+      
+      
+        <link rel="prev" href="../guide/firmware.html">
+      
+      
+        <link rel="next" href="./architecture.html">
+      
+      
+        
+          <link rel="alternate" href="protocol.html" hreflang="zh">
+        
+          <link rel="alternate" href="../../en/developer/protocol.html" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.71">
+    
+    
+      
+        <title>OpenZilo BLE 协议参考 - OpenZilo SDK v0.6.1</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.e442bf79.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M20%204c1.11%200%202%20.89%202%202v12c0%201.11-.89%202-2%202H4c-1.11%200-2-.89-2-2V6c0-1.11.89-2%202-2zM8.5%2015V9H7.25v3.5L4.75%209H3.5v6h1.25v-3.5L7.3%2015zm5-4.74V9h-4v6h4v-1.25H11v-1.11h2.5v-1.26H11v-1.12zm7%203.74V9h-1.25v4.5h-1.12V10h-1.25v3.5h-1.13V9H14.5v5a1%201%200%200%200%201%201h4a1%201%200%200%200%201-1%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        跳转至
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="导航栏">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenZilo SDK v0.6.1
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenZilo BLE 协议参考
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="protocol.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../en/developer/protocol.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="查找">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="查找">
+  <button type="button" class="md-search__button">
+    查找
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/ziloai/OpenZilo" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    OpenZilo SDK v0.6.1
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ziloai/OpenZilo" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  首页
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  开始使用
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  开始使用
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/install.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  安装与运行环境
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/quickstart.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  快速开始
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./cli.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  命令行指南
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按功能使用
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  按功能使用
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/connection.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  扫描与连接
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/device-info.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  读取设备信息
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./compatibility.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  SDK 与固件兼容
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/time-sync.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  设备校时
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./recording.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  远程录音与录音设置
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/downloads.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  下载与接收已保存的录音
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/live-audio.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  实时音频
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/audio-decoding.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  音频解码与文件保存
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/imu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  IMU 数据采集
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/events.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按键与敲击事件
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/logs.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  读取设备日志
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/ota.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  通过 SDK 升级固件
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 参考
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  API 参考
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./sdk.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 索引
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/data-types.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  数据类型
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/errors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  异常与问题排查
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  版本与兼容
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  版本与兼容
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./features.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  功能与版本要求
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/migration.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  版本升级与固件差异
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guide/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  设备与底层资料
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  设备与底层资料
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/first-use.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  首次使用
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/buttons.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按键与工作模式
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/leds.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  灯光说明
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/firmware.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  固件升级
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo BLE 协议参考
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="protocol.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo BLE 协议参考
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-文档范围" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        1. 文档范围
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ble-服务" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        2. BLE 服务
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-v4-协议包" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        3. v4 协议包
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-命令列表" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        4. 命令列表
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-包体定义" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5. 包体定义
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 包体定义">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-系统信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.1 系统信息
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 系统信息">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0101-获取系统信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0101</code> 获取系统信息
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0102-系统信息响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0102</code> 系统信息响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-日志" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.2 日志
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 日志">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0301-获取日志存储信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0301</code> 获取日志存储信息
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0302-日志存储信息响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0302</code> 日志存储信息响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0303-读取日志" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0303</code> 读取日志
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0304-日志数据响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0304</code> 日志数据响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-校时" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.3 校时
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 校时">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0401-戒指请求校时" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0401</code> 戒指请求校时
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0402-sdk-校时应答" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0402</code> SDK 校时应答
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.4 录音
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.4 录音">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0501-获取录音数量" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0501</code> 获取录音数量
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0502-录音数量响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0502</code> 录音数量响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0503-开始普通提取" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0503</code> 开始普通提取
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0509-开始快速提取" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0509</code> 开始快速提取
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0504-录音文件信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0504</code> 录音文件信息
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0505-录音数据帧" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0505</code> 录音数据帧
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0506-请求指定录音偏移" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0506</code> 请求指定录音偏移
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0507-结束普通提取" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0507</code> 结束普通提取
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0508-结束提取响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0508</code> 结束提取响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050a-录音保存结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050A</code> 录音保存结果
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050b-清空所有录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050B</code> 清空所有录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050c-清空录音响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050C</code> 清空录音响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050d-实时录音订阅" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050D</code> 实时录音订阅
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050e-实时录音订阅响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050E</code> 实时录音订阅响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050f-实时录音开始" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050F</code> 实时录音开始
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0510-实时录音数据" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0510</code> 实时录音数据
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0511-实时录音结束" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0511</code> 实时录音结束
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-实时-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.5 实时 IMU
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 实时 IMU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0601-开启实时上报" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0601</code> 开启实时上报
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0602-开启实时上报响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0602</code> 开启实时上报响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0603-停止实时上报" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0603</code> 停止实时上报
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0604-停止实时上报响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0604</code> 停止实时上报响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0605-单点与批量-imu-数据" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0605</code> 单点与批量 IMU 数据
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-动作事件" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.6 动作事件
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.6 动作事件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0701-普通双击" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0701</code> 普通双击
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0703-按键双击" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0703</code> 按键双击
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0704-按键单击" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0704</code> 按键单击
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-远程录音与录音设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.7 远程录音与录音设置
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.7 远程录音与录音设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0512--0x0513-开始录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0512</code> / <code>0x0513</code> 开始录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0514--0x0515-停止录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0514</code> / <code>0x0515</code> 停止录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0516--0x0517-查询录音状态" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0516</code> / <code>0x0517</code> 查询录音状态
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0518--0x0519-读取录音设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0518</code> / <code>0x0519</code> 读取录音设置
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x051a--0x051b-修改录音设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x051A</code> / <code>0x051B</code> 修改录音设置
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-错误码" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        6. 错误码
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#功能查询消息格式" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        功能查询消息格式
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="功能查询消息格式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#接口变更规则" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        接口变更规则
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./architecture.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo SDK 架构与数据流
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/protocol-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  协议调试工具
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  参与开发
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  参与开发
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./ai-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  使用 AI 编程工具
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  报告安全问题
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo 平台
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-文档范围" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        1. 文档范围
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ble-服务" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        2. BLE 服务
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-v4-协议包" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        3. v4 协议包
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-命令列表" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        4. 命令列表
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-包体定义" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5. 包体定义
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 包体定义">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-系统信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.1 系统信息
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 系统信息">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0101-获取系统信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0101</code> 获取系统信息
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0102-系统信息响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0102</code> 系统信息响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-日志" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.2 日志
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 日志">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0301-获取日志存储信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0301</code> 获取日志存储信息
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0302-日志存储信息响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0302</code> 日志存储信息响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0303-读取日志" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0303</code> 读取日志
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0304-日志数据响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0304</code> 日志数据响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-校时" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.3 校时
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 校时">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0401-戒指请求校时" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0401</code> 戒指请求校时
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0402-sdk-校时应答" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0402</code> SDK 校时应答
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.4 录音
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.4 录音">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0501-获取录音数量" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0501</code> 获取录音数量
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0502-录音数量响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0502</code> 录音数量响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0503-开始普通提取" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0503</code> 开始普通提取
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0509-开始快速提取" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0509</code> 开始快速提取
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0504-录音文件信息" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0504</code> 录音文件信息
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0505-录音数据帧" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0505</code> 录音数据帧
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0506-请求指定录音偏移" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0506</code> 请求指定录音偏移
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0507-结束普通提取" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0507</code> 结束普通提取
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0508-结束提取响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0508</code> 结束提取响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050a-录音保存结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050A</code> 录音保存结果
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050b-清空所有录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050B</code> 清空所有录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050c-清空录音响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050C</code> 清空录音响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050d-实时录音订阅" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050D</code> 实时录音订阅
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050e-实时录音订阅响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050E</code> 实时录音订阅响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050f-实时录音开始" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050F</code> 实时录音开始
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0510-实时录音数据" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0510</code> 实时录音数据
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0511-实时录音结束" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0511</code> 实时录音结束
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-实时-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.5 实时 IMU
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 实时 IMU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0601-开启实时上报" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0601</code> 开启实时上报
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0602-开启实时上报响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0602</code> 开启实时上报响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0603-停止实时上报" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0603</code> 停止实时上报
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0604-停止实时上报响应" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0604</code> 停止实时上报响应
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0605-单点与批量-imu-数据" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0605</code> 单点与批量 IMU 数据
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-动作事件" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.6 动作事件
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.6 动作事件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0701-普通双击" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0701</code> 普通双击
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0703-按键双击" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0703</code> 按键双击
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0704-按键单击" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0704</code> 按键单击
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-远程录音与录音设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.7 远程录音与录音设置
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.7 远程录音与录音设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0512--0x0513-开始录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0512</code> / <code>0x0513</code> 开始录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0514--0x0515-停止录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0514</code> / <code>0x0515</code> 停止录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0516--0x0517-查询录音状态" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0516</code> / <code>0x0517</code> 查询录音状态
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0518--0x0519-读取录音设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0518</code> / <code>0x0519</code> 读取录音设置
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x051a--0x051b-修改录音设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x051A</code> / <code>0x051B</code> 修改录音设置
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-错误码" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        6. 错误码
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#功能查询消息格式" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        功能查询消息格式
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="功能查询消息格式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#接口变更规则" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        接口变更规则
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.1)</summary><ul><li><a href="protocol.html" aria-current="page">stable (v0.6.1)</a></li><li><a href="../../../v0.6.1/zh-CN/developer/protocol.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/protocol.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="openzilo-ble-协议参考">OpenZilo BLE 协议参考<a class="headerlink" href="#openzilo-ble-协议参考" title="Permanent link">&para;</a></h1>
+<div class="admonition note">
+<p class="admonition-title">适用设备</p>
+<p>本文档适用于 <strong>OpenZilo Q</strong>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">连接要求</p>
+<p>电脑需要支持低功耗蓝牙（BLE）。SDK 使用 NUS 服务与戒指通信，支持协议 v4。</p>
+</div>
+<h2 id="1-文档范围">1. 文档范围<a class="headerlink" href="#1-文档范围" title="Permanent link">&para;</a></h2>
+<p>本文记录 SDK 使用的协议 v4 封包格式、命令和字段。不同固件可能只实现其中一部分命令，可通过功能查询接口确认；设备按键与灯光说明见<a href="../guide/index.html">使用指南</a>。</p>
+<p>函数调用见 <a href="sdk.html">API 索引</a>，收包和录音处理见 <a href="architecture.html">架构与数据流</a>。</p>
+<h2 id="2-ble-服务">2. BLE 服务<a class="headerlink" href="#2-ble-服务" title="Permanent link">&para;</a></h2>
+<p>当前协议使用标准 Nordic UART Service（NUS）：</p>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>UUID</th>
+<th>数据方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Service</td>
+<td><code>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+<td>服务标识</td>
+</tr>
+<tr>
+<td>TX Characteristic</td>
+<td><code>6E400003-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+<td>戒指通知 SDK</td>
+</tr>
+<tr>
+<td>RX Characteristic</td>
+<td><code>6E400002-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+<td>SDK 写入戒指</td>
+</tr>
+</tbody>
+</table>
+<p>SDK 按扫描得到的设备地址连接设备（macOS 使用 UUID），不依赖广播设备名。</p>
+<p>SDK 写入 RX Characteristic 时固定按 20 字节分片，最后一片按实际剩余长度发送。该分片是 SDK 的 BLE 发送策略，不是 v4 协议包边界，也不会关闭系统蓝牙栈的 MTU 协商。戒指发送的 TX Characteristic 通知可采用其他分片长度，调用方应交由 <code>OpenZiloClient</code> 或 <code>PacketStream</code> 重组。</p>
+<h2 id="3-v4-协议包">3. v4 协议包<a class="headerlink" href="#3-v4-协议包" title="Permanent link">&para;</a></h2>
+<p>协议头固定为 11 字节：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">偏移</th>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>magic_number</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>固定为 <code>0x3F</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>version</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>当前版本为 4</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>command</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>命令号</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>body_length</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>包体字节数</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>body_crc</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>包体 CRC16；空包体时为 0</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>body</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;">可变</td>
+<td>命令包体</td>
+</tr>
+</tbody>
+</table>
+<p>协议头及包体中的数值字段均使用网络字节序（大端序），字符串和 <code>data</code> 原始字节不做字节序转换。CRC 只覆盖包体，算法与 SDK 的 <code>crc16_compute()</code> 一致，初始值为 <code>0xFFFF</code>。</p>
+<p>BLE 通知可能拆分一个协议包，也可能连续携带多个包。调用方必须先根据固定包头和 <code>body_length</code> 重组完整数据，再解析包体；<code>OpenZiloClient</code> 和 <code>PacketStream</code> 已负责此过程。</p>
+<h2 id="4-命令列表">4. 命令列表<a class="headerlink" href="#4-命令列表" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>请求/上报</th>
+<th>响应</th>
+<th>SDK 接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>系统信息</td>
+<td><code>0x0101</code></td>
+<td><code>0x0102</code></td>
+<td><code>get_system_info()</code></td>
+</tr>
+<tr>
+<td>查询支持功能</td>
+<td><code>0x0105</code></td>
+<td><code>0x0106</code></td>
+<td><code>get_device_capabilities()</code></td>
+</tr>
+<tr>
+<td>命令错误</td>
+<td><code>0x01FF</code> 设备响应</td>
+<td>无</td>
+<td><code>DeviceError</code></td>
+</tr>
+<tr>
+<td>日志存储信息</td>
+<td><code>0x0301</code></td>
+<td><code>0x0302</code></td>
+<td><code>get_log_storage()</code></td>
+</tr>
+<tr>
+<td>日志数据</td>
+<td><code>0x0303</code></td>
+<td><code>0x0304</code></td>
+<td><code>read_log_chunk()</code></td>
+</tr>
+<tr>
+<td>校时</td>
+<td><code>0x0401</code> 戒指请求</td>
+<td><code>0x0402</code> SDK 应答</td>
+<td><code>enable_time_sync()</code>、<code>send_time_response()</code></td>
+</tr>
+<tr>
+<td>录音数量</td>
+<td><code>0x0501</code></td>
+<td><code>0x0502</code></td>
+<td><code>get_audio_file_count()</code></td>
+</tr>
+<tr>
+<td>普通录音提取</td>
+<td><code>0x0503</code></td>
+<td><code>0x0504</code></td>
+<td><code>get_audio_file_info()</code></td>
+</tr>
+<tr>
+<td>录音数据</td>
+<td><code>0x0506</code></td>
+<td><code>0x0505</code></td>
+<td><code>read_audio_frame()</code></td>
+</tr>
+<tr>
+<td>结束普通提取</td>
+<td><code>0x0507</code></td>
+<td><code>0x0508</code></td>
+<td><code>end_audio_extract()</code></td>
+</tr>
+<tr>
+<td>快速录音提取</td>
+<td><code>0x0509</code></td>
+<td><code>0x0504</code>、连续 <code>0x0505</code></td>
+<td><code>download_audio_file(..., quick=True)</code></td>
+</tr>
+<tr>
+<td><code>V2.001.0002.0000</code> 保存后自动上报</td>
+<td>连续 <code>0x0505</code> 戒指上报</td>
+<td>主动阶段无 <code>0x0504</code>；恢复时查询元数据</td>
+<td><code>receive_auto_audio_file()</code></td>
+</tr>
+<tr>
+<td><code>V2.001.0002.0001</code> 保存结果</td>
+<td><code>0x050A</code> 戒指上报</td>
+<td>无</td>
+<td><code>wait_audio_record_result()</code>、<code>receive_auto_audio_file()</code></td>
+</tr>
+<tr>
+<td>实时录音订阅</td>
+<td><code>0x050D</code></td>
+<td><code>0x050E</code></td>
+<td><code>set_live_audio_subscription()</code></td>
+</tr>
+<tr>
+<td>实时录音数据</td>
+<td><code>0x050F</code>、<code>0x0510</code>、<code>0x0511</code> 戒指上报</td>
+<td>无</td>
+<td><code>receive_live_audio_file()</code></td>
+</tr>
+<tr>
+<td>清空录音</td>
+<td><code>0x050B</code></td>
+<td><code>0x050C</code></td>
+<td><code>clear_audio_files()</code></td>
+</tr>
+<tr>
+<td>开始录音</td>
+<td><code>0x0512</code></td>
+<td><code>0x0513</code></td>
+<td><code>start_audio_recording()</code></td>
+</tr>
+<tr>
+<td>停止录音</td>
+<td><code>0x0514</code></td>
+<td><code>0x0515</code></td>
+<td><code>stop_audio_recording()</code></td>
+</tr>
+<tr>
+<td>录音状态</td>
+<td><code>0x0516</code></td>
+<td><code>0x0517</code></td>
+<td><code>get_audio_recording_status()</code></td>
+</tr>
+<tr>
+<td>读取录音设置</td>
+<td><code>0x0518</code></td>
+<td><code>0x0519</code></td>
+<td><code>get_audio_recording_config()</code></td>
+</tr>
+<tr>
+<td>修改录音设置</td>
+<td><code>0x051A</code></td>
+<td><code>0x051B</code></td>
+<td><code>set_audio_recording_config()</code></td>
+</tr>
+<tr>
+<td>开启实时 IMU</td>
+<td><code>0x0601</code></td>
+<td><code>0x0602</code></td>
+<td><code>start_sensor_report()</code></td>
+</tr>
+<tr>
+<td>停止实时 IMU</td>
+<td><code>0x0603</code></td>
+<td><code>0x0604</code></td>
+<td><code>stop_sensor_report()</code></td>
+</tr>
+<tr>
+<td>批量 IMU 数据</td>
+<td><code>0x0605</code> 戒指上报</td>
+<td>无</td>
+<td><code>wait_sensor_data()</code></td>
+</tr>
+<tr>
+<td>普通双击</td>
+<td><code>0x0701</code> 戒指上报</td>
+<td>无</td>
+<td><code>wait_sensor_double_tap_event()</code></td>
+</tr>
+<tr>
+<td>按键双击</td>
+<td><code>0x0703</code> 戒指上报</td>
+<td>无</td>
+<td><code>wait_sensor_key_double_press_event()</code></td>
+</tr>
+<tr>
+<td>按键单击</td>
+<td><code>0x0704</code> 戒指上报</td>
+<td>无</td>
+<td><code>wait_sensor_key_single_press_event()</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-包体定义">5. 包体定义<a class="headerlink" href="#5-包体定义" title="Permanent link">&para;</a></h2>
+<p>以下 <code>u16</code>、<code>i16</code> 和 <code>u32</code> 均为大端序。响应中的 <code>error_code</code> 非 0 时，后续字段无效，并且设备可能只返回 <code>error_code</code>。当前固件部分录音错误路径不返回响应，此时 SDK 只能报告超时，不能推断具体错误。</p>
+<h3 id="51-系统信息">5.1 系统信息<a class="headerlink" href="#51-系统信息" title="Permanent link">&para;</a></h3>
+<h4 id="0x0101-获取系统信息"><code>0x0101</code> 获取系统信息<a class="headerlink" href="#0x0101-获取系统信息" title="Permanent link">&para;</a></h4>
+<p>包体为空。</p>
+<h4 id="0x0102-系统信息响应"><code>0x0102</code> 系统信息响应<a class="headerlink" href="#0x0102-系统信息响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>firmware_version_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>固件版本字符串长度</td>
+</tr>
+<tr>
+<td><code>firmware_version</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">可变</td>
+<td>固件版本字符串</td>
+</tr>
+<tr>
+<td><code>system_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Unix 时间戳，单位秒</td>
+</tr>
+<tr>
+<td><code>audio_storage_total</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音存储总字节数</td>
+</tr>
+<tr>
+<td><code>audio_storage_available</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音存储可用字节数</td>
+</tr>
+<tr>
+<td><code>battery_percent</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>电量百分比</td>
+</tr>
+<tr>
+<td><code>battery_charging</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td><code>0</code> 未充电，<code>1</code> 充电中</td>
+</tr>
+<tr>
+<td><code>sn_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>SN 字符串长度</td>
+</tr>
+<tr>
+<td><code>sn</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">可变</td>
+<td>设备 SN</td>
+</tr>
+<tr>
+<td><code>cpuid_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>CPUID 字符串长度</td>
+</tr>
+<tr>
+<td><code>cpuid</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">可变</td>
+<td>设备 CPUID</td>
+</tr>
+<tr>
+<td><code>model_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>型号字符串长度</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">可变</td>
+<td>设备型号</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-日志">5.2 日志<a class="headerlink" href="#52-日志" title="Permanent link">&para;</a></h3>
+<h4 id="0x0301-获取日志存储信息"><code>0x0301</code> 获取日志存储信息<a class="headerlink" href="#0x0301-获取日志存储信息" title="Permanent link">&para;</a></h4>
+<p>包体为空。</p>
+<h4 id="0x0302-日志存储信息响应"><code>0x0302</code> 日志存储信息响应<a class="headerlink" href="#0x0302-日志存储信息响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>日志页大小或设备当前返回的分页单位</td>
+</tr>
+<tr>
+<td><code>total_len</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>日志数据总长度</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0303-读取日志"><code>0x0303</code> 读取日志<a class="headerlink" href="#0x0303-读取日志" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>日志索引</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>读取起始偏移</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>请求字节数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0304-日志数据响应"><code>0x0304</code> 日志数据响应<a class="headerlink" href="#0x0304-日志数据响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>data_len</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>实际数据长度</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>data_len</code></td>
+<td>日志数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-校时">5.3 校时<a class="headerlink" href="#53-校时" title="Permanent link">&para;</a></h3>
+<h4 id="0x0401-戒指请求校时"><code>0x0401</code> 戒指请求校时<a class="headerlink" href="#0x0401-戒指请求校时" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>请求打包时间戳 T1</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0402-sdk-校时应答"><code>0x0402</code> SDK 校时应答<a class="headerlink" href="#0x0402-sdk-校时应答" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>原请求时间戳 T1</td>
+</tr>
+<tr>
+<td><code>response_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>请求到达时间戳 T2</td>
+</tr>
+<tr>
+<td><code>send_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>应答发送时间戳 T3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-录音">5.4 录音<a class="headerlink" href="#54-录音" title="Permanent link">&para;</a></h3>
+<h4 id="0x0501-获取录音数量"><code>0x0501</code> 获取录音数量<a class="headerlink" href="#0x0501-获取录音数量" title="Permanent link">&para;</a></h4>
+<p>包体为空。</p>
+<h4 id="0x0502-录音数量响应"><code>0x0502</code> 录音数量响应<a class="headerlink" href="#0x0502-录音数量响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>file_count</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件数量</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0503-开始普通提取"><code>0x0503</code> 开始普通提取<a class="headerlink" href="#0x0503-开始普通提取" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>固定填写 0</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件索引</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0509-开始快速提取"><code>0x0509</code> 开始快速提取<a class="headerlink" href="#0x0509-开始快速提取" title="Permanent link">&para;</a></h4>
+<p>包体与 <code>0x0503</code> 相同。设备先返回 <code>0x0504</code>，随后连续上报 <code>0x0505</code>，直至 <code>is_end=1</code>。</p>
+<h4 id="0x0504-录音文件信息"><code>0x0504</code> 录音文件信息<a class="headerlink" href="#0x0504-录音文件信息" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件索引</td>
+</tr>
+<tr>
+<td><code>record_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音时间戳，单位秒</td>
+</tr>
+<tr>
+<td><code>data_size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>编码数据区总字节数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0505-录音数据帧"><code>0x0505</code> 录音数据帧<a class="headerlink" href="#0x0505-录音数据帧" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件索引</td>
+</tr>
+<tr>
+<td><code>frame_offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>本帧在录音数据区中的字节偏移</td>
+</tr>
+<tr>
+<td><code>frame_size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>本帧数据字节数，当前最大 4096</td>
+</tr>
+<tr>
+<td><code>is_end</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td><code>0</code> 非末帧，<code>1</code> 末帧</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>frame_size</code></td>
+<td>录音编码数据</td>
+</tr>
+</tbody>
+</table>
+<p><code>data</code> 是原始文件片段：<code>V2.001.0002.0001</code> 为 OP2C 文件；<code>V2.001.0002.0000</code> 为连续“2 字节小端 Speex 长度 + Speex payload”片段。两种布局见<a href="architecture.html#录音文件格式">录音文件格式</a>。这里的小端长度属于录音文件内部格式，不改变 v4 协议字段使用大端序的规则。</p>
+<p>固件 <code>V2.001.0002.0000</code>录音保存成功后，设备会主动连续发送同一格式的 <code>0x0505</code>，但不会预先发送 <code>0x0504</code>。SDK 的 <code>receive_auto_audio_file()</code> 以第一帧的 <code>file_index</code> 确定文件，按 <code>frame_offset</code> 拼接数据，并以 <code>is_end=1</code> 判断连续传输结束。该函数只返回 <code>(file_index, raw_audio)</code>，不返回 <code>AudioFileInfo</code>。</p>
+<p>自动链路正常连续时 SDK 不发送提取命令。发现偏移缺口、等待后续帧超时或收到损坏帧时，SDK 先通过 <code>0x0503 -&gt; 0x0504</code> 获取并校验文件索引和 <code>data_size</code>，再使用 <code>0x0506</code> 请求当前期望偏移，最多补传 3 次。最终结果以 <code>data_size</code> 为边界；应用必须在录音结束和主动上报期间保持 BLE 连接。如果连接建立过晚而错过数据，应查询录音数量并使用 <code>download_audio_file()</code> 重新下载。</p>
+<h4 id="0x0506-请求指定录音偏移"><code>0x0506</code> 请求指定录音偏移<a class="headerlink" href="#0x0506-请求指定录音偏移" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>固定填写 0</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件索引</td>
+</tr>
+<tr>
+<td><code>frame_offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>需要读取或补传的字节偏移</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>当前固件长度检查需要的保留填充，固定填写 0</td>
+</tr>
+</tbody>
+</table>
+<p>SDK 根据 <code>frame_offset</code> 请求普通链路的下一帧，也使用该命令补取快速下载或自动上报链路中的缺失位置。</p>
+<h4 id="0x0507-结束普通提取"><code>0x0507</code> 结束普通提取<a class="headerlink" href="#0x0507-结束普通提取" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>固定填写 0</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件索引</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0508-结束提取响应"><code>0x0508</code> 结束提取响应<a class="headerlink" href="#0x0508-结束提取响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音文件索引</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x050a-录音保存结果"><code>0x050A</code> 录音保存结果<a class="headerlink" href="#0x050a-录音保存结果" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>新保存的录音文件索引</td>
+</tr>
+</tbody>
+</table>
+<p>固件 <code>V2.001.0002.0001</code> 保存录音后发送该包，不再主动上报 <code>0x0505</code>。应用需要用 <code>0x0503</code> 普通提取文件，并以 <code>0x0507</code> 结束。保存失败时包体可能只有 <code>error_code</code>。</p>
+<h4 id="0x050b-清空所有录音"><code>0x050B</code> 清空所有录音<a class="headerlink" href="#0x050b-清空所有录音" title="Permanent link">&para;</a></h4>
+<p>包体为空。该命令会删除设备中的全部录音，属于破坏性操作。</p>
+<h4 id="0x050c-清空录音响应"><code>0x050C</code> 清空录音响应<a class="headerlink" href="#0x050c-清空录音响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x050d-实时录音订阅"><code>0x050D</code> 实时录音订阅<a class="headerlink" href="#0x050d-实时录音订阅" title="Permanent link">&para;</a></h4>
+<div class="admonition note">
+<p class="admonition-title">固件版本</p>
+<p>此用法需要固件 <strong>V2.001.0002.0001 或更新版本</strong>。</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td><code>1</code> 开启，<code>0</code> 关闭</td>
+</tr>
+</tbody>
+</table>
+<p>订阅不会启动录音；<code>V2.001.0002.0001</code> 可由按键长按或远程录音命令启动。仅实时发送时不写入 Flash，也可配置同时保存。断线后清除订阅，关闭订阅会中止实时发送。</p>
+<h4 id="0x050e-实时录音订阅响应"><code>0x050E</code> 实时录音订阅响应<a class="headerlink" href="#0x050e-实时录音订阅响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码；通知未开启或 ATT MTU 小于 128 时返回错误</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>设备当前订阅状态</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x050f-实时录音开始"><code>0x050F</code> 实时录音开始<a class="headerlink" href="#0x050f-实时录音开始" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>本次录音会话，非 0</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>固定为 0</td>
+</tr>
+<tr>
+<td><code>record_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>录音时间戳，单位秒</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>固定为 0</td>
+</tr>
+<tr>
+<td><code>sample_rate</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>固定为 16000</td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>1 或 2，与录音设置一致</td>
+</tr>
+<tr>
+<td><code>codec</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>固定为 3，表示 Opus</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0510-实时录音数据"><code>0x0510</code> 实时录音数据<a class="headerlink" href="#0x0510-实时录音数据" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>与 <code>0x050F</code> 相同</td>
+</tr>
+<tr>
+<td><code>sequence</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>包序号，从 0 开始</td>
+</tr>
+<tr>
+<td><code>byte_offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>已发送 Opus 数据的字节偏移，从 0 开始</td>
+</tr>
+<tr>
+<td><code>length</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Opus 包长度，1～100</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>length</code></td>
+<td>一个 20 ms Opus 包，声道数与开始事件一致</td>
+</tr>
+</tbody>
+</table>
+<p><code>byte_offset</code> 只累计 Opus 数据本身，不包含 OP2C 文件中的长度前缀。</p>
+<h4 id="0x0511-实时录音结束"><code>0x0511</code> 实时录音结束<a class="headerlink" href="#0x0511-实时录音结束" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>与 <code>0x050F</code> 相同</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>固定为 0</td>
+</tr>
+<tr>
+<td><code>produced_bytes</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>设备编码产生的 Opus 字节数</td>
+</tr>
+<tr>
+<td><code>sent_bytes</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>设备已发送的 Opus 字节数</td>
+</tr>
+<tr>
+<td><code>dropped_frames</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>设备丢弃的帧数</td>
+</tr>
+</tbody>
+</table>
+<p>只有 <code>error_code=0</code>、<code>dropped_frames=0</code>，且两个字节计数都等于实际收到的数据量时，录音才完整。实时录音期间请求下载，<code>0x0504</code> 可能返回设备忙碌。</p>
+<h3 id="55-实时-imu">5.5 实时 IMU<a class="headerlink" href="#55-实时-imu" title="Permanent link">&para;</a></h3>
+<p>固件 <code>V2.001.0002.0000</code> 需先进入手势模式；固件 <code>V2.001.0002.0001</code> 取消模式切换，改为由 <code>0x0601</code> 直接启动采集。两版均沿用下列命令号。</p>
+<h4 id="0x0601-开启实时上报"><code>0x0601</code> 开启实时上报<a class="headerlink" href="#0x0601-开启实时上报" title="Permanent link">&para;</a></h4>
+<p>包体为空。以下直接启动采集的用法需要固件 <strong>V2.001.0002.0001 或更新版本</strong>；<code>V2.001.0002.0000</code> 需先进入手势模式。从停止状态开启上报时重置 <code>sequence_start</code>；已在上报时重复请求不会重置序号。</p>
+<p>实时 IMU 的正常调用顺序必须是：</p>
+<div class="highlight"><pre><span></span><code>固件 V2.001.0002.0001：无需切换模式
+-&gt; 发送 0x0601
+-&gt; 收到 error_code=0 的 0x0602
+-&gt; 接收批量 0x0605
+</code></pre></div>
+<p>在 <code>V2.001.0002.0000</code> 的录音模式下，<code>0x0601</code> 返回设备忙碌；<code>V2.001.0002.0001</code> 没有该模式限制。<code>wait_sensor_data()</code> 只等待数据，不会自动发送 <code>0x0601</code>。</p>
+<h4 id="0x0602-开启实时上报响应"><code>0x0602</code> 开启实时上报响应<a class="headerlink" href="#0x0602-开启实时上报响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>sample_rate_hz</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>当前采样率，调用方应以该值为准</td>
+</tr>
+<tr>
+<td><code>accel_range_g</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>加速度计量程</td>
+</tr>
+<tr>
+<td><code>gyro_range_dps</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>陀螺仪量程</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0603-停止实时上报"><code>0x0603</code> 停止实时上报<a class="headerlink" href="#0x0603-停止实时上报" title="Permanent link">&para;</a></h4>
+<p>包体为空。<code>V2.001.0002.0001</code> 同时停止 BLE 上报和 IMU 采集；<code>V2.001.0002.0000</code> 只停止 BLE 上报，手势模式下的本地采集仍可继续。</p>
+<h4 id="0x0604-停止实时上报响应"><code>0x0604</code> 停止实时上报响应<a class="headerlink" href="#0x0604-停止实时上报响应" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0605-单点与批量-imu-数据"><code>0x0605</code> 单点与批量 IMU 数据<a class="headerlink" href="#0x0605-单点与批量-imu-数据" title="Permanent link">&para;</a></h4>
+<p>单点固件成功包体为 <code>error_code:u16 + sequence:u32 + timestamp_ms:u32 + accel_x/y/z:i16 + gyro_x/y/z:i16</code>，固定 22 字节，全大端。SDK 将其转为只有一个样本的 <code>SensorDataBatch</code>。</p>
+<p>以下是批量格式（成功包体长度为 <code>10 + 16*N</code>，与单点格式不重叠）：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td><code>sequence_start</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>本批第一个采样点序号</td>
+</tr>
+<tr>
+<td><code>frame_count</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>本批采样点数量</td>
+</tr>
+<tr>
+<td><code>sample_size</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>单个采样点字节数，当前固定为 16</td>
+</tr>
+<tr>
+<td><code>samples</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>frame_count * sample_size</code></td>
+<td>连续采样点</td>
+</tr>
+</tbody>
+</table>
+<p>每个 16 字节采样点格式如下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>设备采集时间戳，单位毫秒</td>
+</tr>
+<tr>
+<td><code>accel_x</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>X 轴加速度原始值</td>
+</tr>
+<tr>
+<td><code>accel_y</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Y 轴加速度原始值</td>
+</tr>
+<tr>
+<td><code>accel_z</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Z 轴加速度原始值</td>
+</tr>
+<tr>
+<td><code>gyro_x</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>X 轴陀螺仪原始值</td>
+</tr>
+<tr>
+<td><code>gyro_y</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Y 轴陀螺仪原始值</td>
+</tr>
+<tr>
+<td><code>gyro_z</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Z 轴陀螺仪原始值</td>
+</tr>
+</tbody>
+</table>
+<p>成功包体长度必须等于：</p>
+<div class="highlight"><pre><span></span><code>2 + 4 + 2 + 2 + frame_count * sample_size
+</code></pre></div>
+<p>每批最多 32 个采样点，实际数量以 <code>frame_count</code> 为准。下一批序号为 <code>sequence_start + frame_count</code>。<code>V2.001.0002.0001</code> 在断线后停止采集，重连后需重新发送 <code>0x0601</code>；<code>V2.001.0002.0000</code> 可在手势模式重连后恢复本地检测，上报仍需重新开启。</p>
+<h3 id="56-动作事件">5.6 动作事件<a class="headerlink" href="#56-动作事件" title="Permanent link">&para;</a></h3>
+<p>以下事件消息格式在 <code>V2.001.0002.0000</code> 与 <code>V2.001.0002.0001</code> 中保留，采集条件与单击行为的变化见相应小节。</p>
+<h4 id="0x0701-普通双击"><code>0x0701</code> 普通双击<a class="headerlink" href="#0x0701-普通双击" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>事件时间戳，单位毫秒</td>
+</tr>
+</tbody>
+</table>
+<p><code>V2.001.0002.0001</code> 需要先发送 <code>0x0601</code> 开启 IMU 采集，再检测敲击；<code>V2.001.0002.0000</code> 在手势模式下检测，无需开启 BLE 数据上报。时间戳是开机后毫秒数，与按键事件的秒级设备时间不同。</p>
+<h4 id="0x0703-按键双击"><code>0x0703</code> 按键双击<a class="headerlink" href="#0x0703-按键双击" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>设备时间戳，单位秒；SDK 字段仍名为 <code>timestamp_ms</code></td>
+</tr>
+</tbody>
+</table>
+<p>按键双击成立时只上报 <code>0x0703</code>，不再触发对应单击和模式切换。</p>
+<h4 id="0x0704-按键单击"><code>0x0704</code> 按键单击<a class="headerlink" href="#0x0704-按键单击" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th style="text-align: right;">字节数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>设备时间戳，单位秒；SDK 字段仍名为 <code>timestamp_ms</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>V2.001.0002.0001</code> 确认单击后只上报 <code>0x0704</code>，不切换模式；<code>V2.001.0002.0000</code> 同时尝试切换录音／手势模式。事件需等待双击判定窗口结束，包体不包含模式字段。</p>
+<p>按键事件的秒级时间在校时后对应设备的 Unix 时间；未校时时不可当作有效日历时间。不要将其与 IMU／敲击的开机后毫秒数直接比较。</p>
+<h3 id="57-远程录音与录音设置">5.7 远程录音与录音设置<a class="headerlink" href="#57-远程录音与录音设置" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">固件版本</p>
+<p>此用法需要固件 <strong>V2.001.0002.0001 或更新版本</strong>。</p>
+</div>
+<p>以下命令对应录音控制接口第 1 版。开始、查询状态和读取设置的请求包体为空，数值字段均为大端序。应用调用示例见<a href="recording.html">远程录音</a>。</p>
+<h4 id="0x0512--0x0513-开始录音"><code>0x0512</code> / <code>0x0513</code> 开始录音<a class="headerlink" href="#0x0512--0x0513-开始录音" title="Permanent link">&para;</a></h4>
+<p>请求包体为空。成功响应为 <code>error_code:u16, session_id:u32</code>，共 6 字节。录音编号非 0，响应表示设备已接受开始请求；最终状态通过 <code>0x0516</code> 查询。开始请求超时后先查状态，不自动重发。</p>
+<h4 id="0x0514--0x0515-停止录音"><code>0x0514</code> / <code>0x0515</code> 停止录音<a class="headerlink" href="#0x0514--0x0515-停止录音" title="Permanent link">&para;</a></h4>
+<p>请求为 <code>session_id:u32, cancel:u8</code>。<code>cancel=0</code> 结束并按输出设置处理录音，<code>cancel=1</code> 丢弃尚未保存的录音。成功响应为 <code>error_code:u16, session_id:u32</code>。响应中的编号必须与请求一致；收到响应后仍需等待最终状态。</p>
+<h4 id="0x0516--0x0517-查询录音状态"><code>0x0516</code> / <code>0x0517</code> 查询录音状态<a class="headerlink" href="#0x0516--0x0517-查询录音状态" title="Permanent link">&para;</a></h4>
+<p>请求包体为空。成功响应共 14 字节：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td>查询操作的错误码</td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td>录音编号；空闲时为 0</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>u8</code></td>
+<td>0 空闲、1 已排队、2 录音中、3 保存中、4 完成、5 失败、6 已取消</td>
+</tr>
+<tr>
+<td><code>saved</code></td>
+<td><code>u8</code></td>
+<td>1 表示设备已有保存文件，0 表示没有</td>
+</tr>
+<tr>
+<td><code>recording_error</code></td>
+<td><code>u16</code></td>
+<td>该次录音的错误码，与查询错误码分开</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td>已保存文件的索引；未保存时为 0</td>
+</tr>
+</tbody>
+</table>
+<p>SDK 用 <code>saved</code> 判断文件索引是否有效；没有文件时，返回对象的 <code>file_index</code> 为 <code>None</code>。</p>
+<h4 id="0x0518--0x0519-读取录音设置"><code>0x0518</code> / <code>0x0519</code> 读取录音设置<a class="headerlink" href="#0x0518--0x0519-读取录音设置" title="Permanent link">&para;</a></h4>
+<p>请求包体为空，响应以 <code>error_code:u16</code> 开头。成功时后接下表中的 14 字节设置，再接采样率、帧时长和固定编码参数。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td><code>u8</code></td>
+<td>设置结构版本，当前为 1</td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>u8</code></td>
+<td>0 自动、1 保存到设备、2 实时发送、3 同时发送和保存</td>
+</tr>
+<tr>
+<td><code>disconnect_policy</code></td>
+<td><code>u8</code></td>
+<td>0 停止录音、1 继续保存在设备</td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code>u8</code></td>
+<td>1 或 2</td>
+</tr>
+<tr>
+<td><code>bitrate</code></td>
+<td><code>u32</code></td>
+<td>码率，单位 bit/s</td>
+</tr>
+<tr>
+<td><code>gain_left_q8</code>、<code>gain_right_q8</code></td>
+<td>各 <code>u16</code></td>
+<td>左右数字增益，256 表示 1 倍</td>
+</tr>
+<tr>
+<td><code>max_duration_ms</code></td>
+<td><code>u16</code></td>
+<td>最长录音时间，单位毫秒</td>
+</tr>
+</tbody>
+</table>
+<p>成功响应固定为 34 字节。设置字段后依次为 <code>sample_rate:u16</code>、<code>frame_duration_ms:u16</code>，以及编码参数 <code>codec:u8</code>、<code>complexity:u8</code>、<code>vbr:u8</code>、<code>constrained_vbr:u8</code>、<code>dtx:u8</code>、<code>fec:u8</code>、<code>packet_loss_percent:u8</code>、<code>signal:u16</code>、<code>bit_depth:u8</code>、<code>max_packet_size:u16</code>、<code>application:u16</code>。这些参数由设备返回，不能通过修改设置命令写入。</p>
+<h4 id="0x051a--0x051b-修改录音设置"><code>0x051A</code> / <code>0x051B</code> 修改录音设置<a class="headerlink" href="#0x051a--0x051b-修改录音设置" title="Permanent link">&para;</a></h4>
+<p>请求仅包含上表的 14 字节设置。响应与读取设置相同，返回设备接受后的完整设置。仅空闲时可修改；断线后继续保存只允许用于设备存储或同时保存模式。</p>
+<h2 id="6-错误码">6. 错误码<a class="headerlink" href="#6-错误码" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">值</th>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>SUCCESS</code></td>
+<td>成功</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>UNKNOWN</code></td>
+<td>未知错误</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>DEVICE_BUSY</code></td>
+<td>设备忙碌</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>FILE_NOT_EXIST</code></td>
+<td>文件不存在</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>CMD_GROUP_NOT_EXIST</code></td>
+<td>命令组不存在</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>CMD_NOT_EXIST</code></td>
+<td>命令不存在</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>TIMEOUT</code></td>
+<td>操作超时</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>PARAM_INVALID</code></td>
+<td>参数异常</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>COMMUNICATION</code></td>
+<td>通信异常</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>UNSUPPORTED_SCHEMA</code></td>
+<td>不支持的消息结构版本</td>
+</tr>
+</tbody>
+</table>
+<p>用户升级说明见<a href="../guide/firmware.html">固件升级指南</a>。SDK 提供 <code>update_firmware()</code> 与 <code>ota-update</code> 命令，调用方式见 <a href="../sdk/ota.html#固件升级">SDK 固件升级</a>。</p>
+<h2 id="功能查询消息格式">功能查询消息格式<a class="headerlink" href="#功能查询消息格式" title="Permanent link">&para;</a></h2>
+<p>固件 <code>V2.001.0002.0000</code> 与 <code>V2.001.0002.0001</code> 的发行标签均未实现下列功能查询命令。这里记录 SDK 对功能查询扩展的解析格式，不表示该扩展已随 <code>V2.001.0002.0001</code> 发布。</p>
+<p>保留通信协议 v4，现有 GET_INFO、录音配置 v1 等布局不变。所有整数均为大端。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>方向</th>
+<th>消息体</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0105</code></td>
+<td>主机 → 设备</td>
+<td>空</td>
+</tr>
+<tr>
+<td><code>0x0106</code></td>
+<td>设备 → 主机</td>
+<td><code>error:u16</code>, 成功时 <code>schema:u8=1</code>，随后 TLV</td>
+</tr>
+<tr>
+<td><code>0x01FF</code></td>
+<td>设备 → 主机</td>
+<td><code>original_command:u16, error:u16</code>，固定 4 字节</td>
+</tr>
+</tbody>
+</table>
+<p>错误码含义如下：2 忙碌，5 未实现命令，7 参数非法，新增 9 为不支持的结构版本。未知命令返回 5；能力查询非空请求返回 7；14 字节录音配置请求使用未知版本时返回 9。现有命令的已有错误响应继续有效；未将全部旧错误路径迁移到通用回复。收到错误包不再回错误包。</p>
+<p>TLV 为 <code>tag:u16, length:u16, value:length bytes</code>，总长受 v4 的 5120 字节上限约束；当前固件使用最多 512 字节的缓冲区生成响应。重复 tag、截断、非法 UTF-8、缺失必要的设备信息字段会报协议错误；未知的可选 tag 跳过，最高位为 1 的未知 tag 要求升级 SDK，不能静默忽略。</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>完整固件版本，UTF-8</td>
+</tr>
+<tr>
+<td>2</td>
+<td>产品型号，UTF-8</td>
+</tr>
+<tr>
+<td>3</td>
+<td>固件编译目标，UTF-8</td>
+</tr>
+<tr>
+<td>4</td>
+<td>本次启动的 8 字节随机 boot_id</td>
+</tr>
+<tr>
+<td>5</td>
+<td>固件构建 ID，UTF-8</td>
+</tr>
+<tr>
+<td>6</td>
+<td>支持的通信协议列表，连续 u16；当前为 4</td>
+</tr>
+<tr>
+<td><code>0x0100 + feature_id</code></td>
+<td>功能接口版本 <code>major:u8, minor:u8</code></td>
+</tr>
+<tr>
+<td><code>0x0204</code></td>
+<td>录音限制，见下表</td>
+</tr>
+</tbody>
+</table>
+<p>功能 ID：1 system/1，2 time_sync/1，3 audio_files/1，4 recording_control/1，5 live_audio/1，6 imu/2，7 key_events/1，8 double_tap/1，9 ota/1，10 gesture/1。其中斜杠后是本 SDK 支持的主版本。当前固件不声明 gesture。IMU/2 表示订阅直接启动采集；需要额外手势模式的实现不能声明该接口版本。</p>
+<p>固件按完整命令组是否注册声明能力；按键及双击事件只在连接了相应生产者的产品构建中声明。声明表示实现支持，不保证当前硬件初始化成功、连接条件满足或设备不忙。</p>
+<p>录音限制固定 26 字节：</p>
+<table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1–2</td>
+<td>u16, u16</td>
+<td>采样率、帧时长 ms</td>
+</tr>
+<tr>
+<td>3–6</td>
+<td>u8 × 4</td>
+<td>声道位图、输出模式位图、允许继续保存的输出模式位图、保留=0</td>
+</tr>
+<tr>
+<td>7–8</td>
+<td>u32 × 2</td>
+<td>码率下限、上限，闭区间</td>
+</tr>
+<tr>
+<td>9–10</td>
+<td>u16 × 2</td>
+<td>数字增益 Q8 下限、上限</td>
+</tr>
+<tr>
+<td>11–13</td>
+<td>u16 × 3</td>
+<td>时长下限、上限、整除步长 ms</td>
+</tr>
+</tbody>
+</table>
+<p>位图按枚举数值设置位；如声道 1/2 对应 <code>0x06</code>，CONTINUE_SAVING 允许 FLASH=1/BOTH=3 对应 <code>0x0A</code>。录音接口 v1 必须同时提供该限制。当前固定 Opus 编码配置仍通过既有配置读回接口获取。</p>
+<h3 id="接口变更规则">接口变更规则<a class="headerlink" href="#接口变更规则" title="Permanent link">&para;</a></h3>
+<p>增加字段时可使用可选 TLV，旧客户端可以跳过。不兼容的字段或行为变化应提高接口主版本，并提供新命令或消息结构；需要客户端理解的字段使用必需标记。写入请求包含不支持的字段时，应返回错误。录音文件按内容识别格式，不依赖设备当前固件版本。</p>
+<p>请求中没有事务编号，重试录音开始命令前应先查询录音状态。OTA 升级包的适用条件由发行说明提供，SDK 不自动判断所有起始版本组合，也不提供自动回滚。应用固件和引导程序的安全版本独立管理。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © OpenZilo
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation.sections","navigation.indexes","content.code.copy"],"redirect":null,"search":"../assets/javascripts/workers/search.c47bb847.min.js","tags":null,"translations":{"clipboard.copied":"已复制","clipboard.copy":"复制","clipboard.error":"Could not copy to clipboard","search.result.more.one":"在该页上还有 1 个符合条件的结果","search.result.more.other":"在该页上还有 # 个符合条件的结果","search.result.none":"没有找到符合条件的结果","search.result.one":"找到 1 个符合条件的结果","search.result.other":"# 个符合条件的结果","search.result.placeholder":"键入以开始搜索","search.result.term.missing":"缺少","select.version":"选择当前版本"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a2388154.min.js"></script>
+      
+    
+  </body>
+</html>

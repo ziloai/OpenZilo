@@ -1,9 +1,12 @@
 {
   "commits": {
-    "dev": "34f21f5a81af12ca7d310c9f5c9155240e19fc9c"
+    "dev": "34f21f5a81af12ca7d310c9f5c9155240e19fc9c",
+    "v0.6.1": "34f21f5a81af12ca7d310c9f5c9155240e19fc9c"
   },
-  "stable": null,
+  "stable": "v0.6.1",
   "versions": [
+    "stable",
+    "v0.6.1",
     "dev"
   ]
 }

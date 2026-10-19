@@ -1,4 +1,5 @@
 # OpenZilo SDK documentation
 
 [Stable documentation](stable/en/index.html) is the default.
+[Stable documentation index](stable/llms.txt)
 [Development documentation](dev/en/index.html)
