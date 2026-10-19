@@ -1,37 +1,123 @@
-# Recording control
+# Remote recording and configuration
 
-Experimental support for remote recording control and audio configuration. Requires firmware implementing commands `0x0512`–`0x051B`; protocol v4 alone does not imply support. Hardware validation is pending.
+--8<-- "docs/_includes/devices.en.md"
 
-Import the public API from `openzilo`. With an already connected client named `ring`:
+Start and stop recordings with Python or the CLI, and configure channels, bitrate, gain and maximum duration. Audio can be saved on the ring, streamed to the computer, or both.
+
+--8<-- "docs/_includes/features.en.md:recording-control"
+
+## Record with the CLI
+
+--8<-- "docs/_includes/firmware-0001.en.md"
+
+Select a device, then record five seconds and download it:
+
+```bash
+uv run openzilo device use
+uv run openzilo audio-record recordings/test.wav --seconds 5 --channels 1
+```
+
+WAV output requires `ffmpeg`. Inspect settings and recording status:
+
+```bash
+uv run openzilo audio-config
+uv run openzilo audio-status
+```
+
+See the [CLI guide](cli.en.md) for all commands.
+
+## Record and save with Python
+
+--8<-- "docs/_includes/firmware-0001.en.md"
+
+Replace `ADDRESS` with the scanned address. This example stores five seconds on the ring, waits for saving, and downloads the completed recording:
 
 ```python
+import asyncio
 import openzilo as sdk
 
-await sdk.set_audio_recording_config(ring, sdk.AudioRecordingConfig(
-    output=sdk.AudioOutput.FLASH,
-    channels=1,
-    bitrate=16000,
-    max_duration_ms=5000,
-))
-session = await sdk.start_audio_recording(ring)
-status = await sdk.wait_audio_recording_finished(ring, session)
-if status.saved:
-    info, data = await sdk.download_audio_file(ring, status.file_index)
+ADDRESS = "AA:BB:CC:DD:EE:FF"
+
+async def main():
+    ring = await sdk.connect_ring(address=ADDRESS)
+    try:
+        if not ring.capabilities.supports("recording_control"):
+            print("No compatible remote recording interface is available")
+            return
+        config = sdk.AudioRecordingConfig(
+            output=sdk.AudioOutput.FLASH,
+            channels=1,
+            bitrate=16000,
+            max_duration_ms=5000,
+        )
+        await sdk.set_audio_recording_config(ring, config)
+        session_id = await sdk.start_audio_recording(ring)
+        status = await sdk.wait_audio_recording_finished(ring, session_id)
+        if status.saved:
+            info, data = await sdk.download_audio_file(ring, status.file_index)
+            bundle = sdk.save_audio_bundle(
+                file_index=info.file_index, data=data, output_dir="recordings",
+            )
+            print(bundle.play_path)
+    finally:
+        await ring.disconnect()
+
+asyncio.run(main())
 ```
 
-Use `stop_audio_recording(ring, session)` to stop early, or pass `cancel=True` to discard an uncommitted recording. A stop acknowledgment does not confirm file completion. If a START acknowledgment is lost, query `get_audio_recording_status()` instead of blindly retrying START. Session IDs are scoped to one device boot.
+## Change recording settings
 
-`AudioRecordingConfig` supports AUTO, FLASH, LIVE, and LIVE_AND_FLASH; one or two channels; 8–32 kbps; left/right digital Q8 gains (256 = unity); and a 20–60000 ms limit in 20 ms increments. The sample rate and frame duration remain fixed at 16 kHz and 20 ms. Changes are allowed only while idle, survive reconnection, and reset on reboot.
+--8<-- "docs/_includes/firmware-0001.en.md"
 
-LIVE and LIVE_AND_FLASH require a live subscription before START. Use the `on_subscribed` callback in [remote_recording.py](../examples/remote_recording.py) to register the receiver first. CONTINUE_SAVING requires FLASH or LIVE_AND_FLASH; live delivery does not resume across connections. A live-only disconnect is a failure, while explicit unsubscription cancels the live session. A successful local backup remains independently available.
+Read with `get_audio_recording_config()` and write with `set_audio_recording_config()`. Changes are allowed only while idle, survive reconnection and reset on reboot.
 
-CLI examples (replace the placeholder address):
+| Setting | Argument | Values/range |
+| --- | --- | --- |
+| Output | `output` | `AUTO` automatic, `FLASH` save on device, `LIVE` stream, `LIVE_AND_FLASH` stream and save |
+| Channels | `channels` | 1 or 2 |
+| Bitrate | `bitrate` | 8000–32000 bit/s |
+| Digital gain | `gain_left_q8`, `gain_right_q8` | 0–1024; 256 means 1x |
+| Maximum duration | `max_duration_ms` | 20–60000 ms in multiples of 20 |
+| Disconnect handling | `disconnect_policy` | `STOP` or `CONTINUE_SAVING` on device |
 
-```sh
-openzilo audio-config --address AA:BB:CC:DD:EE:FF
-openzilo audio-record --address AA:BB:CC:DD:EE:FF --seconds 5 --channels 1 recording.wav
-openzilo audio-status --address AA:BB:CC:DD:EE:FF
-openzilo audio-stop --address AA:BB:CC:DD:EE:FF 1
+Sample rate is fixed at 16 kHz with 20 ms frames. The device also reports allowed ranges, checked by the SDK before writing. Other fixed Opus parameters can be read but not changed through this API.
+
+`CONTINUE_SAVING` requires `FLASH` or `LIVE_AND_FLASH`.
+
+## Stop early or cancel
+
+--8<-- "docs/_includes/firmware-0001.en.md"
+
+`start_audio_recording()` returns the recording `session_id`, not completion. To stop early:
+
+```python
+await sdk.stop_audio_recording(ring, session_id)
+status = await sdk.wait_audio_recording_finished(ring, session_id)
 ```
 
-Query the current session before using `audio-stop`; `1` is illustrative. Both OP2C files and live PCM support mono/stereo. Confirm completion with `get_audio_recording_status()` or `wait_audio_recording_finished()` before starting OTA.
+Pass `cancel=True` to discard an uncommitted recording. A stop response does not establish that a file was saved; query or wait for completion.
+
+If START times out, query `get_audio_recording_status()` instead of repeating START. Session IDs last only for the current device boot and cannot be reused after reboot.
+
+## Stream with a device copy
+
+--8<-- "docs/_includes/firmware-0001.en.md"
+
+For `LIVE` or `LIVE_AND_FLASH`, subscribe before starting. Call `start_audio_recording()` from `receive_live_audio_file()`'s `on_subscribed` callback. See [remote_recording.py](../examples/remote_recording.py).
+
+Interrupted live audio cannot resume across connections. With simultaneous saving, the device copy can be downloaded after saving finishes. Live-only disconnect fails that transfer.
+
+## API quick reference
+
+--8<-- "docs/_includes/firmware-0001.en.md"
+
+| API | Result |
+| --- | --- |
+| `get_audio_recording_config(ring)` | Current `AudioRecordingConfig`. |
+| `set_audio_recording_config(ring, config)` | Configuration read back from the device. |
+| `start_audio_recording(ring)` | Recording `session_id`. |
+| `stop_audio_recording(ring, session_id, cancel=False)` | Session ID confirmed by the device. |
+| `get_audio_recording_status(ring)` | `AudioRecordingStatus`, including state, saved flag, file index and error. |
+| `wait_audio_recording_finished(ring, session_id, timeout_s=75.0, poll_interval_s=0.2)` | Final status; raises for a failed recording. |
+
+All APIs above are asynchronous. Except the completion waiter, they accept `timeout_s` for a single request timeout.

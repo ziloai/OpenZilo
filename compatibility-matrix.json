@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-19",
+  "policy": "Results apply only to these SDK source identities, firmware builds and listed scopes; no version-range inference.",
+  "results": [
+    {
+      "sdk": {
+        "version": "0.6.0.dev0",
+        "source_sha256": "d8ec0df0b8679505ba169c090c025e5f7190e271287364bfa8aec926566b7703"
+      },
+      "firmware": {
+        "version": "V2.001.0002.0001-prod-7fd1dfc9",
+        "revision": "7fd1dfc9e9c698c47b91e100580deddde66f210e",
+        "model": "Open Zilo"
+      },
+      "kind": "hardware-read-only",
+      "status": "passed",
+      "checks": [
+        "capability timeout falls back to exact legacy profile",
+        "recording config readback",
+        "absent gesture contract rejected before event wait"
+      ],
+      "not_tested": [
+        "new capability response on physical device",
+        "new standard error response on physical device",
+        "recording lifecycle with this exact SDK snapshot"
+      ]
+    },
+    {
+      "sdk": {
+        "version": "0.6.0.dev0",
+        "source_sha256": "d8ec0df0b8679505ba169c090c025e5f7190e271287364bfa8aec926566b7703"
+      },
+      "firmware": {
+        "base_revision": "7fd1dfc9e9c698c47b91e100580deddde66f210e",
+        "workspace_modified": true,
+        "artifact": "native host build of production capability builder, controller and dispatcher"
+      },
+      "kind": "host-contract",
+      "status": "passed",
+      "fixture_sha256": "f7e1a378612fdf9ecb7db6e5f8cc696917e4a689e57c99522aa61796e957f9c3",
+      "checks": [
+        "shared C/Python capability vector",
+        "bounded response construction",
+        "partial command registration",
+        "standard errors",
+        "boot identity scope",
+        "existing recording v1 wire/state tests"
+      ],
+      "on_device_tested": false
+    }
+  ],
+  "validation": {
+    "sdk_unittests_with_pcm": {
+      "passed": 145
+    },
+    "firmware_native_ctest": {
+      "passed": 10
+    },
+    "metadata_unittests": {
+      "passed": 2
+    },
+    "firmware_build_cli_unittests": {
+      "passed": 9
+    },
+    "sdk_wheel_source_identity": "matches editable installation",
+    "ncs_board_build": "not run locally: NCS toolchain unavailable"
+  }
+}

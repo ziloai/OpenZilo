@@ -264,7 +264,8 @@ class DiscoveryTests(unittest.IsolatedAsyncioTestCase):
     async def test_helper_and_cli_parameters(self):
         Scanner.events = [(0, device(), adv())]
         with patch.object(transport, "DEFAULT_CONNECTION_STABILIZATION_S", 0):
-            ring = await sdk.connect_ring(address=ADDRESS, scan_timeout_s=0.05, connect_timeout_s=0.1)
+            ring = await sdk.connect_ring(address=ADDRESS, scan_timeout_s=0.05, connect_timeout_s=0.1,
+                                          negotiate_capabilities=False)
         self.assertEqual(ring.transport.scan_timeout_s, 0.05)
         await ring.disconnect()
         args = cli.build_parser().parse_args(["connect", "--address", ADDRESS, "--scan-timeout", "12"])
@@ -298,7 +299,7 @@ class DiscoveryTests(unittest.IsolatedAsyncioTestCase):
         fresh = device()
         Scanner.events = [(0, fresh, adv())]
         with patch.object(transport, "DEFAULT_CONNECTION_STABILIZATION_S", 0):
-            ring = await sdk.connect_ring(device=selected)
+            ring = await sdk.connect_ring(device=selected, negotiate_capabilities=False)
         self.assertIs(Link.instances[0].target, fresh)
         self.assertEqual(len(Scanner.instances), 1)
         await ring.disconnect()

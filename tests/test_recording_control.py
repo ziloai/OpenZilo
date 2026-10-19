@@ -226,6 +226,7 @@ class RecordingControlTests(unittest.IsolatedAsyncioTestCase):
                     "--destination", destination, "synthetic.bin",
                 ])
                 with mock.patch.object(cli, "OpenZiloClient", return_value=Context()), \
+                        mock.patch.object(cli, "get_device_capabilities", new=mock.AsyncMock()), \
                         mock.patch.object(cli, "receive_live_audio_file", side_effect=receive), \
                         mock.patch.object(cli, "download_audio_file", new=mock.AsyncMock(return_value=(None, raw))), \
                         mock.patch.object(cli, "save_audio_bundle", return_value=SimpleNamespace(raw_path="raw", play_path="wav")) as save, \

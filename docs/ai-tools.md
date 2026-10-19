@@ -1,5 +1,7 @@
 # Use OpenZilo with coding agents
 
+--8<-- "docs/_includes/devices.en.md"
+
 Clone the repository, install the SDK, and start your coding tool from the repository root:
 
 ```bash
@@ -38,4 +40,7 @@ Run `opencode`. It reads [`AGENTS.md`](../AGENTS.md). [OpenCode setup](https://o
 
 > Read `llms.txt` and `docs/python-sdk.zh-CN.md`. Using only exported `openzilo` APIs, write a script that scans for a ring and prints its model, firmware version, and battery level.
 
-Working in another repository? Give the tool a local copy of `llms.txt` or its [raw URL](https://raw.githubusercontent.com/ziloai/openzilo/main/llms.txt), then point it to the relevant SDK pages. GitHub access is required while this repository is private.
+
+## Use from another project
+
+Provide your coding tool with a local copy of `llms.txt` or its [raw URL](https://raw.githubusercontent.com/ziloai/openzilo/main/llms.txt), and point it to the relevant feature guide. Add the SDK through its Git URL as described in [installation](sdk-install.en.md).

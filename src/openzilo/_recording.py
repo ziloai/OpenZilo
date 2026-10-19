@@ -145,6 +145,8 @@ async def set_audio_recording_config(
     """
     if not isinstance(config, AudioRecordingConfig):
         raise TypeError("config must be AudioRecordingConfig")
+    if client.capabilities is not None and client.capabilities.recording_limits is not None:
+        client.capabilities.recording_limits.validate(config)
     async with client._recording_control_lock:
         packet = await client.request(AudioCommand.SET_RECORDING_CONFIG, AudioCommand.RECORDING_CONFIG_SET,
                                       _config_body(config), timeout_s=timeout_s)

@@ -176,6 +176,7 @@ async def update_firmware(
         else:
             queue.put_nowait(packet)
 
+    had_capabilities = client.capabilities is not None
     client._firmware_update_active = True
     client._firmware_update_owner = object()
     ota_token = _ota_context.set(client._firmware_update_owner)
@@ -245,7 +246,11 @@ async def update_firmware(
             sent_end = max(previous, end)
             if progress is not None and sent_end > previous:
                 progress(sent_end, len(data))
-        return await _verify_firmware_restart(client, before, version, timeout_s, reboot_timeout_s)
+        info = await _verify_firmware_restart(client, before, version, timeout_s, reboot_timeout_s)
+        if had_capabilities:
+            from ._compatibility import get_device_capabilities
+            await get_device_capabilities(client, timeout_s=min(timeout_s, 3.0))
+        return info
     finally:
         for command in commands:
             client.remove_packet_handler(command, on_packet)

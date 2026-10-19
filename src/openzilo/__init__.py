@@ -5,10 +5,16 @@ Everything listed in ``__all__`` is the supported public API. Submodules are
 private implementation details and may change without notice.
 """
 
-__version__ = "0.5.0"
+from ._version import __version__
+from ._identity import SdkIdentity, get_sdk_identity
+from ._compatibility import (
+    DeviceCapabilities, FeatureVersion, RecordingLimits,
+    get_device_capabilities, parse_device_capabilities,
+)
 
 from ._errors import (
     AudioDecodeError,
+    CompatibilityError,
     DeviceError,
     OpenZiloError,
     OpusDecoderUnavailable,
@@ -148,6 +154,14 @@ from ._sensor import (
 )
 
 __all__ = [
+    "SdkIdentity",
+    "get_sdk_identity",
+    "CompatibilityError",
+    "DeviceCapabilities",
+    "FeatureVersion",
+    "RecordingLimits",
+    "get_device_capabilities",
+    "parse_device_capabilities",
     "AudioDisconnectPolicy",
     "AudioOutput",
     "AudioRecordingConfig",

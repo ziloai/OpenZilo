@@ -1,63 +1,56 @@
 # 首次使用
 
+--8<-- "docs/_includes/devices.zh-CN.md"
+
 [English](https://github.com/ziloai/OpenZilo/wiki/First-Use) | [简体中文](https://github.com/ziloai/OpenZilo/wiki/First-Use-zh-CN)
 
-适用固件：**V2.001.0002.0000** · 协议：**v4** · Python SDK：**0.5.0**
+--8<-- "docs/_includes/features.zh-CN.md:user-guide-scope"
 
-## 1. 充电并检查戒指
+## 1. 给戒指充电
 
-使用戒指配套的充电附件。红灯闪烁表示充电中，充满时绿灯常亮，详见[灯光说明](https://github.com/ziloai/OpenZilo/wiki/LED-Indicators-zh-CN)。测试录音前先充电，尤其是报告电量低于 20% 时。
+使用配套充电附件。红灯闪烁表示正在充电，充满后绿灯常亮。录音前请确保电量充足，尤其是设备显示电量低于 20% 时。其他灯光含义见[灯光说明](https://github.com/ziloai/OpenZilo/wiki/LED-Indicators-zh-CN)。
 
-## 2. 安装 SDK
+## 2. 安装并连接
 
-需要 [uv](https://docs.astral.sh/uv/getting-started/installation/)、Python 3.10+（可由 uv 自动安装）和 BLE 适配器；Linux 还需 BlueZ 与蓝牙访问权限。录音转 WAV 需要安装 `ffmpeg`，并确保可从命令行执行。
+需要 Python 3.10 或更新版本、[uv](https://docs.astral.sh/uv/getting-started/installation/) 和支持低功耗蓝牙的电脑。Linux 还需要 BlueZ 和蓝牙访问权限。将录音转成 WAV 时需要安装 `ffmpeg`。
 
 ```bash
 git clone https://github.com/ziloai/OpenZilo.git
 cd OpenZilo
-uv sync
-uv run openzilo scan --timeout 10
+uv sync --locked
+uv run openzilo device use
+uv run openzilo info
 ```
 
-识别广播名为 `Open Zilo` 的戒指，使用扫描返回的地址或设备标识；不同操作系统的格式可能不同。下面的地址只是占位符。关闭其他正在连接戒指的应用。
+按提示从扫描结果中选择戒指，设备地址会保存在本机。先关闭其他正在连接戒指的应用。`info` 会显示设备型号、固件版本和电量。
+
+后续命令默认使用这台设备。需要切换时，再运行 `device use`；也可以用 `--address` 为单条命令指定地址。
+
+## 3. 录制并下载音频
+
+按住按键，绿灯亮起后说话，松开结束。固件 `V2.001.0002.0001` 无需切换录音模式；`V2.001.0002.0000` 如已进入手势模式，先按[按键说明](https://github.com/ziloai/OpenZilo/wiki/Buttons-and-Modes-zh-CN)返回录音模式。
 
 ```bash
-uv run openzilo info --address AA:BB:CC:DD:EE:FF
+uv run openzilo audio-count
+uv run openzilo audio-download 0 first-recording.wav
 ```
 
-确认固件版本为 `V2.001.0002.0000`。版本不同请先核对兼容性。每条命令只在执行期间连接设备，不会留下永久连接。
+先确认录音数量增加，再下载索引 `0` 的文件。索引 `0` 表示第一条已存录音，不一定是刚录的那条。命令生成可播放的 WAV，同时保留原始录音。
 
-## 3. 录制一段短音频
+WAV 转换失败时，检查 `ffmpeg -version` 是否可执行。保留原始 `.bin` 文件，之后可以重新转换；改文件扩展名不能改变音频格式。
 
-戒指启动后默认处于录音模式。按住按键，看到绿灯后说一句话，松开结束。如果之前切换过模式，请按[按键与工作模式](https://github.com/ziloai/OpenZilo/wiki/Buttons-and-Modes-zh-CN)返回录音模式。
+## 4. 查看 IMU 数据
+
+以下直接启动用法需要固件 **V2.001.0002.0001 或更新版本**。使用 `V2.001.0002.0000` 时，先短按进入手势模式，再运行：
 
 ```bash
-uv run openzilo audio-count --address AA:BB:CC:DD:EE:FF
+uv run openzilo sensor-stream --seconds 10
 ```
 
-检查录音数量是否增加。使用索引 `0` 下载第一条已存录音进行测试；它不一定是刚录制的那条：
+移动手部，终端会输出 IMU 数据。运行结束后停止上报并断开连接；按 Ctrl+C 可提前结束。两版行为差异见[版本升级说明](../docs/sdk-migration.zh-CN.md)。
 
-```bash
-uv run openzilo audio-download --address AA:BB:CC:DD:EE:FF 0 first-recording.wav
-```
+## 下一步
 
-播放生成的 WAV，原始录音也会保存。原始 `.bin` 不能通过改扩展名直接播放。WAV 转换失败时请检查 `ffmpeg`，保留原始文件以便重新转换。
+用[交互终端](../docs/cli.zh-CN.md#交互终端)连续操作设备，或用 [Python SDK](../docs/python-sdk.zh-CN.md)编写应用。远程开始录音和修改录音设置见[远程录音](../docs/recording-control.zh-CN.md)。
 
-## 4. 尝试 IMU 数据
-
-从录音模式短按一次进入手势模式，等待蓝灯闪两次。把 `examples/imu_stream.py` 中的 `ADDRESS` 改成扫描得到的设备标识，然后运行：
-
-```bash
-uv run python examples/imu_stream.py
-```
-
-运行前设备需已处于手势模式。移动手部，确认收到批量数据。若返回设备忙碌，请检查模式和连接；按 Ctrl+C 停止。敲击与按键事件 API 见 [SDK 手册](https://github.com/ziloai/OpenZilo/blob/main/docs/python-sdk.zh-CN.md)。
-
-## 遇到问题
-
-- **扫描不到／无法连接**：先充电，检查蓝牙权限，断开其他客户端。
-- **无法录音**：确认录音模式、电量和剩余空间，留意红灯快闪三次的错误提示。
-- **没有 IMU 数据**：确认手势模式和开始上报的成功响应；重连后需重新开启上报。
-- **下载成功但无法生成 WAV**：检查 `ffmpeg`，保留已下载的原始录音。
-
-[反馈问题](https://github.com/ziloai/OpenZilo/issues)时请记录固件版本、SDK 版本与复现步骤，公开反馈前移除私人录音和设备标识。
+遇到连接问题，先检查电量、蓝牙权限，以及是否有其他程序占用连接。无法录音时检查当前模式、电量和存储空间；没有 IMU 数据时检查模式和开始上报的响应。更多问题见 [SDK 常见问题](../docs/sdk-errors.zh-CN.md)。

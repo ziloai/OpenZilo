@@ -26,7 +26,11 @@ OpenZilo is an open development platform for building always-available AI experi
 
 Starting with smart rings, OpenZilo provides developers with hardware, firmware, SDKs, and reference applications for connecting **voice, gestures, physiological signals, AI agents, computers, robots, and the physical world**.
 
-This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex or stereo Opus to WAV, and receiving IMU and gesture events.
+This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex or mono/stereo Opus to WAV, and receiving IMU and gesture events.
+
+Run `openzilo device use` to scan and save a default ring, then `openzilo shell` for an interactive terminal. Device commands also accept `OPENZILO_ADDRESS` or `--address`. Use `sensor-stream --seconds 10 --output imu.jsonl` for timed IMU capture. See the [Chinese CLI guide](docs/cli.zh-CN.md); remote recording requires matching extended firmware.
+
+Run `uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell` to start the interactive terminal directly from GitHub. See the [CLI guide](docs/cli.en.md#run-directly-with-uvx).
 
 It documents protocol v4 on firmware `V2.001.0002.0000`. Check device behavior on your own hardware.
 
@@ -109,17 +113,15 @@ See the [setup guide](docs/ai-tools.md) for installation links and using these d
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+ (uv can install it), and a BLE adapter. On Linux, you also need BlueZ and Bluetooth access.
 
-Install from the repository:
+Install the device CLI from GitHub:
 
 ```bash
-git clone https://github.com/ziloai/openzilo.git
-cd openzilo
-uv sync
-uv run openzilo scan --timeout 10
-uv run openzilo info --address AA:BB:CC:DD:EE:FF
+uv tool install git+https://github.com/ziloai/OpenZilo.git
+openzilo scan --timeout 10
+openzilo info --address AA:BB:CC:DD:EE:FF
 ```
 
-Replace the example address with one returned by `scan`. To use the SDK from your own uv project, run `uv add git+https://github.com/ziloai/openzilo`. Without uv, `python -m pip install -e .` also works.
+Replace the example address with one returned by `scan`. To use the SDK in your uv project, run `uv add git+https://github.com/ziloai/OpenZilo.git`. Without uv, use `python -m pip install git+https://github.com/ziloai/OpenZilo.git`.
 
 In Python:
 
@@ -139,13 +141,13 @@ asyncio.run(main())
 
 See the [examples](examples/) for audio download and IMU streaming.
 
-For live stereo PCM, install `uv sync --extra pcm` and consume
+For live mono/stereo PCM, install `uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"` and consume
 `sdk.open_live_audio_stream(ring)` with `async with` / `async for`. It yields
-`LiveAudioStart`, 20 ms `LivePcmFrame` blocks (16 kHz, interleaved s16le stereo),
+`LiveAudioStart`, 20 ms `LivePcmFrame` blocks (16 kHz s16le, with the configured channel count),
 then a verified `LiveAudioEnd`. Slow consumers fail explicitly; leaving the
 context stops an unfinished capture and attempts unsubscribe. This path uses
 PyAV and does not need an ffmpeg executable. See [the live PCM example](examples/live_pcm.py)
-and [SDK guide](docs/python-sdk.zh-CN.md#open_live_audio_stream实时-pcm--opus-事件流).
+and [live audio guide](docs/sdk-live-audio.en.md#open_live_audio_stream-pcm--opus-events).
 Use `output="opus"` to consume original packets with only the base SDK.
 
 Install `ffmpeg` if you need Speex/Opus-to-WAV conversion. `audio-clear` deletes recordings from the device and requires `--yes`.
@@ -171,7 +173,7 @@ If you find OpenZilo or the ComBodied Agents paradigm useful in your research, p
 }
 ```
 
-# Get Featured on OpenZilo GitHub Trend
+## Get Featured on OpenZilo GitHub Trend
 
 Want your project to appear on the **OpenZilo homepage GitHub Trend**?
 
@@ -181,8 +183,12 @@ OpenZilo automatically discovers and surfaces GitHub projects building around th
 
 ## Documentation
 
+- [Documentation home](docs/index.en.md): user and developer guides
+- [Feature requirements](docs/features.en.md): firmware and SDK requirements
+- [SDK and firmware compatibility](docs/compatibility.zh-CN.md): supported features and interface versions
+
 - [Recording control](docs/recording-control.md): experimental session control and audio configuration for matching extended firmware
-- [Python SDK guide](docs/python-sdk.zh-CN.md): public API and examples
+- [Python SDK documentation](docs/index.en.md): quick start, feature guides and API reference
 - [BLE protocol reference](docs/protocol.zh-CN.md): packet format and implemented commands
 - [Architecture and data flow](docs/architecture.zh-CN.md): recording transfer, audio decoding, and events
 - [Coding agent setup](docs/ai-tools.md) and [`llms.txt`](llms.txt)

@@ -62,6 +62,8 @@ async def connect_ring(
     connect_timeout_s: float = 30.0,
     command_timeout_s: float = DEFAULT_COMMAND_TIMEOUT_S,
     auto_time_sync: bool = False,
+    negotiate_capabilities: bool = True,
+    allow_unverified_features: bool = False,
 ) -> OpenZiloClient:
     """Create and connect a OpenZiloClient."""
     client = OpenZiloClient(
@@ -70,10 +72,18 @@ async def connect_ring(
         scan_timeout_s=scan_timeout_s,
         connect_timeout_s=connect_timeout_s,
         command_timeout_s=command_timeout_s,
+        allow_unverified_features=allow_unverified_features,
     )
-    await client.connect()
     if auto_time_sync:
         enable_time_sync(client)
+    await client.connect()
+    try:
+        if negotiate_capabilities:
+            from ._compatibility import get_device_capabilities
+            await get_device_capabilities(client, timeout_s=min(command_timeout_s, 3.0))
+    except BaseException:
+        await client.disconnect()
+        raise
     return client
 
 
@@ -135,15 +145,25 @@ async def send_time_response(
 
 
 def enable_time_sync(client: OpenZiloClient) -> None:
-    """Automatically respond to device time-sync requests."""
+    """Automatically respond once per request, after its connection is ready."""
+    if client._time_sync_enabled:
+        return
 
     def handle_time_request(packet: Packet) -> Awaitable[None]:
         # Automatic replies consume these requests; do not retain queue copies.
         client._drain_queue(int(TimeCommand.REQUEST))
         reader = BinaryReader(packet.body)
-        return send_time_response(client, reader.u32())
+        request_time = reader.u32()
+        response_time = int(time.time())
+
+        def body() -> bytes:
+            return (BinaryWriter().u32(request_time).u32(response_time)
+                    .u32(int(time.time())).build())
+
+        return client._send_when_ready(TimeCommand.RESPONSE, body, client._connection_token)
 
     client.add_packet_handler(TimeCommand.REQUEST, handle_time_request)
+    client._time_sync_enabled = True
 
 
 async def get_log_storage(

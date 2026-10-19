@@ -12,6 +12,7 @@ from ._errors import DeviceError, ERROR_MESSAGES, ErrorCode, ProtocolError
 
 HEADER_MAGIC = 0x3F
 PROTOCOL_VERSION = 4
+SUPPORTED_PROTOCOL_VERSIONS = frozenset({4})
 HEADER_SIZE = 11
 MAX_BODY_LENGTH = 5120
 _HEADER_STRUCT = struct.Struct(">BHHIH")
@@ -20,6 +21,9 @@ _HEADER_STRUCT = struct.Struct(">BHHIH")
 class SystemCommand(IntEnum):
     GET_INFO = 0x0101
     INFO_RESP = 0x0102
+    GET_CAPABILITIES = 0x0105
+    CAPABILITIES_RESP = 0x0106
+    ERROR_RESP = 0x01FF
 
 
 class _OtaCommand(IntEnum):
@@ -212,7 +216,7 @@ def decode_packet(data: bytes | bytearray | memoryview) -> Packet:
     )
     if magic != HEADER_MAGIC:
         raise ProtocolError(f"Invalid packet magic: 0x{magic:02X}")
-    if version > PROTOCOL_VERSION:
+    if version not in SUPPORTED_PROTOCOL_VERSIONS:
         raise ProtocolError(f"Unsupported protocol version: {version}")
     if body_length > MAX_BODY_LENGTH:
         raise ProtocolError(f"Body too large: {body_length} bytes")
