@@ -44,6 +44,10 @@ jobs:
         run: uv run --group docs python tools/check_docs.py
       - name: Check documentation version publishing
         run: uv run --group docs python -m unittest discover -s tests -p test_docs_publishing.py -v
+      - name: Check Pages deployment identity and live verification
+        run: |
+          node --test tests/test_docs_deployment.cjs
+          uv run --group docs python -m unittest discover -s tests -p test_docs_verification.py -v
       - uses: actions/upload-artifact@v4
         with:
           name: documentation-build
@@ -60,7 +64,7 @@ jobs:
       contents: write
       pages: write
       id-token: write
-    # Serialize archive reads, deployment and archive writes together.
+    # Serialize archive assembly, content commits, deployment and live checks.
     concurrency:
       group: documentation-pages-publish
       cancel-in-progress: false
@@ -97,14 +101,10 @@ jobs:
           python tools/assemble_docs.py
           --site build/docs/site --incoming build/docs/html
           --version "$DOCS_VERSION" --commit "$SOURCE_COMMIT"
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/docs/site
-      - name: Deploy documentation
-        id: deployment
-        uses: actions/deploy-pages@v4
-      - name: Save archive after successful deployment
+      # Archive content, not the SDK source revision, identifies the deployment.
+      # Save before deploying so Pages can resolve this real Git commit.
+      - name: Save assembled archive and select deployment identity
+        id: archive
         run: |
           rsync -a --delete --exclude=.git build/docs/site/ build/docs/archive/
           git -C build/docs/archive config user.name 'github-actions[bot]'
@@ -114,3 +114,26 @@ jobs:
             git -C build/docs/archive commit -m 'Update versioned documentation'
             git -C build/docs/archive push origin HEAD:refs/heads/docs-site
           fi
+          echo "commit=$(git -C build/docs/archive rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: actions/configure-pages@v5
+        id: pages
+      - uses: actions/upload-pages-artifact@v3
+        id: artifact
+        with:
+          path: build/docs/site
+      - name: Deploy documentation archive commit
+        id: deployment
+        uses: actions/github-script@v8
+        env:
+          ARCHIVE_COMMIT: ${{ steps.archive.outputs.commit }}
+          PAGES_ARTIFACT: ${{ steps.artifact.outputs.artifact_id }}
+        with:
+          script: |
+            const deploy = require('./.github/scripts/deploy-docs.cjs');
+            await deploy({github, context, core,
+              archiveCommit: process.env.ARCHIVE_COMMIT,
+              artifactId: process.env.PAGES_ARTIFACT});
+      - name: Verify deployed stable, release and development entry points
+        env:
+          DOCS_URL: ${{ steps.pages.outputs.base_url }}
+        run: python tools/verify_docs.py --site build/docs/site --url "$DOCS_URL"
