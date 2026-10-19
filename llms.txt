@@ -1,0 +1,4 @@
+# OpenZilo SDK documentation
+
+[Stable documentation](stable/en/index.html) is the default.
+[Development documentation](dev/en/index.html)

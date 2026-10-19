@@ -1,0 +1,2470 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/dev/zh-CN/developer/sdk.html">
+      
+      
+      
+        <link rel="prev" href="../sdk/ota.html">
+      
+      
+        <link rel="next" href="../sdk/data-types.html">
+      
+      
+        
+          <link rel="alternate" href="sdk.html" hreflang="zh">
+        
+          <link rel="alternate" href="../../en/developer/sdk.html" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.71">
+    
+    
+      
+        <title>API 索引 - OpenZilo SDK v0.6.1</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.e442bf79.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M20%204c1.11%200%202%20.89%202%202v12c0%201.11-.89%202-2%202H4c-1.11%200-2-.89-2-2V6c0-1.11.89-2%202-2zM8.5%2015V9H7.25v3.5L4.75%209H3.5v6h1.25v-3.5L7.3%2015zm5-4.74V9h-4v6h4v-1.25H11v-1.11h2.5v-1.26H11v-1.12zm7%203.74V9h-1.25v4.5h-1.12V10h-1.25v3.5h-1.13V9H14.5v5a1%201%200%200%200%201%201h4a1%201%200%200%200%201-1%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        跳转至
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="导航栏">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenZilo SDK v0.6.1
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API 索引
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="sdk.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../en/developer/sdk.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="查找">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="查找">
+  <button type="button" class="md-search__button">
+    查找
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/ziloai/OpenZilo" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    OpenZilo SDK v0.6.1
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ziloai/OpenZilo" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  首页
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  开始使用
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  开始使用
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/install.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  安装与运行环境
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/quickstart.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  快速开始
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./cli.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  命令行指南
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按功能使用
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  按功能使用
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/connection.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  扫描与连接
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/device-info.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  读取设备信息
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./compatibility.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  SDK 与固件兼容
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/time-sync.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  设备校时
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./recording.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  远程录音与录音设置
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/downloads.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  下载与接收已保存的录音
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/live-audio.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  实时音频
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/audio-decoding.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  音频解码与文件保存
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/imu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  IMU 数据采集
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/events.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按键与敲击事件
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/logs.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  读取设备日志
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/ota.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  通过 SDK 升级固件
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 参考
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  API 参考
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 索引
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="sdk.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 索引
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#按功能查找接口" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        按功能查找接口
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#连接和系统" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        连接和系统
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#功能查询" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        功能查询
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#远程录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        远程录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#固件升级" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        固件升级
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#录音下载" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        录音下载
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#录音解码和文件保存" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        录音解码和文件保存
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六轴和事件" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        六轴和事件
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#协议工具" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        协议工具
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/data-types.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  数据类型
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/errors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  异常与问题排查
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  版本与兼容
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  版本与兼容
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./features.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  功能与版本要求
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/migration.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  版本升级与固件差异
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guide/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  设备与底层资料
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  设备与底层资料
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/first-use.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  首次使用
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/buttons.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按键与工作模式
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/leds.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  灯光说明
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/firmware.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  固件升级
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./protocol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo BLE 协议参考
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./architecture.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo SDK 架构与数据流
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/protocol-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  协议调试工具
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  参与开发
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  参与开发
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./ai-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  使用 AI 编程工具
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  报告安全问题
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo 平台
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#按功能查找接口" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        按功能查找接口
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#连接和系统" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        连接和系统
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#功能查询" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        功能查询
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#远程录音" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        远程录音
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#固件升级" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        固件升级
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#录音下载" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        录音下载
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#录音解码和文件保存" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        录音解码和文件保存
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六轴和事件" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        六轴和事件
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#协议工具" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        协议工具
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: dev</summary><ul><li><a href="sdk.html" aria-current="page">开发版</a></li></ul></details><!-- /openzilo-versions -->
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="api-索引">API 索引<a class="headerlink" href="#api-索引" title="Permanent link">&para;</a></h1>
+<div class="admonition note">
+<p class="admonition-title">适用设备</p>
+<p>本文档适用于 <strong>OpenZilo Q</strong>。</p>
+</div>
+<p>公开接口以 <code>openzilo.__all__</code> 为准，统一从 <code>import openzilo as sdk</code> 导入；下划线开头的子模块属于内部实现。首次使用从<a href="../sdk/quickstart.html">快速开始</a>进入，返回字段见<a href="../sdk/data-types.html">数据类型</a>。</p>
+<h2 id="按功能查找接口">按功能查找接口<a class="headerlink" href="#按功能查找接口" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>常用名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>连接设备</td>
+<td><code>scan_rings()</code>、<code>connect_ring()</code>、<code>OpenZiloClient</code></td>
+<td>扫描、连接、发送请求、等待设备上报</td>
+</tr>
+<tr>
+<td>系统信息</td>
+<td><code>get_system_info()</code>、<code>parse_system_info()</code></td>
+<td>获取固件版本、时间、存储、电量、SN、CPUID、型号</td>
+</tr>
+<tr>
+<td>功能查询</td>
+<td><code>get_device_capabilities()</code>、<code>DeviceCapabilities.supports()</code></td>
+<td>查询可用功能，检查接口版本与参数范围</td>
+</tr>
+<tr>
+<td>远程录音</td>
+<td><code>start_audio_recording()</code>、<code>stop_audio_recording()</code>、<code>set_audio_recording_config()</code></td>
+<td>开始、停止录音及修改设置</td>
+</tr>
+<tr>
+<td>校时服务</td>
+<td><code>enable_time_sync()</code>、<code>send_time_response()</code></td>
+<td>设备发出 <code>0x0401</code> 时自动或手动回复 <code>0x0402</code></td>
+</tr>
+<tr>
+<td>六轴和事件</td>
+<td><code>start_sensor_report()</code>、<code>wait_sensor_data()</code>、<code>wait_sensor_double_tap_event()</code></td>
+<td>接收批量 IMU 数据、敲击和按键事件</td>
+</tr>
+<tr>
+<td>日志</td>
+<td><code>get_log_storage()</code>、<code>read_log_chunk()</code></td>
+<td>获取日志空间信息并按偏移读取日志</td>
+</tr>
+<tr>
+<td>录音接收与下载</td>
+<td><code>receive_auto_audio_file()</code>、<code>receive_live_audio_file()</code>、<code>download_audio_file()</code></td>
+<td>接收刚保存或实时发送的录音，或查询并下载指定录音</td>
+</tr>
+<tr>
+<td>录音解码保存</td>
+<td><code>save_audio_bundle()</code>、<code>decode_audio_to_wav()</code></td>
+<td>保存原始录音并生成 WAV</td>
+</tr>
+<tr>
+<td>协议工具</td>
+<td><code>encode_packet()</code>、<code>decode_packet()</code>、<code>PacketStream</code></td>
+<td>调试协议包、CRC、二进制读写</td>
+</tr>
+</tbody>
+</table>
+<h2 id="连接和系统">连接和系统<a class="headerlink" href="#连接和系统" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>签名</th>
+<th>返回值</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../sdk/connection.html"><code>scan_rings()</code></a></td>
+<td><code>await scan_rings(address=None, timeout_s=25.0)</code></td>
+<td><code>list[BleDeviceInfo]</code></td>
+<td>扫描 BLE 设备，可按 MAC 地址过滤。</td>
+</tr>
+<tr>
+<td><a href="../sdk/connection.html"><code>connect_ring()</code></a></td>
+<td><code>await connect_ring(address=..., command_timeout_s=10.0, auto_time_sync=False)</code></td>
+<td><code>OpenZiloClient</code></td>
+<td>创建并连接客户端，调用方负责 <code>disconnect()</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/device-info.html"><code>get_system_info()</code></a></td>
+<td><code>await get_system_info(client, timeout_s=None)</code></td>
+<td><code>SystemInfo</code></td>
+<td>读取设备系统信息。</td>
+</tr>
+<tr>
+<td><a href="../sdk/device-info.html"><code>parse_system_info()</code></a></td>
+<td><code>parse_system_info(body)</code></td>
+<td><code>SystemInfo</code></td>
+<td>解析 <code>0x0102</code> 包体，通常只用于测试或协议调试。</td>
+</tr>
+<tr>
+<td><a href="../sdk/time-sync.html"><code>enable_time_sync()</code></a></td>
+<td><code>enable_time_sync(client)</code></td>
+<td><code>None</code></td>
+<td>注册 <code>0x0401</code> 自动应答处理器。</td>
+</tr>
+<tr>
+<td><a href="../sdk/time-sync.html"><code>send_time_response()</code></a></td>
+<td><code>await send_time_response(client, request_time, response_time=None, send_time=None)</code></td>
+<td><code>None</code></td>
+<td>手动发送 <code>0x0402</code> 校时应答。</td>
+</tr>
+<tr>
+<td><a href="../sdk/logs.html"><code>get_log_storage()</code></a></td>
+<td><code>await get_log_storage(client, timeout_s=None)</code></td>
+<td><code>LogStorageInfo</code></td>
+<td>查询日志存储信息。</td>
+</tr>
+<tr>
+<td><a href="../sdk/logs.html"><code>read_log_chunk()</code></a></td>
+<td><code>await read_log_chunk(client, index, offset, size, timeout_s=None)</code></td>
+<td><code>bytes</code></td>
+<td>按日志索引、偏移、长度读取日志。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="功能查询">功能查询<a class="headerlink" href="#功能查询" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>返回值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="compatibility.html"><code>await get_device_capabilities(client, timeout_s=None, refresh=False)</code></a></td>
+<td><code>DeviceCapabilities</code></td>
+<td>查询设备支持的功能及录音参数范围。</td>
+</tr>
+<tr>
+<td><a href="compatibility.html"><code>capabilities.supports(name, major=None, min_minor=0)</code></a></td>
+<td><code>bool</code></td>
+<td>检查指定功能及其接口版本。</td>
+</tr>
+<tr>
+<td><a href="compatibility.html"><code>get_sdk_identity()</code></a></td>
+<td><code>SdkIdentity</code></td>
+<td>返回 SDK 版本和源码校验值，便于记录运行环境。</td>
+</tr>
+</tbody>
+</table>
+<p>功能查询结果会在断开连接后清除。字段说明见<a href="compatibility.html">兼容说明</a>。</p>
+<h2 id="远程录音">远程录音<a class="headerlink" href="#远程录音" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="recording.html"><code>get_audio_recording_config()</code> / <code>set_audio_recording_config()</code></a></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 读取、修改录音设置。</td>
+</tr>
+<tr>
+<td><a href="recording.html"><code>start_audio_recording()</code></a></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 开始录音，返回本次录音编号。</td>
+</tr>
+<tr>
+<td><a href="recording.html"><code>stop_audio_recording()</code></a></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 提前结束或取消指定录音。</td>
+</tr>
+<tr>
+<td><a href="recording.html"><code>get_audio_recording_status()</code></a></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 查询录音状态和已保存文件。</td>
+</tr>
+<tr>
+<td><a href="recording.html"><code>wait_audio_recording_finished()</code></a></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 等待录音结束和保存完成。</td>
+</tr>
+</tbody>
+</table>
+<p>以上接口均为异步调用。参数、返回结果及完整示例见<a href="recording.html">远程录音与录音设置</a>。</p>
+<h2 id="固件升级">固件升级<a class="headerlink" href="#固件升级" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>调用方式</th>
+<th>返回</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../sdk/ota.html"><code>update_firmware()</code></a></td>
+<td><code>await update_firmware(client, firmware, version=..., sha256=..., expected_model=..., progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)</code></td>
+<td><code>SystemInfo</code></td>
+<td>上传官方应用升级包，等待重启并核验运行版本，见<a href="#固件升级">固件升级</a>。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="录音下载">录音下载<a class="headerlink" href="#录音下载" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>签名</th>
+<th>返回值</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../sdk/downloads.html"><code>get_audio_file_count()</code></a></td>
+<td><code>await get_audio_file_count(client, timeout_s=None)</code></td>
+<td><code>int</code></td>
+<td>查询设备中保存的录音数量。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>get_audio_file_info()</code></a></td>
+<td><code>await get_audio_file_info(client, file_index, timeout_s=None)</code></td>
+<td><code>AudioFileInfo</code></td>
+<td>普通链路低层接口，发送 <code>0x0503</code> 并等待 <code>0x0504</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>read_audio_frame()</code></a></td>
+<td><code>await read_audio_frame(client, file_index, frame_offset, timeout_s=None)</code></td>
+<td><code>AudioDataFrame</code></td>
+<td>普通链路低层接口，发送 <code>0x0506</code> 并等待 <code>0x0505</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>end_audio_extract()</code></a></td>
+<td><code>await end_audio_extract(client, file_index, timeout_s=None, ignore_timeout=True)</code></td>
+<td><code>None</code></td>
+<td>普通链路低层接口，发送 <code>0x0507</code> 并等待 <code>0x0508</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>download_audio_file()</code></a></td>
+<td><code>await download_audio_file(client, file_index, progress=None, timeout_s=None, quick=True)</code></td>
+<td><code>tuple[AudioFileInfo, bytes]</code></td>
+<td>完整下载录音；默认 quick 链路。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>receive_auto_audio_file()</code></a></td>
+<td><code>await receive_auto_audio_file(client, timeout_s=None)</code></td>
+<td><code>tuple[int, bytes]</code></td>
+<td><code>V2.001.0002.0001</code> 收到 <code>0x050A</code> 后下载；<code>V2.001.0002.0000</code> 接收连续 <code>0x0505</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>wait_audio_record_result()</code></a></td>
+<td><code>await wait_audio_record_result(client, timeout_s=None)</code></td>
+<td><code>AudioRecordResult</code></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本；只等待 <code>0x050A</code>，不下载。</td>
+</tr>
+<tr>
+<td><a href="../sdk/live-audio.html"><code>set_live_audio_subscription()</code></a></td>
+<td><code>await set_live_audio_subscription(client, enabled, timeout_s=None)</code></td>
+<td><code>LiveAudioSubscription</code></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 低层接口，发送 <code>0x050D</code> 并等待 <code>0x050E</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/live-audio.html"><code>receive_live_audio_file()</code></a></td>
+<td><code>await receive_live_audio_file(client, on_packet=None, on_subscribed=None, timeout_s=60.0, recording_timeout_s=70.0)</code></td>
+<td><code>LiveAudioRecording</code></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 订阅并接收一段实时录音，结束后退订。</td>
+</tr>
+<tr>
+<td><a href="../sdk/live-audio.html"><code>open_live_audio_stream()</code></a></td>
+<td><code>open_live_audio_stream(client, output="pcm", queue_size=64, timeout_s=60.0, recording_timeout_s=70.0)</code></td>
+<td><code>LiveAudioStream</code></td>
+<td>需固件 <code>V2.001.0002.0001</code> 或更新版本。 <code>async with</code> 管理订阅，<code>async for</code> 读取录音开始、音频帧和录音结束事件。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>clear_audio_files()</code></a></td>
+<td><code>await clear_audio_files(client, timeout_s=None)</code></td>
+<td><code>None</code></td>
+<td>删除设备内所有录音，属于破坏性操作。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>parse_audio_file_info()</code></a></td>
+<td><code>parse_audio_file_info(body)</code></td>
+<td><code>AudioFileInfo</code></td>
+<td>解析 <code>0x0504</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>parse_audio_data_frame()</code></a></td>
+<td><code>parse_audio_data_frame(body)</code></td>
+<td><code>AudioDataFrame</code></td>
+<td>解析 <code>0x0505</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/downloads.html"><code>parse_audio_record_result()</code></a></td>
+<td><code>parse_audio_record_result(body)</code></td>
+<td><code>AudioRecordResult</code></td>
+<td>解析 <code>0x050A</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/live-audio.html"><code>parse_live_audio_start()</code></a></td>
+<td><code>parse_live_audio_start(body)</code></td>
+<td><code>LiveAudioStart</code></td>
+<td>解析 <code>0x050F</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/live-audio.html"><code>parse_live_audio_data()</code></a></td>
+<td><code>parse_live_audio_data(body)</code></td>
+<td><code>LiveAudioData</code></td>
+<td>解析 <code>0x0510</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/live-audio.html"><code>parse_live_audio_end()</code></a></td>
+<td><code>parse_live_audio_end(body)</code></td>
+<td><code>LiveAudioEnd</code></td>
+<td>解析 <code>0x0511</code> 包体。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="录音解码和文件保存">录音解码和文件保存<a class="headerlink" href="#录音解码和文件保存" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>签名</th>
+<th>返回值</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>save_audio_bundle()</code></a></td>
+<td><code>save_audio_bundle(file_index, data, metadata=None, output_path=None, output_dir=None, pcm_config=None, ...)</code></td>
+<td><code>AudioBundle</code></td>
+<td>保存原始录音并生成可播放文件。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>decode_audio_to_wav()</code></a></td>
+<td><code>decode_audio_to_wav(data, pcm_config=None, ...)</code></td>
+<td><code>bytes</code></td>
+<td>把录音字节解码成 WAV 字节。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>build_playable_audio()</code></a></td>
+<td><code>build_playable_audio(data, pcm_config=None, ...)</code></td>
+<td><code>PlayableAudio</code></td>
+<td>自动识别 WAV、OP2C 单声道或双声道 Opus 或 Speex，返回可播放音频对象。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>build_wav_from_pcm()</code></a></td>
+<td><code>build_wav_from_pcm(pcm_bytes, pcm_config=None)</code></td>
+<td><code>bytes</code></td>
+<td>给 PCM 数据封装 WAV 头。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>decode_speex_to_pcm()</code></a></td>
+<td><code>decode_speex_to_pcm(data, pcm_config=None, ...)</code></td>
+<td><code>SpeexDecodeResult</code></td>
+<td>把 Speex 数据解码成 PCM。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>decode_opus_to_pcm()</code></a></td>
+<td><code>decode_opus_to_pcm(data, ffmpeg_path="ffmpeg")</code></td>
+<td><code>OpusDecodeResult</code></td>
+<td>按 OP2C 文件头中的声道数解码成 PCM。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>parse_opus_recording()</code></a></td>
+<td><code>parse_opus_recording(data)</code></td>
+<td><code>list[bytes]</code></td>
+<td>校验 OP2C 文件并取出 Opus 包。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>build_opus_recording()</code></a></td>
+<td><code>build_opus_recording(packets)</code></td>
+<td><code>bytes</code></td>
+<td>把 Opus 包封装成 OP2C 文件。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>decode_ogg_speex_with_ffmpeg()</code></a></td>
+<td><code>decode_ogg_speex_with_ffmpeg(ogg_bytes, pcm_config=None, ffmpeg_path="ffmpeg")</code></td>
+<td><code>bytes</code></td>
+<td>用 ffmpeg 解码 Ogg Speex 为 PCM。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>parse_packetized_speex_stream()</code></a></td>
+<td><code>parse_packetized_speex_stream(data, allow_framed_blocks=True)</code></td>
+<td><code>list[bytes]</code></td>
+<td>解析带长度字段的 Speex 包流。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>split_raw_speex_packets()</code></a></td>
+<td><code>split_raw_speex_packets(data, quality=3, bits_size=None)</code></td>
+<td><code>list[bytes]</code></td>
+<td>按 Speex 帧大小切分原始数据。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>build_ogg_speex()</code></a></td>
+<td><code>build_ogg_speex(packets, pcm_config=None)</code></td>
+<td><code>bytes</code></td>
+<td>把 Speex 包封装成 Ogg Speex。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>normalize_decoded_speex_pcm()</code></a></td>
+<td><code>normalize_decoded_speex_pcm(pcm, packet_count, pcm_config=None)</code></td>
+<td><code>bytes</code></td>
+<td>规范解码后 PCM 长度。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>normalize_pcm_config()</code></a></td>
+<td><code>normalize_pcm_config(config=None)</code></td>
+<td><code>PcmConfig</code></td>
+<td>规范 PCM 配置输入。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>format_pcm_config()</code></a></td>
+<td><code>format_pcm_config(config=None)</code></td>
+<td><code>str</code></td>
+<td>格式化 PCM 配置说明。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>build_audio_bundle_paths()</code></a></td>
+<td><code>build_audio_bundle_paths(file_index, metadata=None, output_path=None, output_dir=None)</code></td>
+<td><code>tuple[Path, Path]</code></td>
+<td>生成原始文件和播放文件路径。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>build_base_name()</code></a></td>
+<td><code>build_base_name(file_index, metadata=None)</code></td>
+<td><code>str</code></td>
+<td>生成录音文件基础名称。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>is_wav()</code></a></td>
+<td><code>is_wav(data)</code></td>
+<td><code>bool</code></td>
+<td>判断是否为 WAV。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>is_ogg_speex()</code></a></td>
+<td><code>is_ogg_speex(data)</code></td>
+<td><code>bool</code></td>
+<td>判断是否为 Ogg Speex。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>pick_speex_mode()</code></a></td>
+<td><code>pick_speex_mode(sample_rate)</code></td>
+<td><code>int</code></td>
+<td>根据采样率选择 Speex 模式。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>pick_frame_size()</code></a></td>
+<td><code>pick_frame_size(sample_rate)</code></td>
+<td><code>int</code></td>
+<td>根据采样率选择 PCM 帧采样数。</td>
+</tr>
+<tr>
+<td><a href="../sdk/audio-decoding.html"><code>pick_bits_size()</code></a></td>
+<td><code>pick_bits_size(quality)</code></td>
+<td><code>int</code></td>
+<td>根据质量参数估算 Speex 帧字节数。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="六轴和事件">六轴和事件<a class="headerlink" href="#六轴和事件" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>签名</th>
+<th>返回值</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../sdk/imu.html"><code>start_sensor_report()</code></a></td>
+<td><code>await start_sensor_report(client, timeout_s=None)</code></td>
+<td><code>SensorStartInfo</code></td>
+<td><code>V2.001.0002.0001</code> 直接启动采集；<code>V2.001.0002.0000</code> 需先进入手势模式。</td>
+</tr>
+<tr>
+<td><a href="../sdk/imu.html"><code>wait_sensor_data()</code></a></td>
+<td><code>await wait_sensor_data(client, timeout_s=None)</code></td>
+<td><code>SensorDataBatch</code></td>
+<td>在 <code>start_sensor_report()</code> 成功后等待一个 <code>0x0605</code> 单点或批量包；不会自动发送 <code>0x0601</code>。</td>
+</tr>
+<tr>
+<td><a href="../sdk/imu.html"><code>stop_sensor_report()</code></a></td>
+<td><code>await stop_sensor_report(client, timeout_s=None)</code></td>
+<td><code>SensorStopInfo</code></td>
+<td><code>V2.001.0002.0001</code> 停止采集；<code>V2.001.0002.0000</code> 在手势模式下可保留本地采集。</td>
+</tr>
+<tr>
+<td><a href="../sdk/imu.html"><code>parse_sensor_data_batch()</code></a></td>
+<td><code>parse_sensor_data_batch(body)</code></td>
+<td><code>SensorDataBatch</code></td>
+<td>解析 <code>0x0605</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/events.html"><code>wait_sensor_double_tap_event()</code></a></td>
+<td><code>await wait_sensor_double_tap_event(client, timeout_s=None)</code></td>
+<td><code>SensorDoubleTapEvent</code></td>
+<td>等待 <code>0x0701</code> 普通双击事件。</td>
+</tr>
+<tr>
+<td><a href="../sdk/events.html"><code>wait_sensor_key_double_press_event()</code></a></td>
+<td><code>await wait_sensor_key_double_press_event(client, timeout_s=None)</code></td>
+<td><code>SensorKeyDoublePressEvent</code></td>
+<td>等待 <code>0x0703</code> 按键双击事件。</td>
+</tr>
+<tr>
+<td><a href="../sdk/events.html"><code>wait_sensor_key_single_press_event()</code></a></td>
+<td><code>await wait_sensor_key_single_press_event(client, timeout_s=None)</code></td>
+<td><code>SensorKeySinglePressEvent</code></td>
+<td>等待 <code>0x0704</code> 按键单击事件。</td>
+</tr>
+<tr>
+<td><a href="../sdk/events.html"><code>parse_sensor_double_tap_event()</code></a></td>
+<td><code>parse_sensor_double_tap_event(body)</code></td>
+<td><code>SensorDoubleTapEvent</code></td>
+<td>解析 <code>0x0701</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/events.html"><code>parse_sensor_key_double_press_event()</code></a></td>
+<td><code>parse_sensor_key_double_press_event(body)</code></td>
+<td><code>SensorKeyDoublePressEvent</code></td>
+<td>解析 <code>0x0703</code> 包体。</td>
+</tr>
+<tr>
+<td><a href="../sdk/events.html"><code>parse_sensor_key_single_press_event()</code></a></td>
+<td><code>parse_sensor_key_single_press_event(body)</code></td>
+<td><code>SensorKeySinglePressEvent</code></td>
+<td>严格解析 <code>0x0704</code> 的 4 字节时间戳包体。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="协议工具">协议工具<a class="headerlink" href="#协议工具" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>签名</th>
+<th>返回值</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../sdk/protocol-tools.html"><code>encode_packet()</code></a></td>
+<td><code>encode_packet(command, body=b"")</code></td>
+<td><code>bytes</code></td>
+<td>构造带协议头和 CRC 的完整包。</td>
+</tr>
+<tr>
+<td><a href="../sdk/protocol-tools.html"><code>decode_packet()</code></a></td>
+<td><code>decode_packet(data)</code></td>
+<td><code>Packet</code></td>
+<td>解析完整协议包。</td>
+</tr>
+<tr>
+<td><a href="../sdk/protocol-tools.html"><code>crc16_compute()</code></a></td>
+<td><code>crc16_compute(data, initial=0xFFFF)</code></td>
+<td><code>int</code></td>
+<td>计算协议 CRC16。</td>
+</tr>
+</tbody>
+</table>
+<script>
+const sdkSections = {"安装与导入": "../sdk/install.html#安装与导入", "安装依赖": "../sdk/install.html#安装依赖", "python": "../sdk/install.html#python", "windows": "../sdk/install.html#windows", "ubuntulinux": "../sdk/install.html#ubuntulinux", "连接并读取信息": "../sdk/quickstart.html#连接并读取信息", "scan_rings": "../sdk/connection.html#scan_rings", "connect_ring": "../sdk/connection.html#connect_ring", "openziloclient": "../sdk/connection.html#openziloclient", "读取系统信息": "../sdk/device-info.html#读取系统信息", "get_system_info-和-parse_system_info": "../sdk/device-info.html#get_system_info-和-parse_system_info", "自动校时": "../sdk/time-sync.html#自动校时", "enable_time_sync-和-send_time_response": "../sdk/time-sync.html#enable_time_sync-和-send_time_response", "get_log_storage-和-read_log_chunk": "../sdk/logs.html#get_log_storage-和-read_log_chunk", "下载并保存录音": "../sdk/downloads.html#下载并保存录音", "接收并保存刚结束的录音": "../sdk/downloads.html#接收并保存刚结束的录音", "录音下载链路": "../sdk/downloads.html#录音下载链路", "download_audio_file": "../sdk/downloads.html#download_audio_file", "receive_auto_audio_file": "../sdk/downloads.html#receive_auto_audio_file", "clear_audio_files": "../sdk/downloads.html#clear_audio_files", "读取信息下载第一条录音保存文件": "../sdk/downloads.html#读取信息下载第一条录音保存文件", "实时接收录音": "../sdk/live-audio.html#实时接收录音", "open_live_audio_stream实时-pcm--opus-事件流": "../sdk/live-audio.html#open_live_audio_stream实时-pcm--opus-事件流", "receive_live_audio_file": "../sdk/live-audio.html#receive_live_audio_file", "音频解码": "../sdk/audio-decoding.html#音频解码", "save_audio_bundle": "../sdk/audio-decoding.html#save_audio_bundle", "录音解码辅助函数": "../sdk/audio-decoding.html#录音解码辅助函数", "接收批量-imu-数据": "../sdk/imu.html#接收批量-imu-数据", "六轴数据": "../sdk/imu.html#六轴数据", "接收-10-批-imu-数据": "../sdk/imu.html#接收-10-批-imu-数据", "保存-0x0605-到-txt": "../sdk/imu.html#保存-0x0605-到-txt", "动作事件": "../sdk/events.html#动作事件", "wait_sensor_key_single_press_event": "../sdk/events.html#wait_sensor_key_single_press_event", "parse_sensor_key_single_press_event": "../sdk/events.html#parse_sensor_key_single_press_event", "固件升级": "../sdk/ota.html#固件升级", "ble-和协议类型": "../sdk/data-types.html#ble-和协议类型", "系统和日志类型": "../sdk/data-types.html#系统和日志类型", "录音类型": "../sdk/data-types.html#录音类型", "六轴和事件类型": "../sdk/data-types.html#六轴和事件类型", "协议调试工具": "../sdk/protocol-tools.html#协议调试工具", "ble-写入分片与-03x-迁移": "../sdk/migration.html#ble-写入分片与-03x-迁移", "不同固件的使用差异": "../sdk/migration.html", "异常类型": "../sdk/errors.html#异常类型", "transporterror-install-bleak-to-use-ble-transport": "../sdk/errors.html#transporterror-install-bleak-to-use-ble-transport", "扫描不到设备或连接失败": "../sdk/errors.html#扫描不到设备或连接失败", "timed-out-waiting-for-command-": "../sdk/errors.html#timed-out-waiting-for-command-", "receive_auto_audio_file-等待超时": "../sdk/errors.html#receive_auto_audio_file-等待超时", "start_sensor_report-返回设备忙碌": "../sdk/errors.html#start_sensor_report-返回设备忙碌", "录音可以下载但不能解码": "../sdk/errors.html#录音可以下载但不能解码", "清空录音后能恢复吗": "../sdk/errors.html#清空录音后能恢复吗", "文档导航": "sdk.html", "查询设备支持的功能": "compatibility.html", "快速开始": "../sdk/quickstart.html", "运行环境": "../sdk/install.html", "按功能查找接口": "sdk.html", "推荐调用流程": "../sdk/quickstart.html", "公开数据类型": "../sdk/data-types.html", "公开函数速查表": "sdk.html", "api-详细说明": "sdk.html", "完整业务示例": "../sdk/downloads.html", "命令行调用": "cli.html", "常见问题": "../sdk/errors.html", "固件升级_1": "sdk.html#固件升级"};
+const section = decodeURIComponent(window.location.hash.slice(1));
+if (sdkSections[section]) window.location.replace(sdkSections[section]);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © OpenZilo
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation.sections","navigation.indexes","content.code.copy"],"redirect":null,"search":"../assets/javascripts/workers/search.c47bb847.min.js","tags":null,"translations":{"clipboard.copied":"已复制","clipboard.copy":"复制","clipboard.error":"Could not copy to clipboard","search.result.more.one":"在该页上还有 1 个符合条件的结果","search.result.more.other":"在该页上还有 # 个符合条件的结果","search.result.none":"没有找到符合条件的结果","search.result.one":"找到 1 个符合条件的结果","search.result.other":"# 个符合条件的结果","search.result.placeholder":"键入以开始搜索","search.result.term.missing":"缺少","select.version":"选择当前版本"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a2388154.min.js"></script>
+      
+    
+  </body>
+</html>
