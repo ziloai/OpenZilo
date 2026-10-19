@@ -18,6 +18,10 @@ class ProtocolError(OpenZiloError):
     """Packet framing, CRC, or body parsing failed."""
 
 
+class CompatibilityError(OpenZiloError):
+    """Required device contract is unsupported or has not been verified."""
+
+
 class TimeoutError(OpenZiloError):
     """A device response did not arrive in time."""
 
@@ -52,6 +56,7 @@ class ErrorCode(IntEnum):
     TIMEOUT = 6
     PARAM_INVALID = 7
     COMMUNICATION = 8
+    UNSUPPORTED_SCHEMA = 9
 
 
 ERROR_MESSAGES = {
@@ -64,4 +69,5 @@ ERROR_MESSAGES = {
     ErrorCode.TIMEOUT: "operation timeout",
     ErrorCode.PARAM_INVALID: "invalid parameter",
     ErrorCode.COMMUNICATION: "communication error",
+    ErrorCode.UNSUPPORTED_SCHEMA: "unsupported schema",
 }

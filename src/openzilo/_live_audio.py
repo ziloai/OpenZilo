@@ -63,7 +63,10 @@ class LiveAudioRecording:
 async def set_live_audio_subscription(
     client: OpenZiloClient, enabled: bool, *, timeout_s: float | None = None,
 ) -> LiveAudioSubscription:
-    """Select live-only output for subsequent recordings (no Flash copy).
+    """Enable BLE output for subsequent recordings.
+
+    AUTO/legacy output is live-only when subscribed. Extended firmware can be
+    configured as LIVE_AND_FLASH to retain a complete local backup.
 
     Enabling requires NUS notifications and ATT MTU >= 128. Firmware is the
     authority on MTU readiness. Disabling aborts an active live recording;
@@ -108,12 +111,12 @@ def parse_live_audio_start(body: bytes) -> LiveAudioStart:
     if len(body) != 20:
         raise ProtocolError("Invalid live START length")
     session, reserved1, timestamp, reserved2, rate, channels, codec = struct.unpack(">IIIIHBB", body)
-    if not session or reserved1 or reserved2 or (rate, channels, codec) != (16000, 2, 3):
+    if not session or reserved1 or reserved2 or rate != 16000 or channels not in (1, 2) or codec != 3:
         raise ProtocolError("Unsupported live START format")
     return LiveAudioStart(session, timestamp, rate, channels, codec)
 
 
-def parse_live_audio_data(body: bytes) -> LiveAudioData:
+def parse_live_audio_data(body: bytes, *, channels: int = 2) -> LiveAudioData:
     if len(body) < 15:
         raise ProtocolError("Truncated live DATA")
     session, sequence, offset, length = struct.unpack_from(">IIIH", body)
@@ -121,7 +124,7 @@ def parse_live_audio_data(body: bytes) -> LiveAudioData:
         raise ProtocolError("Invalid live DATA length or session")
     packet = body[14:]
     try:
-        _validate_opus_packet(packet)
+        _validate_opus_packet(packet, channels=channels)
     except AudioDecodeError as exc:
         raise ProtocolError(str(exc)) from exc
     return LiveAudioData(session, sequence, offset, packet)
@@ -138,7 +141,7 @@ def parse_live_audio_end(body: bytes) -> LiveAudioEnd:
 
 @dataclass(frozen=True)
 class LivePcmFrame:
-    """20 ms of interleaved signed 16-bit little-endian stereo PCM.
+    """20 ms of signed 16-bit little-endian mono/stereo PCM.
 
     Offsets and counts are samples per channel, not bytes or BLE timestamps.
     """
@@ -297,7 +300,8 @@ class LiveAudioStream:
             raise TimeoutError("Live recording exceeded its time limit")
         for block in blocks:
             assert self._start is not None
-            self._emit(LivePcmFrame(self._start.session_id, self._sample_offset, 320, block))
+            self._emit(LivePcmFrame(self._start.session_id, self._sample_offset, 320, block,
+                                   PcmConfig(16000, self._start.channels, 16)))
             self._sample_offset += 320
 
     async def _run(self) -> None:
@@ -325,6 +329,9 @@ class LiveAudioStream:
                 if first.command != AudioCommand.LIVE_START:
                     raise ProtocolError("Live recording did not begin with START")
                 stream._start = parse_live_audio_start(first.body)
+                if stream._decoder is not None and stream._start.channels == 1:
+                    from ._pcm import _OpusPcmDecoder
+                    stream._decoder = _OpusPcmDecoder(channels=1)
                 stream._deadline = asyncio.get_running_loop().time() + stream._recording_timeout
                 stream._emit(stream._start)
                 sequence = received = 0
@@ -334,7 +341,7 @@ class LiveAudioStream:
                         raise TimeoutError("Live recording exceeded its time limit")
                     packet = await inbox.wait(min(5.0, remaining))
                     if packet.command == AudioCommand.LIVE_DATA:
-                        frame = parse_live_audio_data(packet.body)
+                        frame = parse_live_audio_data(packet.body, channels=stream._start.channels)
                         if (frame.session_id != stream._start.session_id or frame.sequence != sequence
                                 or frame.byte_offset != received):
                             raise ProtocolError("Live recording session, sequence or offset mismatch")
@@ -374,7 +381,8 @@ def open_live_audio_stream(
     """Open one button-triggered recording as ordered START/frame/END events.
 
     Entry confirms subscription, not recording start. PCM needs the ``pcm``
-    extra; Opus requires only the base SDK. No Flash copy or full-file buffering.
+    extra; Opus requires only the base SDK. Flash retention follows device
+    configuration; this iterator does not buffer the entire recording.
     Context exit aborts unfinished capture and attempts bounded unsubscribe.
     """
     return LiveAudioStream(client, output=output, queue_size=queue_size,
@@ -410,4 +418,5 @@ async def receive_live_audio_file(
                         await await_before(result, stream._deadline,
                                            "Live recording exceeded its time limit")
         assert stream.start is not None and stream.end is not None
-        return LiveAudioRecording(stream.start, stream.end, build_opus_recording(packets))
+        return LiveAudioRecording(stream.start, stream.end,
+                                  build_opus_recording(packets, channels=stream.start.channels))

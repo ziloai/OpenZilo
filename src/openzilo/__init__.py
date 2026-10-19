@@ -5,10 +5,16 @@ Everything listed in ``__all__`` is the supported public API. Submodules are
 private implementation details and may change without notice.
 """
 
-__version__ = "0.5.0"
+from ._version import __version__
+from ._identity import SdkIdentity, get_sdk_identity
+from ._compatibility import (
+    DeviceCapabilities, FeatureVersion, RecordingLimits,
+    get_device_capabilities, parse_device_capabilities,
+)
 
 from ._errors import (
     AudioDecodeError,
+    CompatibilityError,
     DeviceError,
     OpenZiloError,
     OpusDecoderUnavailable,
@@ -47,6 +53,19 @@ from ._device import (
 )
 from ._ota import (
     update_firmware,
+)
+from ._recording import (
+    AudioDisconnectPolicy,
+    AudioOutput,
+    AudioRecordingConfig,
+    AudioRecordingState,
+    AudioRecordingStatus,
+    get_audio_recording_config,
+    get_audio_recording_status,
+    set_audio_recording_config,
+    start_audio_recording,
+    stop_audio_recording,
+    wait_audio_recording_finished,
 )
 from ._codec import (
     AudioBundle,
@@ -135,6 +154,25 @@ from ._sensor import (
 )
 
 __all__ = [
+    "SdkIdentity",
+    "get_sdk_identity",
+    "CompatibilityError",
+    "DeviceCapabilities",
+    "FeatureVersion",
+    "RecordingLimits",
+    "get_device_capabilities",
+    "parse_device_capabilities",
+    "AudioDisconnectPolicy",
+    "AudioOutput",
+    "AudioRecordingConfig",
+    "AudioRecordingState",
+    "AudioRecordingStatus",
+    "get_audio_recording_config",
+    "get_audio_recording_status",
+    "set_audio_recording_config",
+    "start_audio_recording",
+    "stop_audio_recording",
+    "wait_audio_recording_finished",
     "AudioBundle",
     "AudioDataFrame",
     "AudioDecodeError",

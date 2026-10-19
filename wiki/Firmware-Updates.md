@@ -1,41 +1,53 @@
-# Firmware Updates
+# Firmware updates
+
+--8<-- "docs/_includes/devices.en.md"
 
 [English](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates) | [简体中文](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates-zh-CN)
 
-Firmware: **V2.001.0002.0000** · Protocol: **v4** · Python SDK: **0.5.0**
+--8<-- "docs/_includes/features.en.md:ota"
 
-## Availability
+## 1. Select a package
 
-This guide targets firmware `V2.001.0002.0000`; the version label does not by itself mean an update package is available. Use only a package and updater explicitly provided for your hardware in an official release announcement.
+Open [official firmware releases](https://github.com/ziloai/OpenZilo-Hardware/releases). Confirm that your model and hardware revision are supported, your current version is an allowed starting version, and you have read the data-retention policy and known issues.
 
-This checkout adds `update_firmware()` and `ota-update` for application firmware updates. The addition is pending release and hardware validation; the SDK version label above does not mean an already installed 0.5.0 package includes it. Check `uv run openzilo ota-update --help` in your installation. An official compatible update package is still required.
+Download the OTA package and keep its target version, model and SHA-256 checksum from the release notes. Factory flashing files are not SDK OTA packages.
 
-## When an official update is available
+## 2. Prepare
 
-1. Read its supported models, compatible starting versions, known issues, and recording-data retention policy. If your device is not listed, contact support before updating.
-2. Back up important recordings. Ensure sufficient battery, a stable connection, and that recording / IMU streaming has stopped. Follow any battery requirement specified by the updater.
-3. Download the official user update package and verify its published SHA-256 checksum. A checksum verifies the downloaded bytes, not device compatibility.
-4. Open the updater named in that release, select the ring and package, and follow its progress. Keep the devices nearby and avoid interrupting power or Bluetooth.
-5. After the updater reports completion, reconnect and read the firmware version. Verify a short recording and IMU capture before normal use.
+Back up important recordings. Stop recording, downloads and IMU reporting, and disconnect other apps. Ensure sufficient charge according to the release instructions.
 
-## SDK command
-
-Run `uv sync` in the reviewed SDK checkout. After completing the preparation above, run:
+From the SDK repository:
 
 ```bash
-uv run openzilo ota-update --address "DEVICE_ADDRESS" "path/to/official-update.bin" --version V2.001.0002.0000 --sha256 "SHA256_FROM_RELEASE" --model "MODEL_FROM_RELEASE"
+uv sync --locked
+uv run openzilo device use
+uv run openzilo info
 ```
 
-Replace the address, file path, checksum, and model with the actual values. The file name is a placeholder, not a published asset. `--version` must match the package's release. The optional `--sha256` and `--model` check the package bytes and connected model respectively; they do not establish compatibility with the starting firmware version.
+Record the current firmware version. Run `uv run openzilo ota-update --help` to inspect the installed updater.
 
-The SDK sends the package unchanged, follows the ring's chunk requests, waits for reboot, reconnects, and checks the device identity and running firmware version. **100% transfer is not installation success.** Success is reported only after the target version is read back. The SDK does not update the bootloader or automatically download a package.
+## 3. Run the update
 
-Timeouts are `--timeout 30` per operation, `--total-timeout 600` for preflight and transfer, and `--reboot-timeout 90` for reboot and verification, in seconds. Python integration is shown in the [SDK guide](https://github.com/ziloai/OpenZilo/blob/main/docs/python-sdk.zh-CN.md#固件升级) and [example](https://github.com/ziloai/OpenZilo/blob/main/examples/update_firmware.py).
+Replace each placeholder with the values for this release:
 
-## If an update fails
+```bash
+uv run openzilo ota-update "path/to/official-update.bin" --version "TARGET_VERSION" --sha256 "SHA256_FROM_RELEASE" --model "MODEL_FROM_RELEASE"
+```
 
-A timeout, disconnect, or cancellation leaves installation unconfirmed; cancelling the client does not roll back a package already received by the ring. Read the running version after reconnecting before deciding whether to retry. Record the updater's error and the current device version. If the ring reconnects, follow the updater's retry instructions; if it does not, contact [support](mailto:openzilo@ziloring.com). Do not assume automatic rollback, downgrade support, or unchanged recordings unless the release explicitly confirms them.
+The command uses your saved device; `--address` selects another one. Keep the ring nearby and avoid interrupting power or Bluetooth.
 
-## Release information
+`--sha256` verifies the downloaded bytes and `--model` checks the connected model. Starting-version compatibility must still follow the release notes.
 
-Any public firmware download is a device update package. Its release notes should identify the target model, version, compatible starting versions, supported updater, checksum, known issues, and recovery contact. The package location will be linked from the official release announcement.
+## 4. Confirm completion
+
+After transfer, the SDK waits for reboot, reconnects, checks that it is the same device, and reads its firmware version. **The command reports success only after the target version is confirmed.** Continue waiting when transfer reaches 100%.
+
+Run `uv run openzilo info` again, record a short clip and check the features your application uses.
+
+Timeouts are in seconds: `--timeout` defaults to 30 per operation, `--total-timeout` to 600 for preparation and transfer, and `--reboot-timeout` to 90 for reboot, reconnect and version checks. See the [SDK guide](../docs/sdk-ota.en.md#firmware-updates) and [update_firmware.py](../examples/update_firmware.py) for Python integration.
+
+## If the update is interrupted
+
+Reconnect and read the firmware version before retrying after a timeout, disconnect or cancellation. Exiting the computer-side updater does not withdraw a package already received by the ring.
+
+If reconnection fails, record the starting version, target version and error message, then [contact support](mailto:openzilo@ziloring.com). Downgrade, recovery and recording retention depend on the release instructions.

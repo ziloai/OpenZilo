@@ -153,6 +153,15 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(progress[-1], (len(PACKAGE), len(PACKAGE)))
         self.assert_clean()
 
+    async def test_negotiated_session_rediscovers_after_firmware_reboot(self):
+        self.client.capabilities = sdk.DeviceCapabilities(
+            "device", "synthetic-before", "synthetic",
+            features=(sdk.FeatureVersion("ota", 1, 0),))
+        info = await self.update()
+        self.assertIsNotNone(self.client.capabilities)
+        self.assertEqual(self.client.capabilities.source, "unknown")
+        self.assertEqual(self.client.capabilities.firmware_version, info.firmware_version)
+
     async def test_build_suffix_is_transmitted_and_verified_exactly(self):
         target = TARGET + "-prod-1234abcd"
         self.peer.running_version = target

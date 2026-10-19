@@ -11,9 +11,14 @@ from ._errors import AudioDecodeError, OpusDecoderUnavailable
 
 
 class _OpusPcmDecoder:
-    """One decoder/resampler per recording; output is interleaved s16le stereo."""
+    """One decoder/resampler per recording; output is s16le mono or stereo."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, channels: int = 2) -> None:
+        if channels not in (1, 2):
+            raise ValueError("channels must be 1 or 2")
+        self._channels = channels
+        self._layout = "mono" if channels == 1 else "stereo"
+        self._block_bytes = 320 * channels * 2
         try:
             import av
         except ImportError as exc:
@@ -25,10 +30,10 @@ class _OpusPcmDecoder:
             self._codec = av.CodecContext.create("opus", "r")
             # OP2C has no pre-skip or gain metadata. Preserve all samples.
             self._codec.extradata = struct.pack(
-                "<8sBBHIhB", b"OpusHead", 1, 2, 0, 16000, 0, 0,
+                "<8sBBHIhB", b"OpusHead", 1, channels, 0, 16000, 0, 0,
             )
             self._codec.open()
-            self._resampler = av.AudioResampler(format="s16", layout="stereo", rate=16000)
+            self._resampler = av.AudioResampler(format="s16", layout=self._layout, rate=16000)
         except Exception as exc:
             raise OpusDecoderUnavailable("Could not initialize the live Opus decoder") from exc
         self._pending = bytearray()
@@ -37,10 +42,10 @@ class _OpusPcmDecoder:
 
     def _convert(self, frames: Any) -> None:
         for frame in frames:
-            if (frame.sample_rate, frame.layout.name, frame.format.name) != (16000, "stereo", "s16"):
+            if (frame.sample_rate, frame.layout.name, frame.format.name) != (16000, self._layout, "s16"):
                 raise AudioDecodeError("Unexpected live PCM format")
             # AV planes include alignment padding; expose only actual samples.
-            pcm = bytes(frame.planes[0])[:frame.samples * 4]
+            pcm = bytes(frame.planes[0])[:frame.samples * self._channels * 2]
             if sys.byteorder != "little":
                 from array import array
                 samples = array("h", pcm)
@@ -50,9 +55,9 @@ class _OpusPcmDecoder:
 
     def _blocks(self) -> list[bytes]:
         blocks = []
-        while len(self._pending) >= 1280:
-            blocks.append(bytes(self._pending[:1280]))
-            del self._pending[:1280]
+        while len(self._pending) >= self._block_bytes:
+            blocks.append(bytes(self._pending[:self._block_bytes]))
+            del self._pending[:self._block_bytes]
             self._samples += 320
         return blocks
 

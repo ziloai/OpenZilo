@@ -1,11 +1,11 @@
 # OpenZilo project guidance
 
-This repository contains the Python BLE SDK and CLI for compatible OpenZilo rings. The maintained public API is `openzilo.__all__` in `src/openzilo/__init__.py`; the underscore submodules are private. It does not contain firmware source, a TypeScript SDK, or public PPG APIs. The [website](https://openzilo.com) describes a broader platform; check the implementation and [SDK guide](docs/python-sdk.zh-CN.md) before claiming a capability is available here.
+This repository contains the Python BLE SDK and CLI for compatible OpenZilo rings. The maintained public API is `openzilo.__all__` in `src/openzilo/__init__.py`; the underscore submodules are private. It does not contain firmware source, a TypeScript SDK, or public PPG APIs. The [website](https://openzilo.com) describes a broader platform; check the implementation and [SDK documentation](docs/index.md) before claiming a capability is available here.
 
 ## Where to look
 
 - Start with [llms.txt](llms.txt) for the documentation index.
-- Use [docs/python-sdk.zh-CN.md](docs/python-sdk.zh-CN.md) for Python API calls, [docs/protocol.zh-CN.md](docs/protocol.zh-CN.md) for wire fields, and [docs/architecture.zh-CN.md](docs/architecture.zh-CN.md) for transport and audio behavior.
+- Start with [installation](docs/sdk-install.zh-CN.md) and [quick start](docs/sdk-quickstart.zh-CN.md). Use [docs/python-sdk.zh-CN.md](docs/python-sdk.zh-CN.md) as the Python API index; it links to feature guides. Use [docs/protocol.zh-CN.md](docs/protocol.zh-CN.md) for wire fields, and [docs/architecture.zh-CN.md](docs/architecture.zh-CN.md) for transport and audio behavior.
 - Use [examples/](examples/) for small runnable examples. `ffmpeg` is needed only for Speex/Opus-to-WAV conversion.
 
 ## Working agreements

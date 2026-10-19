@@ -1,10 +1,12 @@
 # Contributing
 
-Thank you for contributing to OpenZilo Python SDK.
+Contributions to the SDK, examples and documentation are welcome. Keep changes focused and preserve compatibility for the public API in `openzilo.__all__`. If an API must change, explain its impact and migration steps.
 
-Keep changes focused, keep the public API in `openzilo.__all__` stable unless a compatibility change is explicitly agreed, and do not include device captures, generated audio, firmware, APKs, CAD assets, or secrets. Use placeholder MAC addresses and remove real serial numbers and CPUIDs from examples, logs, and screenshots. Add or update hardware-free tests for protocol and parser changes.
+## Code changes
 
-Before opening a pull request, run:
+Keep code in the module responsible for the feature and export public APIs from `openzilo`. For protocol or parser changes, add hardware-free tests and update relevant examples and documentation.
+
+Run these checks from the repository:
 
 ```bash
 uv sync --locked
@@ -13,6 +15,14 @@ uv run python -m unittest discover -s tests -v
 uv run openzilo --help
 ```
 
-Change dependencies with `uv add` or `uv remove` so `uv.lock` stays in sync, and commit the updated lock file.
+Use `uv add` or `uv remove` to change dependencies, and commit the updated `uv.lock`. For hardware-dependent changes, describe the applicable firmware and device in the PR.
 
-Describe the tested firmware/device baseline for hardware-dependent changes. Software and documentation contributions are submitted under MPL-2.0; hardware design contributions, if added, are submitted under CERN-OHL-W-2.0.
+## Documentation changes
+
+Write documentation in Markdown. See [Maintaining documentation](docs/documentation.en.md) for builds, translations and GitHub Pages configuration. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.
+
+## Submission contents
+
+Use placeholder addresses in examples. Remove real device addresses, serial numbers, CPUIDs, private recordings and credentials before submitting. Do not include device captures, generated audio, firmware, APKs or CAD files in SDK changes.
+
+Software and documentation contributions use MPL-2.0. Hardware designs published in their own repository use its hardware license. Report vulnerabilities privately as described in the [security policy](SECURITY.md).

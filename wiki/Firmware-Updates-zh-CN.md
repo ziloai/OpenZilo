@@ -1,41 +1,57 @@
 # 固件升级
 
+--8<-- "docs/_includes/devices.zh-CN.md"
+
 [English](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates) | [简体中文](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates-zh-CN)
 
-适用固件：**V2.001.0002.0000** · 协议：**v4** · Python SDK：**0.5.0**
+--8<-- "docs/_includes/features.zh-CN.md:ota"
 
-## 可用状态
+## 1. 选择升级包
 
-本说明面向固件 `V2.001.0002.0000`，版本号本身不代表升级包已经提供。请仅使用官方发布说明明确指定、与硬件匹配的升级包和升级工具。
+打开 [官方固件发行页面](https://github.com/ziloai/OpenZilo-Hardware/releases)，确认以下信息：
 
-当前源码新增 `update_firmware()` 和 `ota-update`，用于应用固件升级，尚待发布和实机验证。页首 SDK 版本不代表已安装的 0.5.0 包包含此功能；可通过 `uv run openzilo ota-update --help` 检查。实际升级仍需官方提供与设备兼容的升级包。
+- 设备型号和硬件版本在支持列表中。
+- 当前固件版本可以升级到目标版本。
+- 已了解录音、设置是否保留，以及该版本的已知问题。
 
-## 官方升级发布后
+下载 OTA 升级包，并保存发行说明提供的目标版本、型号和 SHA-256 校验值。工厂烧录文件不用于 SDK 的 OTA 升级。
 
-1. 阅读支持型号、可升级的起始版本、已知问题和录音保留说明。设备不在支持列表时，请先联系支持。
-2. 备份重要录音，确保电量充足、连接稳定，并停止录音与 IMU 数据流。升级工具如有电量要求，以其要求为准。
-3. 下载官方用户升级包，核对公开的 SHA-256 校验值。校验值用于检查下载内容，不代表设备兼容性已确认。
-4. 打开该版本指定的升级工具，选择戒指和升级包，按提示操作。保持设备靠近，避免中断供电或蓝牙。
-5. 工具提示完成后重新连接，读取固件版本，再测试一段短录音和 IMU 数据，确认正常后继续使用。
+## 2. 升级前准备
 
-## SDK 命令
+先备份重要录音，停止录音、下载和 IMU 上报，并断开其他连接戒指的应用。确保电量充足，遵循发行说明中的电量要求。
 
-在已审阅的 SDK 源码目录运行 `uv sync`。完成上面的准备后执行：
+在 SDK 仓库目录运行：
 
 ```bash
-uv run openzilo ota-update --address "DEVICE_ADDRESS" "path/to/official-update.bin" --version V2.001.0002.0000 --sha256 "SHA256_FROM_RELEASE" --model "MODEL_FROM_RELEASE"
+uv sync --locked
+uv run openzilo device use
+uv run openzilo info
 ```
 
-替换设备标识、文件路径、校验值和型号；文件名只是占位示例，不代表已有下载附件。`--version` 必须与升级包发布说明一致。可选参数 `--sha256` 和 `--model` 分别检查文件内容与已连接设备的型号，不代表已确认起始固件版本兼容。
+记下当前固件版本。可运行 `uv run openzilo ota-update --help` 查看当前安装的升级命令。
 
-SDK 原样传送升级包，按戒指请求发送分片，等待重启并重连，核对设备身份和运行版本。**传输 100% 不等于安装成功**；只有重启后读到目标版本才报告成功。SDK 不升级 bootloader，也不会自动下载固件包。
+## 3. 运行升级命令
 
-超时参数以秒计：`--timeout 30` 为单次操作上限，`--total-timeout 600` 为前置检查和传输总上限，`--reboot-timeout 90` 为重启与核验总上限。Python 调用见 [SDK 手册](https://github.com/ziloai/OpenZilo/blob/main/docs/python-sdk.zh-CN.md#固件升级)及[示例](https://github.com/ziloai/OpenZilo/blob/main/examples/update_firmware.py)。
+下面的参数都需要替换为本次发行提供的值：
 
-## 升级失败
+```bash
+uv run openzilo ota-update "path/to/official-update.bin" --version "TARGET_VERSION" --sha256 "SHA256_FROM_RELEASE" --model "MODEL_FROM_RELEASE"
+```
 
-超时、断线或取消表示安装结果尚未确认；取消客户端不会撤销戒指已经收到的升级包。重连后先读取运行版本，再决定是否重试。记录工具错误和设备当前版本。若能重新连接，按工具说明重试；无法连接时请[联系支持](mailto:openzilo@ziloring.com)。除非发布说明明确确认，否则不要假设支持自动回滚、降级或升级后录音一定保留。
+命令使用已保存的默认设备；也可用 `--address` 指定地址。升级期间保持设备靠近，避免中断蓝牙和供电。
 
-## 版本发布信息
+`--sha256` 检查下载文件是否完整，`--model` 检查设备型号。当前固件能否升级，仍需按发行说明确认。
 
-公开固件下载如有提供，其用途是设备升级。发布说明应包含目标型号、版本、可升级的起始版本、配套工具、校验值、已知问题和恢复联系方式。下载位置由官方发布说明提供。
+## 4. 确认结果
+
+SDK 发送完文件后会等待戒指重启、重新连接，确认仍是同一台设备，并读取目标固件版本。**只有版本检查通过，命令才报告成功。** 传输进度到达 100% 时还需继续等待。
+
+完成后可运行 `uv run openzilo info` 查看版本，再录制一段短音频并检查需要使用的功能。
+
+超时参数均以秒计：`--timeout` 默认 30，限制单次操作；`--total-timeout` 默认 600，限制升级前检查与传输；`--reboot-timeout` 默认 90，限制重启、重连与版本检查。Python 调用见 [SDK 手册](../docs/sdk-ota.zh-CN.md#固件升级)和 [update_firmware.py](../examples/update_firmware.py)。
+
+## 升级中断怎么办
+
+超时、断线或取消后，先重新连接并读取固件版本，再决定是否重试。退出电脑端程序不会撤回戒指已经收到的升级包。
+
+无法重新连接时，记录升级前版本、目标版本和错误信息，并[联系支持](mailto:openzilo@ziloring.com)。降级、自动恢复和录音保留情况以该版本发行说明为准。

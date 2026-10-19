@@ -1,27 +1,24 @@
-# OpenZilo Documentation
+# Ring user guide
+
+--8<-- "docs/_includes/devices.en.md"
 
 [English](https://github.com/ziloai/OpenZilo/wiki/Home) | [简体中文](https://github.com/ziloai/OpenZilo/wiki/Home-zh-CN)
 
-Firmware: **V2.001.0002.0000** · Protocol: **v4** · Python SDK: **0.5.0**
+--8<-- "docs/_includes/features.en.md:user-guide-scope"
 
-Guides for using your ring and building with the OpenZilo SDK.
+## Start here
 
-## Use Your Ring
+- [First use](https://github.com/ziloai/OpenZilo/wiki/First-Use): charge, connect, record and download audio.
+- [Buttons and modes](https://github.com/ziloai/OpenZilo/wiki/Buttons-and-Modes): recording, mode changes and button events.
+- [LED indicators](https://github.com/ziloai/OpenZilo/wiki/LED-Indicators): colors and patterns, with suggested actions.
+- [Firmware updates](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates): package selection, updates and recovery.
 
-- [First Use](https://github.com/ziloai/OpenZilo/wiki/First-Use): charge, connect, record, download, and try IMU data.
-- [Buttons and Modes](https://github.com/ziloai/OpenZilo/wiki/Buttons-and-Modes): recording, IMU, tap detection, and button events.
-- [LED Indicators](https://github.com/ziloai/OpenZilo/wiki/LED-Indicators): colors, timing, and what to do next.
-- [Firmware Updates](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates): availability, compatibility, updates, and recovery.
+## Build an application
 
-## Build with OpenZilo
+Use the [CLI guide](../docs/cli.zh-CN.md) to operate the device, or the [Python SDK guide](../docs/python-sdk.zh-CN.md) to write an application. Check [feature requirements](../docs/features.en.md) before choosing an API.
 
-- [SDK installation and examples](https://github.com/ziloai/OpenZilo/blob/main/README.md#quick-start)
-- [Python SDK guide (简体中文)](https://github.com/ziloai/OpenZilo/blob/main/docs/python-sdk.zh-CN.md)
-- [BLE protocol (简体中文)](https://github.com/ziloai/OpenZilo/blob/main/docs/protocol.zh-CN.md)
-- [Architecture and data flow (简体中文)](https://github.com/ziloai/OpenZilo/blob/main/docs/architecture.zh-CN.md)
+Hardware, firmware and SDK versions are managed separately. Use the interfaces supported by your device. The Python SDK does not currently expose PPG data APIs.
 
-## Compatibility and Support
+## Get help
 
-These guides target the firmware version listed above. Check the device version before following them. Hardware model names alone do not guarantee compatibility; an OTA release must list supported models and starting versions. The public SDK covers audio, IMU, tap detection, and button events; this checkout also provides an OTA update API and CLI (see [Firmware Updates](https://github.com/ziloai/OpenZilo/wiki/Firmware-Updates) for availability). There is no public PPG API.
-
-[Report a problem](https://github.com/ziloai/OpenZilo/issues) · [Private security reports](https://github.com/ziloai/OpenZilo/blob/main/SECURITY.md) · [OpenZilo website](https://openzilo.com)
+When [reporting an issue](https://github.com/ziloai/OpenZilo/issues), include SDK and firmware versions, steps to reproduce, and error messages. Remove device addresses, serial numbers and private audio. Report security issues privately as described in the [security policy](../SECURITY.md).

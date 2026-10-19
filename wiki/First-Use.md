@@ -1,63 +1,56 @@
-# First Use
+# First use
+
+--8<-- "docs/_includes/devices.en.md"
 
 [English](https://github.com/ziloai/OpenZilo/wiki/First-Use) | [简体中文](https://github.com/ziloai/OpenZilo/wiki/First-Use-zh-CN)
 
-Firmware: **V2.001.0002.0000** · Protocol: **v4** · Python SDK: **0.5.0**
+--8<-- "docs/_includes/features.en.md:user-guide-scope"
 
-## 1. Charge and check the ring
+## 1. Charge the ring
 
-Use the charging accessory supplied for your ring. Red blinking indicates charging; steady green indicates a full charge. See [LED Indicators](https://github.com/ziloai/OpenZilo/wiki/LED-Indicators). Charge before testing recording, especially if the reported battery is below 20%.
+Use the supplied charging accessory. Red flashes indicate charging; steady green indicates a full charge. Charge before recording, especially when the device reports less than 20% battery. See [LED indicators](https://github.com/ziloai/OpenZilo/wiki/LED-Indicators).
 
-## 2. Install the SDK
+## 2. Install and connect
 
-You need [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+ (uv can install it), and a BLE adapter. Linux also requires BlueZ and Bluetooth access. Install `ffmpeg` and make it available on your PATH to convert recordings to WAV.
+You need Python 3.10 or later, [uv](https://docs.astral.sh/uv/getting-started/installation/), and Bluetooth Low Energy support. Linux also requires BlueZ and permission to access Bluetooth. Install `ffmpeg` to convert recordings to WAV.
 
 ```bash
 git clone https://github.com/ziloai/OpenZilo.git
 cd OpenZilo
-uv sync
-uv run openzilo scan --timeout 10
+uv sync --locked
+uv run openzilo device use
+uv run openzilo info
 ```
 
-Identify your ring (advertised name: `Open Zilo`). Use the address or identifier returned by the scanner; its format varies by operating system. The address below is a placeholder. Close other applications connected to the ring.
+Select a ring from the scan results. Its address is saved locally. Close other apps connected to the ring first. `info` shows the model, firmware version and battery level.
+
+Later commands use the saved device. Run `device use` again to change it, or supply `--address` for an individual command.
+
+## 3. Record and download audio
+
+Hold the button, speak after the green light appears, then release to finish. Firmware `V2.001.0002.0001` needs no recording-mode change. If `V2.001.0002.0000` is in gesture mode, return to recording mode using [Buttons and modes](https://github.com/ziloai/OpenZilo/wiki/Buttons-and-Modes).
 
 ```bash
-uv run openzilo info --address AA:BB:CC:DD:EE:FF
+uv run openzilo audio-count
+uv run openzilo audio-download 0 first-recording.wav
 ```
 
-Confirm the firmware version is `V2.001.0002.0000`. If it differs, check compatibility before using this guide. Each command connects for its operation; it does not keep a permanent session open.
+Confirm the count increased, then download file index `0`. This is the first stored recording, not necessarily the latest one. The command produces a playable WAV and preserves the original data.
 
-## 3. Make a short recording
+If conversion fails, check that `ffmpeg -version` runs. Keep the original `.bin` file for conversion later. Renaming its extension does not convert the audio.
 
-After startup the ring is in recording mode. Hold the button until green appears, say a short sentence, and release it. If you have already changed modes, use [Buttons and Modes](https://github.com/ziloai/OpenZilo/wiki/Buttons-and-Modes) to return to recording mode.
+## 4. Receive IMU data
+
+Direct startup requires firmware **V2.001.0002.0001 or later**. On `V2.001.0002.0000`, enter gesture mode with a short press first, then run:
 
 ```bash
-uv run openzilo audio-count --address AA:BB:CC:DD:EE:FF
+uv run openzilo sensor-stream --seconds 10
 ```
 
-Check that the count increased. Download index `0` to test the first stored recording (this is not necessarily the one you just recorded):
+Move your hand to see data in the terminal. The command stops reporting and disconnects when finished; Ctrl+C ends it early. Check [feature requirements](../docs/features.en.md) for other firmware.
 
-```bash
-uv run openzilo audio-download --address AA:BB:CC:DD:EE:FF 0 first-recording.wav
-```
+## Next steps
 
-Listen to the generated WAV. The raw recording is also saved. A raw `.bin` cannot be played by simply renaming it. If WAV conversion fails, check `ffmpeg`; retain the raw file for retrying conversion.
+Use the [interactive CLI](../docs/cli.zh-CN.md#interactive-shell) for repeated operations, or the [Python SDK](../docs/python-sdk.zh-CN.md) to build an app. See [Recording control](../docs/recording-control.md) to start recordings remotely and change recording settings.
 
-## 4. Try IMU data
-
-Single-press to enter gesture mode from recording mode, then wait for the two blue pulses. Edit `ADDRESS` in `examples/imu_stream.py` to match your scan result and run:
-
-```bash
-uv run python examples/imu_stream.py
-```
-
-The ring must already be in gesture mode when this example starts. Move your hand and confirm batches arrive. A busy response means the prerequisites are not satisfied; check the mode and connection. Press Ctrl+C to stop. See the [SDK guide (简体中文)](https://github.com/ziloai/OpenZilo/blob/main/docs/python-sdk.zh-CN.md) for tap and button event APIs.
-
-## If something does not work
-
-- **Cannot scan / connect:** charge the ring, check Bluetooth permissions, and disconnect other clients.
-- **No recording:** confirm recording mode and sufficient battery; check for the three red error pulses and available storage.
-- **No IMU data:** confirm gesture mode and a successful streaming-start response; restart streaming after reconnecting.
-- **Download succeeds but WAV fails:** check `ffmpeg`; keep the downloaded raw file.
-
-Record your firmware version, SDK version, and reproduction steps when [reporting an issue](https://github.com/ziloai/OpenZilo/issues). Remove private recordings and device identifiers from public reports.
+For connection issues, check battery, Bluetooth permissions and other connected apps. For recording issues, check mode, battery and storage. For IMU issues, check mode and the start-report response. More help is in the [SDK FAQ](../docs/sdk-errors.en.md).
