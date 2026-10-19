@@ -58,7 +58,6 @@ PAGES = [
     ("developer/ai-tools", "docs/ai-tools.zh-CN.md", "docs/ai-tools.md"),
     ("contributing/index", "CONTRIBUTING.zh-CN.md", "CONTRIBUTING.md"),
     ("contributing/security", "SECURITY.zh-CN.md", "SECURITY.md"),
-    ("contributing/documentation", "docs/documentation.zh-CN.md", "docs/documentation.en.md"),
     ("contributing/agents", "AGENTS.md", "AGENTS.md"),
     ("contributing/claude", "CLAUDE.md", "CLAUDE.md"),
     ("contributing/gemini", "GEMINI.md", "GEMINI.md"),
@@ -251,7 +250,7 @@ def navigation(source, locale):
         ("版本与兼容", "Versions and compatibility", ["developer/features", "sdk/migration"]),
         ("设备与底层资料", "Device and protocol", ["guide/index", "guide/first-use", "guide/buttons", "guide/leds", "guide/firmware",
          "developer/protocol", "developer/architecture", "sdk/protocol-tools"]),
-        ("参与开发", "Development", ["developer/ai-tools", "contributing/index", "contributing/security", "contributing/documentation", "overview"]),
+        ("参与开发", "Development", ["developer/ai-tools", "contributing/index", "contributing/security", "overview"]),
     ]
     nav = [{"首页" if locale == "zh-CN" else "Home": "index.md"}]
     for chinese, english, routes in groups:
@@ -266,6 +265,9 @@ def navigation(source, locale):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "build/docs/html")
+    parser.add_argument("--channel", choices=("dev", "stable"), default=None,
+                        help="Published URL prefix; omit for the standalone local preview")
+    parser.add_argument("--release-tag", help="Validate a formal release tag against documentation and package versions")
     args = parser.parse_args()
     check_coverage()
     check_snippets()
@@ -278,6 +280,11 @@ def main():
     version = release["version"]
     if not re.fullmatch(r"\d+\.\d+\.\d+", version) or release["status"] not in {"upcoming", "released"}:
         raise SystemExit("Document release must be a stable version with upcoming/released status")
+    if args.release_tag:
+        if args.release_tag != f"v{version}" or release["status"] != "released":
+            raise SystemExit("A formal release requires matching vX.Y.Z tag and released documentation status")
+    if args.channel == "stable" and not args.release_tag:
+        raise SystemExit("The stable channel requires --release-tag")
     if release["status"] == "released":
         package_version = runpy.run_path(str(ROOT / "src/openzilo/_version.py"))["__version__"]
         if package_version != version:
@@ -296,6 +303,9 @@ def main():
             text = text.replace(f"Planned for SDK v{version}", f"Available since SDK v{version}")
         (snippets / snippet.name).write_text(text, encoding="utf-8")
     base = tomllib.loads((ROOT / "zensical.toml").read_text(encoding="utf-8"))["project"]
+    if args.channel:
+        prefix = args.release_tag if args.channel == "stable" else "dev"
+        base["site_url"] = base["site_url"].rstrip("/") + f"/{prefix}/"
     for locale in ("zh-CN", "en"):
         source = sources / locale
         if source.exists():

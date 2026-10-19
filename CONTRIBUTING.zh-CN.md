@@ -19,7 +19,7 @@ uv run openzilo --help
 
 ## 修改文档
 
-正文使用 Markdown。文档构建、语言文件和 GitHub Pages 配置见[维护文档](docs/documentation.zh-CN.md)。版本要求写清设备、固件和 SDK，不用协议版本代替具体功能要求。
+正文使用 Markdown。版本要求写清设备、固件和 SDK，不用协议版本代替具体功能要求。
 
 ## 提交内容
 

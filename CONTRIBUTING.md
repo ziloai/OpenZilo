@@ -19,7 +19,7 @@ Use `uv add` or `uv remove` to change dependencies, and commit the updated `uv.l
 
 ## Documentation changes
 
-Write documentation in Markdown. See [Maintaining documentation](docs/documentation.en.md) for builds, translations and GitHub Pages configuration. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.
+Write documentation in Markdown. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.
 
 ## Submission contents
 
