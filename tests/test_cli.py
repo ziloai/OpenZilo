@@ -19,11 +19,13 @@ from openzilo import ProtocolError, SensorDataBatch, TimeoutError
 
 class CliTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
-        directory = self.enterContext(tempfile.TemporaryDirectory())
+        contexts = contextlib.ExitStack()
+        self.addCleanup(contexts.close)
+        directory = contexts.enter_context(tempfile.TemporaryDirectory())
         self.path = Path(directory) / "preferences" / "config.json"
-        self.enterContext(mock.patch.dict(os.environ, {"OPENZILO_CONFIG": str(self.path)}, clear=True))
-        self.enterContext(contextlib.redirect_stdout(io.StringIO()))
-        self.enterContext(contextlib.redirect_stderr(io.StringIO()))
+        contexts.enter_context(mock.patch.dict(os.environ, {"OPENZILO_CONFIG": str(self.path)}, clear=True))
+        contexts.enter_context(contextlib.redirect_stdout(io.StringIO()))
+        contexts.enter_context(contextlib.redirect_stderr(io.StringIO()))
 
     async def dispatch(self, words, **kwargs):
         await cli.dispatch(cli.build_parser().parse_args(words), **kwargs)
