@@ -41,6 +41,7 @@
     "contributing/claude",
     "contributing/gemini",
     "contributing/copilot",
+    "reference/changelog",
     "reference/wiki-sidebar",
     "reference/wiki-entry",
     "reference/llms"

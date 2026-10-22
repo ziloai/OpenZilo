@@ -30,7 +30,7 @@
     
     
       
-        <title>Command-line guide - OpenZilo SDK v0.6.1</title>
+        <title>Command-line guide - OpenZilo SDK v0.6.2</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.1
+            OpenZilo SDK v0.6.2
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.1
+    OpenZilo SDK v0.6.2
   </label>
   
     <div class="md-nav__source">
@@ -506,6 +506,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Compatibility diagnostics
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-imu-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Software IMU calibration
       </span>
     </span>
   </a>
@@ -1643,6 +1654,96 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Releases
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Releases
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/changelog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1754,6 +1855,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Compatibility diagnostics
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-imu-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Software IMU calibration
       </span>
     </span>
   </a>
@@ -1888,6 +2000,16 @@ openzilo<span class="w"> </span>ota-update<span class="w"> </span>--help
 <p>Connection commands accept <code>--scan-timeout</code> and <code>--connect-timeout</code>. Errors go to stderr and exit with 1; argument errors with 2; Ctrl+C with 130. Interactive command errors return to the prompt.</p>
 <h2 id="compatibility-diagnostics">Compatibility diagnostics<a class="headerlink" href="#compatibility-diagnostics" title="Permanent link">&para;</a></h2>
 <p><code>openzilo --version</code> shows the SDK version. <code>openzilo device capabilities</code> shows features, recording limits and information source. <code>openzilo doctor</code> also shows the SDK source checksum and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See <a href="compatibility.html">compatibility</a>.</p>
+<h2 id="software-imu-calibration">Software IMU calibration<a class="headerlink" href="#software-imu-calibration" title="Permanent link">&para;</a></h2>
+<p>Use <code>openzilo imu-calibrate accel</code> for six-face accelerometer calibration in the charging case,
+<code>quick</code> for stationary gyro calibration outside the case, or <code>full</code> for both stages.
+Independent validation precedes atomic local saving. <code>show</code> reads the local file; <code>reset</code>
+deletes it. <code>sensor-stream --calibrated --seconds 10</code> explicitly applies the matching profile,
+outputs g / deg/s and marks the corrected components. Default raw streaming is unchanged.
+No calibration parameters are sent to the ring. See <a href="../sdk/imu.html#local-software-calibration">the software calibration specification</a>.</p>
+<p>Inspect and verify all signed OTA ZIP metadata offline:</p>
+<div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span>firmware.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem<span class="w"> </span>--json
+</code></pre></div>
 
 
 

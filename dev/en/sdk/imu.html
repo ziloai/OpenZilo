@@ -30,7 +30,7 @@
     
     
       
-        <title>Collect IMU data - OpenZilo SDK v0.6.1</title>
+        <title>Collect IMU data - OpenZilo SDK v0.6.2</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.1
+            OpenZilo SDK v0.6.2
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.1
+    OpenZilo SDK v0.6.2
   </label>
   
     <div class="md-nav__source">
@@ -801,6 +801,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Save <code>0x0605</code> to TXT
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-software-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Local software calibration
       </span>
     </span>
   </a>
@@ -1610,6 +1621,96 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Releases
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Releases
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/changelog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1688,6 +1789,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Save <code>0x0605</code> to TXT
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-software-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Local software calibration
       </span>
     </span>
   </a>
@@ -1849,6 +1961,70 @@ gyro_z: i16
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </code></pre></div>
+<h2 id="local-software-calibration">Local software calibration<a class="headerlink" href="#local-software-calibration" title="Permanent link">&para;</a></h2>
+<p>OpenZilo computes, stores and applies calibration on the host. No calibration commands or
+parameters are written to the ring. The known legacy IMU/2 firmware is supported; unknown
+or incompatible contracts are rejected. Firmware upgrades are not required for this feature.</p>
+<div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>imu-calibrate<span class="w"> </span>accel
+openzilo<span class="w"> </span>imu-calibrate<span class="w"> </span>quick
+openzilo<span class="w"> </span>imu-calibrate<span class="w"> </span>full
+openzilo<span class="w"> </span>imu-calibrate<span class="w"> </span>show
+openzilo<span class="w"> </span>imu-calibrate<span class="w"> </span>reset
+openzilo<span class="w"> </span>sensor-stream<span class="w"> </span>--calibrated<span class="w"> </span>--seconds<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<p><code>accel</code> collects six signed gravity directions with the ring fixed in the charging case,
+then fits diagonal accelerometer biases/gains and validates new data on three distinct axes.
+An inverted attachment and arbitrary face order are supported. Release the case before
+pressing Enter; use a support if necessary. Do not remove and reattach the ring during the six
+faces. Each face settles for 2 seconds and records at least 5 seconds.</p>
+<p><code>quick</code> calibrates only gyro bias. Remove the ring from the case, keep it away from magnets,
+and lay it still, with paper support to prevent rolling. Three consecutive windows must have
+mean gyro ranges within 0.08 deg/s (up to 3 minutes), followed by a minimum 20-second bias
+recording and fresh independent validation. Charging, magnetic attachment and temperature
+conditions must not be confused with normal-use bias. There is no full-turn rotation.</p>
+<p><code>full</code> performs both stages and replaces the local file only when both pass. Cancellation,
+drift, failed validation or storage failure preserves the previous file. Use <code>accel</code> first and
+<code>quick</code> later to retain independent progress. Each action preserves any previously validated
+parameters of the other component. Unvalidated components remain uncorrected.</p>
+<p>Original <code>start_sensor_report</code>, <code>wait_sensor_data</code> and default <code>sensor-stream</code> semantics
+remain unchanged. Software correction is explicit:</p>
+<div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">with</span> <span class="n">sdk</span><span class="o">.</span><span class="n">OpenZiloClient</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">ADDRESS</span><span class="p">)</span> <span class="k">as</span> <span class="n">ring</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">sdk</span><span class="o">.</span><span class="n">open_calibrated_imu_stream</span><span class="p">(</span><span class="n">ring</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">timestamp_ms</span><span class="p">,</span> <span class="n">sample</span><span class="o">.</span><span class="n">accel_g</span><span class="p">,</span> <span class="n">sample</span><span class="o">.</span><span class="n">gyro_dps</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">applied_components</span><span class="p">)</span>
+</code></pre></div>
+<p>The context starts/stops reports, cleans up on errors/cancellation, and is invalid after
+reconnect. Use an exclusive IMU consumer on the connection. Custom transports must provide
+<code>device_id=</code> for profile binding. <code>CalibratedImuBatch</code> and <code>CalibratedImuSample</code> preserve
+sequences/counts/timestamps and contain new float tuples in g and deg/s, leaving raw objects
+untouched. CLI JSONL marks <code>data_domain="software_calibrated"</code>, <code>accel_unit="g"</code>,
+<code>gyro_unit="deg/s"</code>, and <code>applied_components</code>. An accel-only profile does not subtract gyro bias.</p>
+<p>For range R, raw signed counts convert by <code>counts * R / 32768</code>. Per-axis corrections are
+<code>(accel_g - accel_bias_ug/1e6) * accel_scale_ppm/1e6</code> and
+<code>gyro_dps - gyro_bias_udps/1e6</code>. The six-face fit uses a diagonal ellipsoid with unit gravity
+magnitude, permitting small fixture tilt. Gravity is retained. There is no gyro gain fit,
+full cross-axis matrix, temperature compensation, orientation fusion or drift-free heading.</p>
+<p>Sampling rejects gaps, clipping, movement and within-window drift. Initial thresholds are
+0.008 g accel standard deviation, 0.06 g peak-to-peak, 0.3 deg/s gyro standard deviation,
+and first/second-half mean changes of 0.003 g / 0.15 deg/s. Accel-stage quality ignores gyro
+bias/noise. Independent acceptance thresholds are 0.015 g gravity-norm error and 0.15 deg/s
+mean gyro residual per axis. Thresholds are acceptance rules, not universal accuracy claims.</p>
+<p>Profiles live next to CLI preferences under <code>imu/&lt;device_hash&gt;.json</code>, normally
+<code>~/.config/openzilo/imu/</code> on Linux. They record schema, input domain, units, device hash,
+model, exact firmware version, parameters, component validation flags and creation time.
+Unknown chip type is 0. Device/model/firmware/ranges must match; recalibrate after firmware
+upgrades. Corrupt profiles fail explicitly. Save uses a temporary file, sync and atomic replace.
+Override with <code>imu-calibrate --profile FILE</code> or <code>sensor-stream --calibrated --calibration-profile FILE</code>.</p>
+<p>Public helpers include <code>ImuCalibration</code>, <code>ImuCalibrationProfile</code>, <code>imu_device_key</code>,
+<code>imu_calibration_path</code>, <code>load_imu_calibration_profile</code>, <code>save_imu_calibration_profile</code>,
+<code>apply_imu_calibration</code>, <code>analyze_imu_static_window</code>, <code>collect_imu_static_window</code>,
+<code>fit_imu_six_face_calibration</code>, <code>fit_imu_gyro_bias</code>, and <code>validate_imu_calibration</code>.
+Offline application requires original raw samples and rejects already-calibrated batch types.</p>
+<p>Future firmware application must explicitly negotiate raw/corrected data, chip identity,
+storage and ownership. This SDK sends no calibration commands and refuses software streams
+when firmware advertises calibration feature ID 11, preventing double correction.</p>
 
 
 

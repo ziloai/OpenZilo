@@ -30,7 +30,7 @@
     
     
       
-        <title>固件升级 - OpenZilo SDK v0.6.1</title>
+        <title>固件升级 - OpenZilo SDK v0.6.2</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.1
+            OpenZilo SDK v0.6.2
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.1" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.1" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.1
+    OpenZilo SDK v0.6.2
   </label>
   
     <div class="md-nav__source">
@@ -1621,6 +1621,96 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Releases
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Releases
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/changelog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1752,7 +1842,7 @@
 <li>当前固件版本可以升级到目标版本。</li>
 <li>已了解录音、设置是否保留，以及该版本的已知问题。</li>
 </ul>
-<p>下载 OTA 升级包，并保存发行说明提供的目标版本、型号和 SHA-256 校验值。工厂烧录文件不用于 SDK 的 OTA 升级。</p>
+<p>Download the versioned signed OTA ZIP and obtain its signing public key independently through a trusted channel. The signed metadata carries the target version, model, board and payload digest. Factory flashing files are not SDK OTA packages.</p>
 <h2 id="2-升级前准备">2. 升级前准备<a class="headerlink" href="#2-升级前准备" title="Permanent link">&para;</a></h2>
 <p>先备份重要录音，停止录音、下载和 IMU 上报，并断开其他连接戒指的应用。确保电量充足，遵循发行说明中的电量要求。</p>
 <p>在 SDK 仓库目录运行：</p>
@@ -1763,10 +1853,11 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 <p>记下当前固件版本。可运行 <code>uv run openzilo ota-update --help</code> 查看当前安装的升级命令。</p>
 <h2 id="3-运行升级命令">3. 运行升级命令<a class="headerlink" href="#3-运行升级命令" title="Permanent link">&para;</a></h2>
 <p>下面的参数都需要替换为本次发行提供的值：</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </span>ota-update<span class="w"> </span><span class="s2">"path/to/official-update.bin"</span><span class="w"> </span>--version<span class="w"> </span><span class="s2">"TARGET_VERSION"</span><span class="w"> </span>--sha256<span class="w"> </span><span class="s2">"SHA256_FROM_RELEASE"</span><span class="w"> </span>--model<span class="w"> </span><span class="s2">"MODEL_FROM_RELEASE"</span>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span><span class="s2">"path/to/firmware.ota.zip"</span><span class="w"> </span>--public-key<span class="w"> </span><span class="s2">"path/to/trusted-signing-public.pem"</span>
+uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </span>ota-update<span class="w"> </span><span class="s2">"path/to/firmware.ota.zip"</span><span class="w"> </span>--public-key<span class="w"> </span><span class="s2">"path/to/trusted-signing-public.pem"</span>
 </code></pre></div>
 <p>命令使用已保存的默认设备；也可用 <code>--address</code> 指定地址。升级期间保持设备靠近，避免中断蓝牙和供电。</p>
-<p><code>--sha256</code> 检查下载文件是否完整，<code>--model</code> 检查设备型号。当前固件能否升级，仍需按发行说明确认。</p>
+<p><code>ota-inspect</code> verifies signatures and displays all metadata offline; add <code>--json</code> for JSON. <code>ota-update</code> checks device model, board and source version before sending only the inner OTA bytes. Raw BIN input and manual version, digest or model overrides are no longer accepted. Test-profile ZIPs require <code>--allow-test-firmware</code>; boards must be reported by the device or provided by an exact verified legacy profile; unknown boards are rejected.</p>
 <h2 id="4-确认结果">4. 确认结果<a class="headerlink" href="#4-确认结果" title="Permanent link">&para;</a></h2>
 <p>SDK 发送完文件后会等待戒指重启、重新连接，确认仍是同一台设备，并读取目标固件版本。<strong>只有版本检查通过，命令才报告成功。</strong> 传输进度到达 100% 时还需继续等待。</p>
 <p>完成后可运行 <code>uv run openzilo info</code> 查看版本，再录制一段短音频并检查需要使用的功能。</p>
