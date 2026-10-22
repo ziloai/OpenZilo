@@ -58,7 +58,8 @@
 
 | 函数 | 调用方式 | 返回 | 说明 |
 | --- | --- | --- | --- |
-| [`update_firmware()`](sdk-ota.zh-CN.md) | `await update_firmware(client, firmware, version=..., sha256=..., expected_model=..., progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)` | `SystemInfo` | 上传官方应用升级包，等待重启并核验运行版本，见[固件升级](#固件升级)。 |
+| [`inspect_firmware_bundle()`](sdk-ota.en.md) | `inspect_firmware_bundle(bundle, trusted_public_key=...)` | `FirmwareBundle` | Verify a signed ZIP and inspect metadata offline. |
+| [`update_firmware()`](sdk-ota.en.md) | `await update_firmware(client, firmware, trusted_public_key=..., allow_test_firmware=False, progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)` | `SystemInfo` | Upload an official application package, wait for reboot, and verify the running version. See [firmware updates](python-sdk.en.md#firmware-updates). |
 
 ## 录音下载
 
@@ -116,6 +117,10 @@
 | [`start_sensor_report()`](sdk-imu.zh-CN.md) | `await start_sensor_report(client, timeout_s=None)` | `SensorStartInfo` | `V2.001.0002.0001` 直接启动采集；`V2.001.0002.0000` 需先进入手势模式。 |
 | [`wait_sensor_data()`](sdk-imu.zh-CN.md) | `await wait_sensor_data(client, timeout_s=None)` | `SensorDataBatch` | 在 `start_sensor_report()` 成功后等待一个 `0x0605` 单点或批量包；不会自动发送 `0x0601`。 |
 | [`stop_sensor_report()`](sdk-imu.zh-CN.md) | `await stop_sensor_report(client, timeout_s=None)` | `SensorStopInfo` | `V2.001.0002.0001` 停止采集；`V2.001.0002.0000` 在手势模式下可保留本地采集。 |
+| [`open_calibrated_imu_stream()`](sdk-imu.en.md) | `async with open_calibrated_imu_stream(client, profile=None, device_id=None)` | `CalibratedImuStream` | Explicit host correction in g / deg/s, with profile binding and report cleanup; no calibration writes. |
+| [`apply_imu_calibration()`](sdk-imu.en.md) | `apply_imu_calibration(batch, config, calibration, accel=True, gyro=True)` | `CalibratedImuBatch` | Offline conversion of original integer batches; input remains untouched. |
+| [`load_imu_calibration_profile()`](sdk-imu.en.md) | `load_imu_calibration_profile(path)` | `ImuCalibrationProfile` | Validate local schema, units and parameters. |
+| [`save_imu_calibration_profile()`](sdk-imu.en.md) | `save_imu_calibration_profile(profile, path)` | `None` | Atomically save locally after independent validation. |
 | [`parse_sensor_data_batch()`](sdk-imu.zh-CN.md) | `parse_sensor_data_batch(body)` | `SensorDataBatch` | 解析 `0x0605` 包体。 |
 | [`wait_sensor_double_tap_event()`](sdk-events.zh-CN.md) | `await wait_sensor_double_tap_event(client, timeout_s=None)` | `SensorDoubleTapEvent` | 等待 `0x0701` 普通双击事件。 |
 | [`wait_sensor_key_double_press_event()`](sdk-events.zh-CN.md) | `await wait_sensor_key_double_press_event(client, timeout_s=None)` | `SensorKeyDoublePressEvent` | 等待 `0x0703` 按键双击事件。 |

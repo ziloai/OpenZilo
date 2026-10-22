@@ -20,7 +20,7 @@ FEATURE_MAJORS = {"system": 1, "time_sync": 1, "audio_files": 1,
                   "key_events": 1, "double_tap": 1, "ota": 1, "gesture": 1}
 FEATURE_NAMES = {1: "system", 2: "time_sync", 3: "audio_files", 4: "recording_control",
                  5: "live_audio", 6: "imu", 7: "key_events", 8: "double_tap",
-                 9: "ota", 10: "gesture"}
+                 9: "ota", 10: "gesture", 11: "imu_calibration"}
 _LIMITS = struct.Struct(">HHBBBBIIHHHHH")
 
 
@@ -147,7 +147,8 @@ def _legacy_capabilities(firmware: str, model: str, reason: str) -> DeviceCapabi
     # No prefix/range matching: customer IDs are not semantic patch versions.
     if firmware == "V2.001.0002.0001-prod-7fd1dfc9" and model == "Open Zilo":
         return DeviceCapabilities(
-            "legacy_profile", firmware, model, build_id="7fd1dfc9e9c698c47b91e100580deddde66f210e",
+            "legacy_profile", firmware, model, board_target="ring_dvt2/nrf54l15/cpuapp",
+            build_id="7fd1dfc9e9c698c47b91e100580deddde66f210e",
             protocol_versions=(4,),
             features=tuple(FeatureVersion(n, m, 0) for n, m in (
                 ("system", 1), ("time_sync", 1), ("audio_files", 1), ("recording_control", 1),

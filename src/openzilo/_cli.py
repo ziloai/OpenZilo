@@ -15,6 +15,8 @@ import sys
 from dataclasses import asdict, replace
 from pathlib import Path
 
+from ._cli_calibration import cmd_imu_calibration
+from ._imu_profiles import load_imu_calibration_profile, open_calibrated_imu_stream
 from ._identity import get_sdk_identity
 from ._compatibility import get_device_capabilities
 from ._version import __version__
@@ -31,7 +33,8 @@ from ._device import (
     read_log_chunk,
     scan_rings,
 )
-from ._ota import _validate_firmware_package, update_firmware
+from ._ota import update_firmware
+from ._firmware_bundle import FirmwareBundle, inspect_firmware_bundle
 from ._codec import (
     build_playable_audio,
     DEFAULT_BIT_DEPTH,
@@ -102,8 +105,8 @@ async def cmd_device(args: argparse.Namespace) -> None:
 
 
 async def cmd_shell(args: argparse.Namespace) -> None:
-    print("OpenZilo 交互终端：help 查看命令，exit 退出。每条设备命令会自动连接并断开。")
-    print("常用：info | audio-config | audio-record recording.wav --seconds 5 | audio-status")
+    print("OpenZilo shell: help lists commands; exit closes the shell. Device commands connect and disconnect automatically.")
+    print("Common commands: info | audio-config | audio-record recording.wav --seconds 5 | audio-status")
     parser = build_parser()
     while True:
         try:
@@ -136,6 +139,8 @@ async def cmd_shell(args: argparse.Namespace) -> None:
 
 
 async def cmd_sensor_stream(args: argparse.Namespace) -> None:
+    if getattr(args, "calibration_profile", None) and not getattr(args, "calibrated", False):
+        raise ValueError('--calibration-profile requires --calibrated')
     # Open output before connecting so an invalid path cannot start device capture.
     stream = None
     if args.output:
@@ -147,6 +152,22 @@ async def cmd_sensor_stream(args: argparse.Namespace) -> None:
                               allow_unverified_features=getattr(args, "allow_unverified_features", False)) as client:
             await get_device_capabilities(client, timeout_s=3.0)
             enable_time_sync(client)
+            if getattr(args, "calibrated", False):
+                profile_path = getattr(args, "calibration_profile", None)
+                profile = load_imu_calibration_profile(profile_path) if profile_path else None
+                async with open_calibrated_imu_stream(client, profile, device_id=args.address) as calibrated:
+                    print(f"IMU software calibration: {calibrated.config}", file=sys.stderr)
+                    loop = asyncio.get_running_loop()
+                    deadline = loop.time() + args.seconds
+                    while (remaining := deadline-loop.time()) > 0:
+                        try:
+                            batch = await asyncio.wait_for(anext(calibrated), remaining)
+                        except (DeviceTimeoutError, asyncio.TimeoutError):
+                            break
+                        print(json.dumps({"data_domain": "software_calibrated", "accel_unit": "g",
+                                          "gyro_unit": "deg/s", **asdict(batch)}),
+                              file=stream or sys.stdout, flush=True)
+                return
             info = await start_sensor_report(client)
             print(f"IMU: {info}", file=sys.stderr)
             try:
@@ -412,17 +433,45 @@ async def cmd_audio_record(args: argparse.Namespace) -> None:
     print(f"Saved {bundle.raw_path} and {bundle.play_path}")
 
 
+def _print_firmware_bundle(bundle: FirmwareBundle, *, json_output: bool = False) -> None:
+    manifest = bundle.manifest
+    if json_output:
+        print(json.dumps({"signature_verified": True, "manifest": manifest}, ensure_ascii=False, indent=2))
+        return
+    print("signature: verified")
+    for name, value in manifest.items():
+        if name == "payload":
+            for field, item in value.items():
+                print(f"payload.{field}: {item}")
+        elif name == "source_versions":
+            print(f"source_versions: {', '.join(value) if value else 'any'}")
+        else:
+            print(f"{name}: {value}")
+
+
+async def cmd_ota_inspect(args: argparse.Namespace) -> None:
+    bundle = inspect_firmware_bundle(args.firmware.read_bytes(),
+                                     trusted_public_key=args.public_key.read_bytes())
+    _print_firmware_bundle(bundle, json_output=args.json)
+
+
 async def cmd_ota_update(args: argparse.Namespace) -> None:
     # Reject corrupt or invalid input before opening a BLE session.
-    data = _validate_firmware_package(args.firmware.read_bytes(), args.version, args.sha256)
+    data = args.firmware.read_bytes()
+    public_key = args.public_key.read_bytes()
+    bundle = inspect_firmware_bundle(data, trusted_public_key=public_key)
+    if bundle.profile == "test" and not args.allow_test_firmware:
+        raise ValueError("Test firmware requires --allow-test-firmware")
+    _print_firmware_bundle(bundle)
     print("OTA transfer progress is not installation confirmation; keep the ring nearby.")
     async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
                               connect_timeout_s=args.connect_timeout,
                               allow_unverified_features=getattr(args, "allow_unverified_features", False)) as client:
         await get_device_capabilities(client, timeout_s=3.0)
         info = await update_firmware(
-            client, data, version=args.version, sha256=args.sha256,
-            expected_model=args.model, progress=ProgressPrinter(prefix="OTA transfer"),
+            client, data,
+            trusted_public_key=public_key, allow_test_firmware=args.allow_test_firmware,
+            progress=ProgressPrinter(prefix="OTA transfer"),
             timeout_s=args.timeout, total_timeout_s=args.total_timeout,
             reboot_timeout_s=args.reboot_timeout,
         )
@@ -516,7 +565,17 @@ def build_parser() -> argparse.ArgumentParser:
     add_connection_args(sensor)
     sensor.add_argument("--seconds", type=positive_seconds, default=10.0)
     sensor.add_argument("--output", type=Path, help="Write JSONL to a file instead of stdout.")
+    sensor.add_argument("--calibrated", action="store_true", help="Apply a matching local software profile; output g and deg/s.")
+    sensor.add_argument("--calibration-profile", type=Path, help="Profile JSON override for --calibrated.")
     sensor.set_defaults(func=cmd_sensor_stream)
+
+    calibration = subparsers.add_parser("imu-calibrate", help="Local software IMU calibration; no firmware writes.")
+    add_connection_args(calibration)
+    calibration.add_argument("action", choices=("show", "accel", "quick", "full", "reset"))
+    calibration.add_argument("--seconds", type=positive_seconds, default=5.0,
+                             help="Static seconds per face; quick uses at least 20 seconds.")
+    calibration.add_argument("--profile", type=Path, help="Override local calibration JSON path.")
+    calibration.set_defaults(func=cmd_imu_calibration)
 
     scan = subparsers.add_parser("scan", help="Scan nearby devices.")
     scan.add_argument("--address", default=None, help="Target device address/identifier; return as soon as found.")
@@ -600,14 +659,19 @@ def build_parser() -> argparse.ArgumentParser:
         audio_receive.add_argument("--ffmpeg", default="ffmpeg")
         audio_receive.set_defaults(func=handler)
 
+    inspect = subparsers.add_parser("ota-inspect", help="Verify a firmware ZIP and display all metadata without BLE.")
+    inspect.add_argument("firmware", type=Path)
+    inspect.add_argument("--public-key", type=Path, required=True, help="Independently trusted PEM P-256 public key.")
+    inspect.add_argument("--json", action="store_true", help="Print verified metadata as JSON.")
+    inspect.set_defaults(func=cmd_ota_inspect)
+
     ota = subparsers.add_parser(
         "ota-update", help="Install an official APP update package and verify the running version.",
     )
     add_connection_args(ota)
-    ota.add_argument("firmware", type=Path, help="Official update package, transmitted unchanged.")
-    ota.add_argument("--version", required=True, help="Target version from the release notes.")
-    ota.add_argument("--sha256", help="Expected SHA-256 from the official release.")
-    ota.add_argument("--model", help="Expected model string returned by the info command.")
+    ota.add_argument("firmware", type=Path, help="Signed APP OTA ZIP containing verified release metadata.")
+    ota.add_argument("--public-key", type=Path, required=True, help="Independently trusted PEM P-256 public key for ZIPs.")
+    ota.add_argument("--allow-test-firmware", action="store_true", help="Permit signed test-profile firmware.")
     ota.add_argument("--timeout", type=float, default=30.0, help="Per-operation timeout in seconds.")
     ota.add_argument("--total-timeout", type=float, default=600.0, help="Overall transfer time limit.")
     ota.add_argument("--reboot-timeout", type=float, default=90.0, help="Reboot and verification time limit.")

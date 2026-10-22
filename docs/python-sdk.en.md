@@ -58,7 +58,8 @@ These APIs are asynchronous. Arguments, results and complete examples are in [re
 
 | Function | Call | Returns | Description |
 | --- | --- | --- | --- |
-| [`update_firmware()`](sdk-ota.en.md) | `await update_firmware(client, firmware, version=..., sha256=..., expected_model=..., progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)` | `SystemInfo` | Upload an official application package, wait for reboot, and verify the running version. See [firmware updates](#firmware-updates). |
+| [`inspect_firmware_bundle()`](sdk-ota.en.md) | `inspect_firmware_bundle(bundle, trusted_public_key=...)` | `FirmwareBundle` | Verify a signed ZIP and inspect metadata offline. |
+| [`update_firmware()`](sdk-ota.en.md) | `await update_firmware(client, firmware, trusted_public_key=..., allow_test_firmware=False, progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)` | `SystemInfo` | Upload an official application package, wait for reboot, and verify the running version. See [firmware updates](#firmware-updates). |
 
 ## Recording downloads
 
@@ -116,6 +117,10 @@ These APIs are asynchronous. Arguments, results and complete examples are in [re
 | [`start_sensor_report()`](sdk-imu.en.md) | `await start_sensor_report(client, timeout_s=None)` | `SensorStartInfo` | `V2.001.0002.0001` starts capture directly; `V2.001.0002.0000` requires gesture mode first. |
 | [`wait_sensor_data()`](sdk-imu.en.md) | `await wait_sensor_data(client, timeout_s=None)` | `SensorDataBatch` | After starting reports, wait for a single-sample or batch `0x0605`; does not automatically send `0x0601`. |
 | [`stop_sensor_report()`](sdk-imu.en.md) | `await stop_sensor_report(client, timeout_s=None)` | `SensorStopInfo` | `V2.001.0002.0001` stops capture; `V2.001.0002.0000` can retain local capture in gesture mode. |
+| [`open_calibrated_imu_stream()`](sdk-imu.en.md) | `async with open_calibrated_imu_stream(client, profile=None, device_id=None)` | `CalibratedImuStream` | Explicit host correction in g / deg/s, with profile binding and report cleanup; no calibration writes. |
+| [`apply_imu_calibration()`](sdk-imu.en.md) | `apply_imu_calibration(batch, config, calibration, accel=True, gyro=True)` | `CalibratedImuBatch` | Offline conversion of original integer batches; input remains untouched. |
+| [`load_imu_calibration_profile()`](sdk-imu.en.md) | `load_imu_calibration_profile(path)` | `ImuCalibrationProfile` | Validate local schema, units and parameters. |
+| [`save_imu_calibration_profile()`](sdk-imu.en.md) | `save_imu_calibration_profile(profile, path)` | `None` | Atomically save locally after independent validation. |
 | [`parse_sensor_data_batch()`](sdk-imu.en.md) | `parse_sensor_data_batch(body)` | `SensorDataBatch` | Parse a `0x0605` body. |
 | [`wait_sensor_double_tap_event()`](sdk-events.en.md) | `await wait_sensor_double_tap_event(client, timeout_s=None)` | `SensorDoubleTapEvent` | Wait for a physical double-tap event (`0x0701`). |
 | [`wait_sensor_key_double_press_event()`](sdk-events.en.md) | `await wait_sensor_key_double_press_event(client, timeout_s=None)` | `SensorKeyDoublePressEvent` | Wait for a double button press (`0x0703`). |

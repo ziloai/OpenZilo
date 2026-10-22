@@ -4,12 +4,11 @@
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import math
-import re
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from ._firmware_bundle import inspect_firmware_bundle
 from ._errors import ProtocolError, TimeoutError, TransportError
 from ._protocol import (
     _OtaCommand,
@@ -24,28 +23,15 @@ from ._device import get_system_info, SystemInfo
 from ._tasks import await_before
 
 
-def _validate_firmware_package(
-    firmware: bytes,
-    version: str,
-    sha256: str | None,
-) -> bytes:
-    if not isinstance(firmware, (bytes, bytearray, memoryview)):
-        raise TypeError("firmware must contain the update package bytes")
-    data = bytes(firmware)
-    if not data or len(data) > 0xFFFFFFFF:
-        raise ValueError("Firmware package size must be between 1 and 4294967295 bytes")
-    version_pattern = r"V[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(?:-(?:debug|prod)-[0-9a-fA-F]{8})?"
-    if not re.fullmatch(version_pattern, version) or len(version) > 63:
-        raise ValueError(
-            "version must be Vx.xxx.xxxx.xxxx with an optional "
-            "-debug/prod-8hex suffix, at most 63 bytes"
-        )
-    if sha256 is not None:
-        if not re.fullmatch(r"[0-9a-fA-F]{64}", sha256):
-            raise ValueError("sha256 must contain exactly 64 hexadecimal characters")
-        if hashlib.sha256(data).hexdigest() != sha256.lower():
-            raise ValueError("Firmware package SHA-256 mismatch")
-    return data
+def _board_identity(board: str | None) -> tuple[str, ...] | None:
+    # Zephyr BOARD_QUALIFIERS may already start with '/'. Preserve signed
+    # metadata verbatim; ignore empty separators only for identity comparison.
+    if not board:
+        return None
+    parts = tuple(part for part in board.split("/") if part)
+    if not parts or any(part in (".", "..") for part in parts):
+        return None
+    return parts
 
 
 async def _ota_timed(operation: Awaitable[Any], timeout: float, phase: str) -> Any:
@@ -127,9 +113,8 @@ async def update_firmware(
     client: OpenZiloClient,
     firmware: bytes,
     *,
-    version: str,
-    sha256: str | None = None,
-    expected_model: str | None = None,
+    trusted_public_key: bytes,
+    allow_test_firmware: bool = False,
     progress: Callable[[int, int], None] | None = None,
     timeout_s: float = 30.0,
     total_timeout_s: float = 600.0,
@@ -138,13 +123,17 @@ async def update_firmware(
     """Upload an official APP package, await reboot, and verify its running version.
 
     Use this connected client exclusively until the call finishes. Stop recording
-    and IMU streaming first. Package bytes are transmitted unchanged. The caller
-    must select a release compatible with the device and its starting version.
+    and IMU streaming first. Signed ZIPs require an independently trusted PEM
+    public key; only the verified payload is transmitted. Raw BIN inputs are
+    rejected. Version and compatibility come only from signed metadata.
     ``progress(sent, total)`` reports transfer progress, not installation success.
     The return value is system information read after reboot. A timeout or
     disconnect before confirmation never implies a successful installation.
     """
-    data = _validate_firmware_package(firmware, version, sha256)
+    bundle = inspect_firmware_bundle(firmware, trusted_public_key=trusted_public_key)
+    if bundle.profile == "test" and not allow_test_firmware:
+        raise ValueError("Test firmware requires allow_test_firmware=True")
+    version, data = bundle.version, bundle.payload
     for name, value in (("timeout_s", timeout_s), ("total_timeout_s", total_timeout_s),
                         ("reboot_timeout_s", reboot_timeout_s)):
         if not math.isfinite(value) or value <= 0:
@@ -196,8 +185,16 @@ async def update_firmware(
     try:
         budget = remaining()
         before = await _ota_timed(get_system_info(client, timeout_s=timeout_s), budget, "device check")
-        if expected_model is not None and before.model != expected_model:
-            raise ProtocolError("Device model does not match expected_model")
+        if before.model != bundle.model:
+            raise ProtocolError("Device model differs from signed manifest")
+        from ._compatibility import get_device_capabilities
+        capabilities = await _ota_timed(
+            get_device_capabilities(client, timeout_s=timeout_s), remaining(), "board check")
+        if (_board_identity(capabilities.board_target) is None
+                or _board_identity(capabilities.board_target) != _board_identity(bundle.board)):
+            raise ProtocolError("Device board is unknown or differs from signed manifest")
+        if bundle.source_versions and before.firmware_version not in bundle.source_versions:
+            raise ProtocolError("Starting firmware version is not supported by signed manifest")
         if before.firmware_version == version:
             raise ProtocolError("Device already reports the target version; no update was started")
         notify = (BinaryWriter().u32(2).string_u32(version).u32(len(data))

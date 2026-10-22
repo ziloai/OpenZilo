@@ -147,6 +147,21 @@ openzilo ota-update --help
 
 连接命令均支持 `--scan-timeout` 和 `--connect-timeout`。错误写入 stderr 并返回退出码 1；参数错误返回 2；Ctrl+C 返回 130。交互终端中的命令错误会显示并返回提示符。
 
+## Software IMU calibration
+
+Use `openzilo imu-calibrate accel` for six-face accelerometer calibration in the charging case,
+`quick` for stationary gyro calibration outside the case, or `full` for both stages.
+Independent validation precedes atomic local saving. `show` reads the local file; `reset`
+deletes it. `sensor-stream --calibrated --seconds 10` explicitly applies the matching profile,
+outputs g / deg/s and marks the corrected components. Default raw streaming is unchanged.
+No calibration parameters are sent to the ring. See [the software calibration specification](sdk-imu.en.md#local-software-calibration).
+
 ## 兼容诊断
 
 `openzilo --version` 查看 SDK 版本；`openzilo device capabilities` 输出支持的功能、录音参数范围和信息来源；`openzilo doctor` 额外输出 SDK 版本、源码校验值和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见[兼容说明](compatibility.zh-CN.md)。
+
+Inspect and verify all signed OTA ZIP metadata offline:
+
+```bash
+openzilo ota-inspect firmware.ota.zip --public-key trusted-signing-public.pem --json
+```

@@ -12,7 +12,7 @@ The [OpenZilo website](https://openzilo.com) describes a broader platform. Do no
 - [Quick start](docs/sdk-quickstart.en.md): a complete connect/read/disconnect example.
 - [Saved recordings](docs/sdk-downloads.en.md): download files and receive post-save transfers.
 - [Live audio](docs/sdk-live-audio.en.md): PCM and Opus streaming.
-- [IMU](docs/sdk-imu.en.md): start reports, receive batches and stop.
+- [IMU](docs/sdk-imu.en.md): start reports, receive batches, software calibration and explicit physical-unit streams.
 - [Events](docs/sdk-events.en.md): button and tap events.
 - [Firmware updates](docs/sdk-ota.en.md): Python OTA usage and version verification.
 - [Data types](docs/sdk-data-types.en.md) and [troubleshooting](docs/sdk-errors.en.md): result fields and failures.

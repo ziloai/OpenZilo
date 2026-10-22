@@ -14,7 +14,7 @@
 - 当前固件版本可以升级到目标版本。
 - 已了解录音、设置是否保留，以及该版本的已知问题。
 
-下载 OTA 升级包，并保存发行说明提供的目标版本、型号和 SHA-256 校验值。工厂烧录文件不用于 SDK 的 OTA 升级。
+Download the versioned signed OTA ZIP and obtain its signing public key independently through a trusted channel. The signed metadata carries the target version, model, board and payload digest. Factory flashing files are not SDK OTA packages.
 
 ## 2. 升级前准备
 
@@ -35,12 +35,13 @@ uv run openzilo info
 下面的参数都需要替换为本次发行提供的值：
 
 ```bash
-uv run openzilo ota-update "path/to/official-update.bin" --version "TARGET_VERSION" --sha256 "SHA256_FROM_RELEASE" --model "MODEL_FROM_RELEASE"
+uv run openzilo ota-inspect "path/to/firmware.ota.zip" --public-key "path/to/trusted-signing-public.pem"
+uv run openzilo ota-update "path/to/firmware.ota.zip" --public-key "path/to/trusted-signing-public.pem"
 ```
 
 命令使用已保存的默认设备；也可用 `--address` 指定地址。升级期间保持设备靠近，避免中断蓝牙和供电。
 
-`--sha256` 检查下载文件是否完整，`--model` 检查设备型号。当前固件能否升级，仍需按发行说明确认。
+`ota-inspect` verifies signatures and displays all metadata offline; add `--json` for JSON. `ota-update` checks device model, board and source version before sending only the inner OTA bytes. Raw BIN input and manual version, digest or model overrides are no longer accepted. Test-profile ZIPs require `--allow-test-firmware`; boards must be reported by the device or provided by an exact verified legacy profile; unknown boards are rejected.
 
 ## 4. 确认结果
 

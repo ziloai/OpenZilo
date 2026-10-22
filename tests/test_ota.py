@@ -3,18 +3,45 @@
 import asyncio
 import binascii
 import hashlib
+import io
+import json
+import zipfile
 import struct
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
+from openzilo._firmware_bundle import DOMAIN
+
 import openzilo as sdk
 from openzilo import _cli as cli
 
 TARGET = "V2.001.0002.0000"
 OLD = "V2.000.0002.0001"
-PACKAGE = bytes(range(256)) * 35 + b"tail"
+_SYNTHETIC = bytes(range(256)) * 35 + b"tail"
+PACKAGE = b"RINGENC1" + struct.pack("<II", 1, len(_SYNTHETIC) - 32) + b"0" * 16 + _SYNTHETIC[32:]
+KEY = ec.generate_private_key(ec.SECP256R1())
+PUBLIC_KEY = KEY.public_key().public_bytes(serialization.Encoding.PEM,
+                                          serialization.PublicFormat.SubjectPublicKeyInfo)
+
+
+def make_bundle(payload=PACKAGE, *, version=TARGET, model="Test Ring"):
+    meta = dict(schema=1, algorithm="ECDSA-P256-SHA256", image="app", version=version,
+        model=model, board="synthetic/board", profile="production", security_version=1,
+        source_versions=[], key_id=hashlib.sha256(KEY.public_key().public_bytes(
+            serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)).hexdigest(),
+        payload=dict(file="app.ota.bin", format="RINGENC1", size=len(payload),
+                     sha256=hashlib.sha256(payload).hexdigest()))
+    raw = json.dumps(meta).encode()
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr("manifest.json", raw)
+        archive.writestr("manifest.sig", KEY.sign(DOMAIN + raw, ec.ECDSA(hashes.SHA256())))
+        archive.writestr("app.ota.bin", payload)
+    return output.getvalue()
 
 
 def text_field(value):
@@ -85,6 +112,11 @@ class RingPeer:
                     + struct.pack(">IIIHB", 0, 100, 50, 80, 0)
                     + text_field("") + text_field(self.identity) + text_field(self.model))
             self.emit(0x0102, body)
+        elif packet.command == 0x0105:
+            fields = {1: self.version.encode(), 2: self.model.encode(), 3: b"synthetic/board",
+                      4: b"12345678", 5: b"synthetic-build", 6: b"\x00\x04", 0x109: b"\x01\x00"}
+            body = b"\x00\x00\x01" + b"".join(struct.pack(">HH", t, len(v)) + v for t, v in fields.items())
+            self.emit(0x0106, body)
         elif packet.command == 1005:
             self.notify_body = packet.body
             if self.begin is not None:
@@ -126,10 +158,12 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
         await self.client.disconnect()
 
     async def update(self, **kwargs):
-        options = dict(version=TARGET, timeout_s=0.5,
+        version = kwargs.pop("version", TARGET)
+        model = kwargs.pop("expected_model", "Test Ring")
+        options = dict(trusted_public_key=PUBLIC_KEY, timeout_s=0.5,
                        total_timeout_s=2.0, reboot_timeout_s=0.5)
         options.update(kwargs)
-        return await sdk.update_firmware(self.client, self.peer.package, **options)
+        return await sdk.update_firmware(self.client, make_bundle(self.peer.package, version=version, model=model), **options)
 
     def assert_clean(self):
         self.assertFalse(self.client._firmware_update_active)
@@ -140,7 +174,6 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
     async def test_upload_without_start_ack_and_verify_after_immediate_reboot(self):
         progress = []
         info = await self.update(progress=lambda n, total: progress.append((n, total)),
-                                 sha256=hashlib.sha256(PACKAGE).hexdigest(),
                                  expected_model="Test Ring")
         self.assertEqual(info.firmware_version, TARGET)
         self.assertEqual(self.peer.connect_count, 2)
@@ -155,11 +188,11 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_negotiated_session_rediscovers_after_firmware_reboot(self):
         self.client.capabilities = sdk.DeviceCapabilities(
-            "device", "synthetic-before", "synthetic",
+            "device", OLD, "Test Ring", "synthetic/board",
             features=(sdk.FeatureVersion("ota", 1, 0),))
         info = await self.update()
         self.assertIsNotNone(self.client.capabilities)
-        self.assertEqual(self.client.capabilities.source, "unknown")
+        self.assertEqual(self.client.capabilities.source, "device")
         self.assertEqual(self.client.capabilities.firmware_version, info.firmware_version)
 
     async def test_build_suffix_is_transmitted_and_verified_exactly(self):
@@ -203,14 +236,13 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_invalid_inputs_do_not_start_update(self):
         cases = [dict(version="bad"), dict(version="V1.2.3.4\x00"),
-                 dict(sha256="not-a-hash"), dict(sha256="0" * 64),
                  dict(timeout_s=0), dict(total_timeout_s=float("inf")),
                  dict(reboot_timeout_s=-1)]
         for options in cases:
             with self.subTest(options=options), self.assertRaises(ValueError):
                 await self.update(**options)
         with self.assertRaises(ValueError):
-            await sdk.update_firmware(self.client, b"", version=TARGET)
+            await sdk.update_firmware(self.client, b"", trusted_public_key=PUBLIC_KEY)
         self.assertEqual(self.peer.commands, [])
         self.assert_clean()
 
@@ -397,13 +429,14 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
 
 
 class OtaCliTests(unittest.IsolatedAsyncioTestCase):
-    async def test_bad_checksum_rejected_before_ble_connection(self):
+    async def test_raw_bin_rejected_before_ble_connection(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "synthetic.ota.bin"
-            path.write_bytes(b"synthetic package")
+            path.write_bytes(PACKAGE)
+            public = Path(directory) / "public.pem"
+            public.write_bytes(PUBLIC_KEY)
             args = cli.build_parser().parse_args([
-                "ota-update", "--address", "AA:BB:CC:DD:EE:FF", str(path),
-                "--version", TARGET, "--sha256", "0" * 64,
+                "ota-update", str(path), "--public-key", str(public),
             ])
             with patch.object(cli, "OpenZiloClient") as client:
                 with self.assertRaises(ValueError):

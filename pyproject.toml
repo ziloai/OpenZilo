@@ -21,7 +21,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dependencies = ["bleak>=0.21"]
+dependencies = [
+    "bleak>=0.21",
+    "cryptography>=43",
+]
 
 [project.scripts]
 openzilo = "openzilo._cli:run"

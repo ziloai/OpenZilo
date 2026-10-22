@@ -183,11 +183,11 @@ class RecordingControlTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(name, sdk.__all__)
 
     async def test_active_recording_blocks_ota(self):
-        from test_ota import PACKAGE, TARGET
+        from test_ota import make_bundle, PUBLIC_KEY
         peer = RecordingPeer()
         await sdk.start_audio_recording(peer.client)
         with self.assertRaises(sdk.ProtocolError):
-            await sdk.update_firmware(peer.client, PACKAGE, version=TARGET)
+            await sdk.update_firmware(peer.client, make_bundle(), trusted_public_key=PUBLIC_KEY)
         self.assertFalse(any(cmd == 1005 for cmd, _ in peer.commands))
 
     async def test_cli_remote_record_flash_and_both(self):

@@ -10,7 +10,7 @@
 
 Open [official firmware releases](https://github.com/ziloai/OpenZilo-Hardware/releases). Confirm that your model and hardware revision are supported, your current version is an allowed starting version, and you have read the data-retention policy and known issues.
 
-Download the OTA package and keep its target version, model and SHA-256 checksum from the release notes. Factory flashing files are not SDK OTA packages.
+Download the versioned signed OTA ZIP and obtain its signing public key independently through a trusted channel. The signed metadata carries the target version, model, board and payload digest. Factory flashing files are not SDK OTA packages.
 
 ## 2. Prepare
 
@@ -31,12 +31,13 @@ Record the current firmware version. Run `uv run openzilo ota-update --help` to 
 Replace each placeholder with the values for this release:
 
 ```bash
-uv run openzilo ota-update "path/to/official-update.bin" --version "TARGET_VERSION" --sha256 "SHA256_FROM_RELEASE" --model "MODEL_FROM_RELEASE"
+uv run openzilo ota-inspect "path/to/firmware.ota.zip" --public-key "path/to/trusted-signing-public.pem"
+uv run openzilo ota-update "path/to/firmware.ota.zip" --public-key "path/to/trusted-signing-public.pem"
 ```
 
 The command uses your saved device; `--address` selects another one. Keep the ring nearby and avoid interrupting power or Bluetooth.
 
-`--sha256` verifies the downloaded bytes and `--model` checks the connected model. Starting-version compatibility must still follow the release notes.
+`ota-inspect` verifies signatures and displays all metadata offline; add `--json` for JSON. `ota-update` checks device model, board and source version before sending only the inner OTA bytes. Raw BIN input and manual version, digest or model overrides are no longer accepted. Test-profile ZIPs require `--allow-test-firmware`; boards must be reported by the device or provided by an exact verified legacy profile; unknown boards are rejected.
 
 ## 4. Confirm completion
 

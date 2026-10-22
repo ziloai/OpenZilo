@@ -150,3 +150,18 @@ Connection commands accept `--scan-timeout` and `--connect-timeout`. Errors go t
 ## Compatibility diagnostics
 
 `openzilo --version` shows the SDK version. `openzilo device capabilities` shows features, recording limits and information source. `openzilo doctor` also shows the SDK source checksum and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See [compatibility](compatibility.en.md).
+
+## Software IMU calibration
+
+Use `openzilo imu-calibrate accel` for six-face accelerometer calibration in the charging case,
+`quick` for stationary gyro calibration outside the case, or `full` for both stages.
+Independent validation precedes atomic local saving. `show` reads the local file; `reset`
+deletes it. `sensor-stream --calibrated --seconds 10` explicitly applies the matching profile,
+outputs g / deg/s and marks the corrected components. Default raw streaming is unchanged.
+No calibration parameters are sent to the ring. See [the software calibration specification](sdk-imu.en.md#local-software-calibration).
+
+Inspect and verify all signed OTA ZIP metadata offline:
+
+```bash
+openzilo ota-inspect firmware.ota.zip --public-key trusted-signing-public.pem --json
+```

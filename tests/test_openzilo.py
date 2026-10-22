@@ -185,7 +185,8 @@ class CompatibilityTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(sdk.ProtocolError, "audio operation"):
             await sdk.receive_auto_audio_file(client)
         with self.assertRaisesRegex(sdk.ProtocolError, "active audio"):
-            await sdk.update_firmware(client, b"synthetic", version="V2.001.0002.0000")
+            from test_ota import make_bundle, PUBLIC_KEY
+            await sdk.update_firmware(client, make_bundle(), trusted_public_key=PUBLIC_KEY)
         download.cancel()
         with self.assertRaises(asyncio.CancelledError):
             await asyncio.wait_for(download, 1)

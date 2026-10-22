@@ -10,17 +10,16 @@ import openzilo as sdk
 async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--address", required=True)
-    parser.add_argument("--version", required=True, help="Target version from the release.")
-    parser.add_argument("--sha256", required=True, help="SHA-256 from the official release.")
-    parser.add_argument("--model", required=True, help="Compatible model from the release.")
+    parser.add_argument("--public-key", type=Path, required=True, help="Independently trusted signing public key.")
     parser.add_argument("firmware", type=Path)
     args = parser.parse_args()
     data = args.firmware.read_bytes()
+    public_key = args.public_key.read_bytes()
+    sdk.inspect_firmware_bundle(data, trusted_public_key=public_key)
     # Stop recording and IMU streaming first; use this connection exclusively.
     async with sdk.OpenZiloClient(address=args.address) as ring:
         info = await sdk.update_firmware(
-            ring, data, version=args.version, sha256=args.sha256,
-            expected_model=args.model, progress=sdk.ProgressPrinter(prefix="OTA transfer"),
+            ring, data, trusted_public_key=public_key, progress=sdk.ProgressPrinter(prefix="OTA transfer"),
         )
         print(f"Verified after reboot: {info.firmware_version}")
 

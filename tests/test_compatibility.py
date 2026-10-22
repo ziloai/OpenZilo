@@ -75,9 +75,9 @@ class CapabilityParserTests(unittest.TestCase):
                     disconnect_policy=sdk.AudioDisconnectPolicy.CONTINUE_SAVING))
 
     def test_unknown_optional_tlv_and_feature_are_forward_compatible(self):
-        caps = sdk.parse_device_capabilities(VECTOR + tlv(0x300, b"future") + tlv(0x10B, b"\1\0"))
+        caps = sdk.parse_device_capabilities(VECTOR + tlv(0x300, b"future") + tlv(0x10C, b"\1\0"))
         self.assertTrue(caps.supports("recording_control"))
-        self.assertTrue(caps.supports("unknown_11", major=1))
+        self.assertTrue(caps.supports("unknown_12", major=1))
         with self.assertRaises(sdk.CompatibilityError):
             sdk.parse_device_capabilities(VECTOR + tlv(0x8001, b"required"))
 
@@ -134,6 +134,7 @@ class DiscoveryTests(unittest.IsolatedAsyncioTestCase):
             self.peer.mode, self.peer.version = mode, LEGACY
             caps = await self.discover()
             self.assertEqual(caps.source, "legacy_profile")
+            self.assertEqual(caps.board_target, "ring_dvt2/nrf54l15/cpuapp")
             self.assertTrue(caps.supports("recording_control"))
             self.assertFalse(caps.supports("gesture"))
             with self.assertRaisesRegex(sdk.CompatibilityError, "Reconnect"):

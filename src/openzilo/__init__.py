@@ -51,6 +51,7 @@ from ._device import (
     send_time_response,
     SystemInfo,
 )
+from ._firmware_bundle import FirmwareBundle, inspect_firmware_bundle
 from ._ota import (
     update_firmware,
 )
@@ -153,7 +154,22 @@ from ._sensor import (
     wait_sensor_key_single_press_event,
 )
 
+from ._imu_calibration import (
+    ImuCalibration, ImuStaticWindow, CalibratedImuSample, CalibratedImuBatch, apply_imu_calibration,
+    collect_imu_static_window, analyze_imu_static_window, fit_imu_gyro_bias,
+    fit_imu_six_face_calibration, validate_imu_calibration,
+)
+from ._imu_profiles import (
+    ImuCalibrationProfile, CalibratedImuStream, imu_device_key, imu_calibration_path,
+    load_imu_calibration_profile, save_imu_calibration_profile, open_calibrated_imu_stream,
+)
+
 __all__ = [
+    "ImuCalibration", "ImuStaticWindow", "CalibratedImuSample", "CalibratedImuBatch",
+    "ImuCalibrationProfile", "CalibratedImuStream", "apply_imu_calibration", "imu_device_key",
+    "imu_calibration_path", "load_imu_calibration_profile", "save_imu_calibration_profile",
+    "open_calibrated_imu_stream", "collect_imu_static_window", "analyze_imu_static_window",
+    "fit_imu_gyro_bias", "fit_imu_six_face_calibration", "validate_imu_calibration",
     "SdkIdentity",
     "get_sdk_identity",
     "CompatibilityError",
@@ -273,6 +289,8 @@ __all__ = [
     "TimeoutError",
     "TransportError",
     "update_firmware",
+    "FirmwareBundle",
+    "inspect_firmware_bundle",
     "wait_audio_record_result",
     "wait_sensor_data",
     "wait_sensor_double_tap_event",

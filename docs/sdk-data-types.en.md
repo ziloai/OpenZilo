@@ -193,3 +193,41 @@ timestamp_ms: int  # This firmware sends seconds; the historical SDK field name 
 ```
 
 Call `start_sensor_report()` again after reconnection. Whether local capture resumes automatically depends on firmware, not just BLE connection state.
+
+## Software IMU calibration
+
+```python
+ImuCalibration
+sensor_type: int             # 0 = unknown; no guessed chip identity
+accel_range_g: int
+gyro_range_dps: int
+accel_bias_ug: tuple[int, int, int]
+accel_scale_ppm: tuple[int, int, int]  # identity = (1000000, 1000000, 1000000)
+gyro_bias_udps: tuple[int, int, int]
+
+ImuCalibrationProfile
+device_key: str              # SHA-256 of normalized local device identifier
+firmware_version: str        # exact match, not a version range
+model: str
+calibration: ImuCalibration
+accel_validated: bool
+gyro_validated: bool
+created_at: str              # ISO 8601, with timezone
+
+CalibratedImuSample
+timestamp_ms: int
+accel_g: tuple[float, float, float]
+gyro_dps: tuple[float, float, float]
+
+CalibratedImuBatch
+sequence_start: int
+frame_count: int
+samples: tuple[CalibratedImuSample, ...]
+applied_components: tuple[str, ...]  # e.g. ("accel",), or ("accel", "gyro")
+```
+
+[Software calibration workflow and APIs](sdk-imu.en.md).
+
+## FirmwareBundle
+
+The immutable result of `inspect_firmware_bundle()` contains `version`, `model`, `board`, `profile`, `security_version`, `source_versions`, `signing_key_id`, and inner OTA bytes `payload`. Its `manifest` property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.
