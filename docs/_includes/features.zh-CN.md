@@ -9,7 +9,7 @@
 
 <!-- --8<-- [start:capabilities] -->
 
-!!! tip "计划于 SDK v0.6.1 提供"
+!!! tip "Available since SDK v0.6.1"
 
     连接时查询设备支持的功能。使用 `connect_ring()` 会自动查询；使用 `OpenZiloClient` 时需调用 `get_device_capabilities()`。
 

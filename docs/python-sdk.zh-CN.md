@@ -59,7 +59,7 @@
 | 函数 | 调用方式 | 返回 | 说明 |
 | --- | --- | --- | --- |
 | [`inspect_firmware_bundle()`](sdk-ota.en.md) | `inspect_firmware_bundle(bundle, trusted_public_key=...)` | `FirmwareBundle` | Verify a signed ZIP and inspect metadata offline. |
-| [`update_firmware()`](sdk-ota.en.md) | `await update_firmware(client, firmware, trusted_public_key=..., allow_test_firmware=False, progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)` | `SystemInfo` | Upload an official application package, wait for reboot, and verify the running version. See [firmware updates](python-sdk.en.md#firmware-updates). |
+| [`update_firmware()`](sdk-ota.en.md) | `await update_firmware(client, firmware, trusted_public_key=..., allow_test_firmware=False, progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)` | `SystemInfo` | Upload an official application package, wait for reboot, and verify the running version. See [firmware updates](sdk-ota.en.md). |
 
 ## 录音下载
 

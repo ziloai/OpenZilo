@@ -9,7 +9,7 @@
 
 <!-- --8<-- [start:capabilities] -->
 
-!!! tip "Planned for SDK v0.6.1"
+!!! tip "Available since SDK v0.6.1"
 
     `connect_ring()` discovers features automatically. When using `OpenZiloClient`, call `get_device_capabilities()` explicitly.
 
