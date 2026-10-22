@@ -1,123 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/contributing/agents.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/contributing/agents.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/contributing/claude.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/contributing/claude.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/contributing/copilot.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/contributing/copilot.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/contributing/gemini.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/contributing/gemini.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/contributing/index.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/contributing/index.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/contributing/security.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/contributing/security.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/ai-tools.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/ai-tools.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/architecture.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/architecture.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/cli.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/cli.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/compatibility.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/compatibility.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/features.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/features.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/protocol.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/protocol.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/recording.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/recording.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/developer/sdk.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/sdk.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/guide/buttons.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/guide/buttons.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/guide/firmware.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/guide/firmware.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/guide/first-use.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/guide/first-use.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/guide/index.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/guide/index.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/guide/leds.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/guide/leds.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/index.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/index.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/overview.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/overview.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/reference/llms.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/reference/changelog.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/reference/wiki-entry.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/reference/llms.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/reference/wiki-sidebar.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/reference/wiki-entry.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/audio-decoding.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/reference/wiki-sidebar.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/connection.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/audio-decoding.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/data-types.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/connection.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/device-info.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/data-types.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/downloads.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/device-info.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/errors.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/downloads.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/events.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/errors.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/imu.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/events.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/install.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/imu.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/live-audio.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/install.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/logs.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/live-audio.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/migration.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/logs.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/ota.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/migration.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/protocol-tools.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/ota.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/quickstart.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/protocol-tools.html</loc>
       </url>
       <url>
-        <loc>https://ziloai.github.io/OpenZilo/v0.6.1/zh-CN/sdk/time-sync.html</loc>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/quickstart.html</loc>
+      </url>
+      <url>
+        <loc>https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/time-sync.html</loc>
       </url>
 </urlset>

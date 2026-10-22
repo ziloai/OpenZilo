@@ -1,0 +1,4581 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/developer/protocol.html">
+      
+      
+      
+        <link rel="prev" href="../guide/firmware.html">
+      
+      
+        <link rel="next" href="./architecture.html">
+      
+      
+        
+          <link rel="alternate" href="../../zh-CN/developer/protocol.html" hreflang="zh">
+        
+          <link rel="alternate" href="protocol.html" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.71">
+    
+    
+      
+        <title>OpenZilo BLE protocol reference - OpenZilo SDK v0.6.2</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.e442bf79.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M20%204c1.11%200%202%20.89%202%202v12c0%201.11-.89%202-2%202H4c-1.11%200-2-.89-2-2V6c0-1.11.89-2%202-2zM8.5%2015V9H7.25v3.5L4.75%209H3.5v6h1.25v-3.5L7.3%2015zm5-4.74V9h-4v6h4v-1.25H11v-1.11h2.5v-1.26H11v-1.12zm7%203.74V9h-1.25v4.5h-1.12V10h-1.25v3.5h-1.13V9H14.5v5a1%201%200%200%200%201%201h4a1%201%200%200%200%201-1%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenZilo SDK v0.6.2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenZilo BLE protocol reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../zh-CN/developer/protocol.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="protocol.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/ziloai/OpenZilo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    OpenZilo SDK v0.6.2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ziloai/OpenZilo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Get started
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Get started
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/install.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installation and requirements
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/quickstart.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Quick start
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./cli.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Command-line guide
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Use SDK features
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Use SDK features
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/connection.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Scan and connect
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/device-info.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Read device information
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./compatibility.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  SDK and firmware compatibility
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/time-sync.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synchronize device time
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./recording.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Remote recording and configuration
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/downloads.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Download and receive saved recordings
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/live-audio.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Live audio
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/audio-decoding.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Decode and save audio
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/imu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Collect IMU data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/events.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Button and tap events
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/logs.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Read device logs
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/ota.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Update firmware with the SDK
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API reference
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  API reference
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./sdk.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API index
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/data-types.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data types
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/errors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Exceptions and troubleshooting
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Versions and compatibility
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Versions and compatibility
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./features.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Features and version requirements
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/migration.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Version migration and firmware differences
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guide/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Device and protocol
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Device and protocol
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/first-use.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  First use
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/buttons.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Buttons and Modes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/leds.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  LED Indicators
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/firmware.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Firmware updates
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo BLE protocol reference
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="protocol.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo BLE protocol reference
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        1. Scope
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ble-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        2. BLE services
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-protocol-v4-packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        3. Protocol v4 packets
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        4. Commands
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-message-bodies" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5. Message bodies
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Message bodies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-system-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.1 System information
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 System information">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0101-get-system-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0101</code> Get system information
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0102-system-information-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0102</code> System information response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.2 Logs
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0301-get-log-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0301</code> Get log storage
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0302-log-storage-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0302</code> Log storage response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0303-read-log-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0303</code> Read log data
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0304-log-data-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0304</code> Log data response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-time-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.3 Time synchronization
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 Time synchronization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0401-device-time-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0401</code> Device time request
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0402-sdk-time-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0402</code> SDK time response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-recordings" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.4 Recordings
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.4 Recordings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0501-get-recording-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0501</code> Get recording count
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0502-recording-count-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0502</code> Recording count response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0503-begin-normal-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0503</code> Begin normal extraction
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0509-begin-fast-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0509</code> Begin fast extraction
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0504-recording-file-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0504</code> Recording file information
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0505-recording-data-chunk" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0505</code> Recording data chunk
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0506-request-recording-offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0506</code> Request recording offset
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0507-end-normal-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0507</code> End normal extraction
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0508-extraction-end-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0508</code> Extraction-end response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050a-recording-save-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050A</code> Recording save result
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050b-delete-all-recordings" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050B</code> Delete all recordings
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050c-delete-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050C</code> Delete response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050d-live-audio-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050D</code> Live audio subscription
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050e-subscription-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050E</code> Subscription response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050f-live-recording-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050F</code> Live recording START
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0510-live-recording-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0510</code> Live recording DATA
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0511-live-recording-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0511</code> Live recording END
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-live-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.5 Live IMU
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 Live IMU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0601-start-live-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0601</code> Start live reports
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0602-start-report-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0602</code> Start-report response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0603-stop-live-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0603</code> Stop live reports
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0604-stop-report-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0604</code> Stop-report response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0605-single-sample-and-batch-imu-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0605</code> Single-sample and batch IMU data
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-motion-and-button-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.6 Motion and button events
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.6 Motion and button events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0701-physical-double-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0701</code> Physical double tap
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0703-double-button-press" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0703</code> Double button press
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0704-single-button-press" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0704</code> Single button press
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-remote-recording-and-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.7 Remote recording and settings
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.7 Remote recording and settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0512--0x0513-start-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0512</code> / <code>0x0513</code> Start recording
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0514--0x0515-stop-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0514</code> / <code>0x0515</code> Stop recording
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0516--0x0517-query-recording-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0516</code> / <code>0x0517</code> Query recording status
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0518--0x0519-read-recording-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0518</code> / <code>0x0519</code> Read recording configuration
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x051a--0x051b-write-recording-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x051A</code> / <code>0x051B</code> Write recording configuration
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-error-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        6. Error codes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capability-discovery-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Capability discovery messages
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Capability discovery messages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interface-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Interface evolution
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./architecture.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo SDK architecture and data flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/protocol-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Protocol debugging utilities
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Development
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Development
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./ai-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Use OpenZilo with coding agents
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Security policy
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo platform
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Releases
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Releases
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/changelog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        1. Scope
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ble-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        2. BLE services
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-protocol-v4-packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        3. Protocol v4 packets
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        4. Commands
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-message-bodies" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5. Message bodies
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Message bodies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-system-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.1 System information
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 System information">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0101-get-system-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0101</code> Get system information
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0102-system-information-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0102</code> System information response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.2 Logs
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0301-get-log-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0301</code> Get log storage
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0302-log-storage-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0302</code> Log storage response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0303-read-log-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0303</code> Read log data
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0304-log-data-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0304</code> Log data response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-time-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.3 Time synchronization
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 Time synchronization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0401-device-time-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0401</code> Device time request
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0402-sdk-time-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0402</code> SDK time response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-recordings" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.4 Recordings
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.4 Recordings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0501-get-recording-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0501</code> Get recording count
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0502-recording-count-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0502</code> Recording count response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0503-begin-normal-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0503</code> Begin normal extraction
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0509-begin-fast-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0509</code> Begin fast extraction
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0504-recording-file-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0504</code> Recording file information
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0505-recording-data-chunk" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0505</code> Recording data chunk
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0506-request-recording-offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0506</code> Request recording offset
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0507-end-normal-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0507</code> End normal extraction
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0508-extraction-end-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0508</code> Extraction-end response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050a-recording-save-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050A</code> Recording save result
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050b-delete-all-recordings" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050B</code> Delete all recordings
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050c-delete-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050C</code> Delete response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050d-live-audio-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050D</code> Live audio subscription
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050e-subscription-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050E</code> Subscription response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x050f-live-recording-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x050F</code> Live recording START
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0510-live-recording-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0510</code> Live recording DATA
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0511-live-recording-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0511</code> Live recording END
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-live-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.5 Live IMU
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 Live IMU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0601-start-live-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0601</code> Start live reports
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0602-start-report-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0602</code> Start-report response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0603-stop-live-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0603</code> Stop live reports
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0604-stop-report-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0604</code> Stop-report response
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0605-single-sample-and-batch-imu-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0605</code> Single-sample and batch IMU data
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-motion-and-button-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.6 Motion and button events
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.6 Motion and button events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0701-physical-double-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0701</code> Physical double tap
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0703-double-button-press" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0703</code> Double button press
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0704-single-button-press" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0704</code> Single button press
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-remote-recording-and-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        5.7 Remote recording and settings
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.7 Remote recording and settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0x0512--0x0513-start-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0512</code> / <code>0x0513</code> Start recording
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0514--0x0515-stop-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0514</code> / <code>0x0515</code> Stop recording
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0516--0x0517-query-recording-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0516</code> / <code>0x0517</code> Query recording status
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x0518--0x0519-read-recording-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0518</code> / <code>0x0519</code> Read recording configuration
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0x051a--0x051b-write-recording-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x051A</code> / <code>0x051B</code> Write recording configuration
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-error-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        6. Error codes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capability-discovery-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Capability discovery messages
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Capability discovery messages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interface-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Interface evolution
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: v0.6.2</summary><ul><li><a href="../../../stable/en/developer/protocol.html">stable (v0.6.2)</a></li><li><a href="protocol.html" aria-current="page">v0.6.2</a></li><li><a href="../../../v0.6.1/en/developer/protocol.html">v0.6.1</a></li><li><a href="../../../dev/en/developer/protocol.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="openzilo-ble-protocol-reference">OpenZilo BLE protocol reference<a class="headerlink" href="#openzilo-ble-protocol-reference" title="Permanent link">&para;</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Device applicability</p>
+<p>This document applies to <strong>OpenZilo Q</strong>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Connection requirements</p>
+<p>Your computer needs Bluetooth Low Energy (BLE). The SDK communicates with the ring through NUS and supports protocol v4.</p>
+</div>
+<h2 id="1-scope">1. Scope<a class="headerlink" href="#1-scope" title="Permanent link">&para;</a></h2>
+<p>This reference describes protocol v4 framing, commands and fields used by the SDK. Firmware may implement only a subset; query features to check. Button and LED behavior is covered by the <a href="../guide/index.html">user guide</a>.</p>
+<p>See the <a href="sdk.html">API index</a> for calls and <a href="architecture.html">architecture</a> for transport and audio handling.</p>
+<h2 id="2-ble-services">2. BLE services<a class="headerlink" href="#2-ble-services" title="Permanent link">&para;</a></h2>
+<p>The protocol uses Nordic UART Service (NUS):</p>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>UUID</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Service</td>
+<td><code>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+<td>Service identifier.</td>
+</tr>
+<tr>
+<td>TX Characteristic</td>
+<td><code>6E400003-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+<td>Ring notifies SDK.</td>
+</tr>
+<tr>
+<td>RX Characteristic</td>
+<td><code>6E400002-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+<td>SDK writes to ring.</td>
+</tr>
+</tbody>
+</table>
+<p>Connect by the scanned address (UUID on macOS), without depending on advertising names.</p>
+<p>SDK RX writes use chunks of up to 20 bytes; the last may be shorter. This is a BLE write policy, not a packet boundary or a replacement for system MTU negotiation. TX notifications can use other sizes; reconstruct them with <code>OpenZiloClient</code> or <code>PacketStream</code>.</p>
+<h2 id="3-protocol-v4-packets">3. Protocol v4 packets<a class="headerlink" href="#3-protocol-v4-packets" title="Permanent link">&para;</a></h2>
+<p>The fixed header is 11 bytes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Offset</th>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>magic_number</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>Always <code>0x3F</code>.</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>version</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Currently 4.</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>command</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Command number.</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>body_length</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Body size in bytes.</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>body_crc</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Body CRC16; 0 for an empty body.</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>body</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;">variable</td>
+<td>Command body.</td>
+</tr>
+</tbody>
+</table>
+<p>Header and body integers are network byte order (big-endian). Strings and raw bytes are not reordered. CRC covers only the body, using SDK <code>crc16_compute()</code> with initial value <code>0xFFFF</code>.</p>
+<p>A packet can span notifications and a notification can contain multiple packets. Reconstruct using the fixed header and <code>body_length</code> before parsing. <code>OpenZiloClient</code> and <code>PacketStream</code> do this already.</p>
+<h2 id="4-commands">4. Commands<a class="headerlink" href="#4-commands" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Request/event</th>
+<th>Response</th>
+<th>SDK API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System information</td>
+<td><code>0x0101</code></td>
+<td><code>0x0102</code></td>
+<td><code>get_system_info()</code></td>
+</tr>
+<tr>
+<td>Feature discovery</td>
+<td><code>0x0105</code></td>
+<td><code>0x0106</code></td>
+<td><code>get_device_capabilities()</code></td>
+</tr>
+<tr>
+<td>Command error</td>
+<td><code>0x01FF</code> device response</td>
+<td>None</td>
+<td><code>DeviceError</code></td>
+</tr>
+<tr>
+<td>Log storage information</td>
+<td><code>0x0301</code></td>
+<td><code>0x0302</code></td>
+<td><code>get_log_storage()</code></td>
+</tr>
+<tr>
+<td>Log data</td>
+<td><code>0x0303</code></td>
+<td><code>0x0304</code></td>
+<td><code>read_log_chunk()</code></td>
+</tr>
+<tr>
+<td>Time synchronization</td>
+<td>Device requests <code>0x0401</code></td>
+<td>SDK replies <code>0x0402</code></td>
+<td><code>enable_time_sync()</code>, <code>send_time_response()</code></td>
+</tr>
+<tr>
+<td>Recording count</td>
+<td><code>0x0501</code></td>
+<td><code>0x0502</code></td>
+<td><code>get_audio_file_count()</code></td>
+</tr>
+<tr>
+<td>Normal recording extraction</td>
+<td><code>0x0503</code></td>
+<td><code>0x0504</code></td>
+<td><code>get_audio_file_info()</code></td>
+</tr>
+<tr>
+<td>Recording data</td>
+<td><code>0x0506</code></td>
+<td><code>0x0505</code></td>
+<td><code>read_audio_frame()</code></td>
+</tr>
+<tr>
+<td>End normal extraction</td>
+<td><code>0x0507</code></td>
+<td><code>0x0508</code></td>
+<td><code>end_audio_extract()</code></td>
+</tr>
+<tr>
+<td>Fast recording extraction</td>
+<td><code>0x0509</code></td>
+<td><code>0x0504</code>, consecutive <code>0x0505</code></td>
+<td><code>download_audio_file(..., quick=True)</code></td>
+</tr>
+<tr>
+<td><code>V2.001.0002.0000</code> post-save push</td>
+<td>Consecutive device <code>0x0505</code></td>
+<td>No initial <code>0x0504</code>; metadata queried for recovery</td>
+<td><code>receive_auto_audio_file()</code></td>
+</tr>
+<tr>
+<td>Recording saved</td>
+<td>Device <code>0x050A</code></td>
+<td>None</td>
+<td><code>wait_audio_record_result()</code>, <code>receive_auto_audio_file()</code></td>
+</tr>
+<tr>
+<td>Live audio subscription</td>
+<td><code>0x050D</code></td>
+<td><code>0x050E</code></td>
+<td><code>set_live_audio_subscription()</code></td>
+</tr>
+<tr>
+<td>Live audio data</td>
+<td>Device <code>0x050F</code>, <code>0x0510</code>, <code>0x0511</code></td>
+<td>None</td>
+<td><code>receive_live_audio_file()</code></td>
+</tr>
+<tr>
+<td>Delete all recordings</td>
+<td><code>0x050B</code></td>
+<td><code>0x050C</code></td>
+<td><code>clear_audio_files()</code></td>
+</tr>
+<tr>
+<td>Start recording</td>
+<td><code>0x0512</code></td>
+<td><code>0x0513</code></td>
+<td><code>start_audio_recording()</code></td>
+</tr>
+<tr>
+<td>Stop recording</td>
+<td><code>0x0514</code></td>
+<td><code>0x0515</code></td>
+<td><code>stop_audio_recording()</code></td>
+</tr>
+<tr>
+<td>Recording status</td>
+<td><code>0x0516</code></td>
+<td><code>0x0517</code></td>
+<td><code>get_audio_recording_status()</code></td>
+</tr>
+<tr>
+<td>Read recording settings</td>
+<td><code>0x0518</code></td>
+<td><code>0x0519</code></td>
+<td><code>get_audio_recording_config()</code></td>
+</tr>
+<tr>
+<td>Write recording settings</td>
+<td><code>0x051A</code></td>
+<td><code>0x051B</code></td>
+<td><code>set_audio_recording_config()</code></td>
+</tr>
+<tr>
+<td>Start IMU reports</td>
+<td><code>0x0601</code></td>
+<td><code>0x0602</code></td>
+<td><code>start_sensor_report()</code></td>
+</tr>
+<tr>
+<td>Stop IMU reports</td>
+<td><code>0x0603</code></td>
+<td><code>0x0604</code></td>
+<td><code>stop_sensor_report()</code></td>
+</tr>
+<tr>
+<td>IMU batches</td>
+<td>Device <code>0x0605</code></td>
+<td>None</td>
+<td><code>wait_sensor_data()</code></td>
+</tr>
+<tr>
+<td>Physical double tap</td>
+<td>Device <code>0x0701</code></td>
+<td>None</td>
+<td><code>wait_sensor_double_tap_event()</code></td>
+</tr>
+<tr>
+<td>Double button press</td>
+<td>Device <code>0x0703</code></td>
+<td>None</td>
+<td><code>wait_sensor_key_double_press_event()</code></td>
+</tr>
+<tr>
+<td>Single button press</td>
+<td>Device <code>0x0704</code></td>
+<td>None</td>
+<td><code>wait_sensor_key_single_press_event()</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-message-bodies">5. Message bodies<a class="headerlink" href="#5-message-bodies" title="Permanent link">&para;</a></h2>
+<p>All <code>u16</code>, <code>i16</code> and <code>u32</code> below are big-endian. A nonzero response <code>error_code</code> makes subsequent fields invalid; a response may contain only that error. Some recording failure paths return no response, so timeout alone does not identify the cause.</p>
+<h3 id="51-system-information">5.1 System information<a class="headerlink" href="#51-system-information" title="Permanent link">&para;</a></h3>
+<h4 id="0x0101-get-system-information"><code>0x0101</code> Get system information<a class="headerlink" href="#0x0101-get-system-information" title="Permanent link">&para;</a></h4>
+<p>Empty body.</p>
+<h4 id="0x0102-system-information-response"><code>0x0102</code> System information response<a class="headerlink" href="#0x0102-system-information-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>firmware_version_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Firmware version string length.</td>
+</tr>
+<tr>
+<td><code>firmware_version</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">variable</td>
+<td>Firmware version string.</td>
+</tr>
+<tr>
+<td><code>system_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Unix timestamp in seconds.</td>
+</tr>
+<tr>
+<td><code>audio_storage_total</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Total recording storage in bytes.</td>
+</tr>
+<tr>
+<td><code>audio_storage_available</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Available recording storage in bytes.</td>
+</tr>
+<tr>
+<td><code>battery_percent</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Battery percentage.</td>
+</tr>
+<tr>
+<td><code>battery_charging</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td><code>0</code> not charging, <code>1</code> charging.</td>
+</tr>
+<tr>
+<td><code>sn_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Serial number string length.</td>
+</tr>
+<tr>
+<td><code>sn</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">variable</td>
+<td>Device serial number.</td>
+</tr>
+<tr>
+<td><code>cpuid_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>CPUID string length.</td>
+</tr>
+<tr>
+<td><code>cpuid</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">variable</td>
+<td>Device CPUID.</td>
+</tr>
+<tr>
+<td><code>model_len</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Model string length.</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>UTF-8</td>
+<td style="text-align: right;">variable</td>
+<td>Device model.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-logs">5.2 Logs<a class="headerlink" href="#52-logs" title="Permanent link">&para;</a></h3>
+<h4 id="0x0301-get-log-storage"><code>0x0301</code> Get log storage<a class="headerlink" href="#0x0301-get-log-storage" title="Permanent link">&para;</a></h4>
+<p>Empty body.</p>
+<h4 id="0x0302-log-storage-response"><code>0x0302</code> Log storage response<a class="headerlink" href="#0x0302-log-storage-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Log page size or the device's current paging unit.</td>
+</tr>
+<tr>
+<td><code>total_len</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Total log data length.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0303-read-log-data"><code>0x0303</code> Read log data<a class="headerlink" href="#0x0303-read-log-data" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Log index.</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Starting offset.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Requested byte count.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0304-log-data-response"><code>0x0304</code> Log data response<a class="headerlink" href="#0x0304-log-data-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>data_len</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Actual data length.</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>data_len</code></td>
+<td>Log bytes.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-time-synchronization">5.3 Time synchronization<a class="headerlink" href="#53-time-synchronization" title="Permanent link">&para;</a></h3>
+<h4 id="0x0401-device-time-request"><code>0x0401</code> Device time request<a class="headerlink" href="#0x0401-device-time-request" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Request construction timestamp T1.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0402-sdk-time-response"><code>0x0402</code> SDK time response<a class="headerlink" href="#0x0402-sdk-time-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Original request timestamp T1.</td>
+</tr>
+<tr>
+<td><code>response_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Request arrival timestamp T2.</td>
+</tr>
+<tr>
+<td><code>send_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Reply send timestamp T3.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-recordings">5.4 Recordings<a class="headerlink" href="#54-recordings" title="Permanent link">&para;</a></h3>
+<h4 id="0x0501-get-recording-count"><code>0x0501</code> Get recording count<a class="headerlink" href="#0x0501-get-recording-count" title="Permanent link">&para;</a></h4>
+<p>Empty body.</p>
+<h4 id="0x0502-recording-count-response"><code>0x0502</code> Recording count response<a class="headerlink" href="#0x0502-recording-count-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>file_count</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Number of stored recordings.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0503-begin-normal-extraction"><code>0x0503</code> Begin normal extraction<a class="headerlink" href="#0x0503-begin-normal-extraction" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Always 0.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording file index.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0509-begin-fast-extraction"><code>0x0509</code> Begin fast extraction<a class="headerlink" href="#0x0509-begin-fast-extraction" title="Permanent link">&para;</a></h4>
+<p>Same body as <code>0x0503</code>. The device first returns <code>0x0504</code>, then consecutive <code>0x0505</code> packets until <code>is_end=1</code>.</p>
+<h4 id="0x0504-recording-file-information"><code>0x0504</code> Recording file information<a class="headerlink" href="#0x0504-recording-file-information" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording file index.</td>
+</tr>
+<tr>
+<td><code>record_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording timestamp in seconds.</td>
+</tr>
+<tr>
+<td><code>data_size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Total encoded data bytes.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0505-recording-data-chunk"><code>0x0505</code> Recording data chunk<a class="headerlink" href="#0x0505-recording-data-chunk" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording file index.</td>
+</tr>
+<tr>
+<td><code>frame_offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Byte offset within recording data.</td>
+</tr>
+<tr>
+<td><code>frame_size</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Chunk byte count, currently at most 4096.</td>
+</tr>
+<tr>
+<td><code>is_end</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td><code>0</code> not final, <code>1</code> final chunk.</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>frame_size</code></td>
+<td>Encoded recording bytes.</td>
+</tr>
+</tbody>
+</table>
+<p><code>data</code> is a raw file fragment: OP2C on Opus firmware, or consecutive little-endian two-byte lengths followed by Speex payloads on legacy firmware. See <a href="architecture.html#recording-formats">recording formats</a>. File-internal little-endian lengths do not change big-endian protocol fields.</p>
+<p>After saving, legacy Speex firmware pushes this same <code>0x0505</code> format without preceding <code>0x0504</code>. <code>receive_auto_audio_file()</code> selects the first frame's index, assembles by offset, and finishes at <code>is_end=1</code>. It returns <code>(file_index, raw_audio)</code> without <code>AudioFileInfo</code>.</p>
+<p>Normal continuous push needs no extraction commands. For a gap, timeout or damaged frame, the SDK queries and verifies index and <code>data_size</code> using <code>0x0503 -&gt; 0x0504</code>, then requests the expected offset with <code>0x0506</code>, up to three attempts. Results are bounded by <code>data_size</code>. Keep BLE connected during saving and push. If connection was too late, query the recording count and download by index.</p>
+<h4 id="0x0506-request-recording-offset"><code>0x0506</code> Request recording offset<a class="headerlink" href="#0x0506-request-recording-offset" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Always 0.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording file index.</td>
+</tr>
+<tr>
+<td><code>frame_offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Byte offset to read or recover.</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Reserved padding required by current firmware length checks; always 0.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDK uses <code>frame_offset</code> for the next normal-download chunk and to recover missing fast-download or push data.</p>
+<h4 id="0x0507-end-normal-extraction"><code>0x0507</code> End normal extraction<a class="headerlink" href="#0x0507-end-normal-extraction" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Always 0.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording file index.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0508-extraction-end-response"><code>0x0508</code> Extraction-end response<a class="headerlink" href="#0x0508-extraction-end-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording file index.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x050a-recording-save-result"><code>0x050A</code> Recording save result<a class="headerlink" href="#0x050a-recording-save-result" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Newly saved recording index.</td>
+</tr>
+</tbody>
+</table>
+<p>Firmware <code>V2.001.0002.0001</code> sends this after saving instead of pushing <code>0x0505</code>. Retrieve using normal <code>0x0503</code> extraction and finish with <code>0x0507</code>. Failed saves may return only <code>error_code</code>.</p>
+<h4 id="0x050b-delete-all-recordings"><code>0x050B</code> Delete all recordings<a class="headerlink" href="#0x050b-delete-all-recordings" title="Permanent link">&para;</a></h4>
+<p>Empty body. Irreversibly deletes all recordings on the device.</p>
+<h4 id="0x050c-delete-response"><code>0x050C</code> Delete response<a class="headerlink" href="#0x050c-delete-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x050d-live-audio-subscription"><code>0x050D</code> Live audio subscription<a class="headerlink" href="#0x050d-live-audio-subscription" title="Permanent link">&para;</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Firmware version</p>
+<p>This usage requires firmware <strong>V2.001.0002.0001 or later</strong>.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td><code>1</code> enable, <code>0</code> disable.</td>
+</tr>
+</tbody>
+</table>
+<p>Subscribing does not start recording; users still hold the button in recording mode. Live-only output uses BLE without flash saving; configurable firmware can also save a copy. Disconnect clears the subscription. Unsubscribe aborts live transmission.</p>
+<h4 id="0x050e-subscription-response"><code>0x050E</code> Subscription response<a class="headerlink" href="#0x050e-subscription-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code; notifications disabled or ATT MTU below 128 causes an error.</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>Current device subscription state.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x050f-live-recording-start"><code>0x050F</code> Live recording START<a class="headerlink" href="#0x050f-live-recording-start" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Nonzero recording session ID.</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Always 0.</td>
+</tr>
+<tr>
+<td><code>record_time</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Recording timestamp in seconds.</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Always 0.</td>
+</tr>
+<tr>
+<td><code>sample_rate</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Always 16000.</td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>1 or 2, matching recording settings.</td>
+</tr>
+<tr>
+<td><code>codec</code></td>
+<td><code>u8</code></td>
+<td style="text-align: right;">1</td>
+<td>Always 3 (Opus).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0510-live-recording-data"><code>0x0510</code> Live recording DATA<a class="headerlink" href="#0x0510-live-recording-data" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Same as <code>0x050F</code>.</td>
+</tr>
+<tr>
+<td><code>sequence</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Packet sequence starting at 0.</td>
+</tr>
+<tr>
+<td><code>byte_offset</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Offset in transmitted Opus bytes, starting at 0.</td>
+</tr>
+<tr>
+<td><code>length</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Opus packet length, 1–100 bytes.</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>length</code></td>
+<td>One 20 ms Opus packet, with the START channel count.</td>
+</tr>
+</tbody>
+</table>
+<p><code>byte_offset</code> counts Opus data only, excluding OP2C length prefixes.</p>
+<h4 id="0x0511-live-recording-end"><code>0x0511</code> Live recording END<a class="headerlink" href="#0x0511-live-recording-end" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Same as <code>0x050F</code>.</td>
+</tr>
+<tr>
+<td><code>reserved</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Always 0.</td>
+</tr>
+<tr>
+<td><code>produced_bytes</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Opus bytes produced by the device encoder.</td>
+</tr>
+<tr>
+<td><code>sent_bytes</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Opus bytes sent by the device.</td>
+</tr>
+<tr>
+<td><code>dropped_frames</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Frames dropped by the device.</td>
+</tr>
+</tbody>
+</table>
+<p>A recording is complete only when <code>error_code=0</code>, <code>dropped_frames=0</code>, and both byte counts equal the actual received data. Downloads during live recording may receive device-busy in <code>0x0504</code>.</p>
+<h3 id="55-live-imu">5.5 Live IMU<a class="headerlink" href="#55-live-imu" title="Permanent link">&para;</a></h3>
+<p>Firmware <code>V2.001.0002.0000</code> requires gesture mode first. Firmware <code>V2.001.0002.0001</code> removes mode switching and starts capture directly on <code>0x0601</code>. Both retain the following command numbers.</p>
+<h4 id="0x0601-start-live-reports"><code>0x0601</code> Start live reports<a class="headerlink" href="#0x0601-start-live-reports" title="Permanent link">&para;</a></h4>
+<p>Empty body. Direct capture startup requires firmware <strong>V2.001.0002.0001 or later</strong>. Firmware <code>V2.001.0002.0000</code> requires gesture mode first. Starting from stopped resets <code>sequence_start</code>; an active subscription does not reset it.</p>
+<p>Use this sequence:</p>
+<div class="highlight"><pre><span></span><code>Firmware V2.001.0002.0001: no mode change required
+-&gt; Send 0x0601
+-&gt; Receive 0x0602 with error_code=0
+-&gt; Receive batch 0x0605
+</code></pre></div>
+<p>In recording mode on <code>V2.001.0002.0000</code>, <code>0x0601</code> returns device-busy. Firmware <code>V2.001.0002.0001</code> has no such mode restriction. <code>wait_sensor_data()</code> only waits for data and does not send <code>0x0601</code>.</p>
+<h4 id="0x0602-start-report-response"><code>0x0602</code> Start-report response<a class="headerlink" href="#0x0602-start-report-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>sample_rate_hz</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Current sample rate; use this returned value.</td>
+</tr>
+<tr>
+<td><code>accel_range_g</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Accelerometer range.</td>
+</tr>
+<tr>
+<td><code>gyro_range_dps</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Gyroscope range.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0603-stop-live-reports"><code>0x0603</code> Stop live reports<a class="headerlink" href="#0x0603-stop-live-reports" title="Permanent link">&para;</a></h4>
+<p>Empty body. Firmware <code>V2.001.0002.0001</code> stops both BLE reporting and IMU capture. Firmware <code>V2.001.0002.0000</code> only stops BLE reports and can retain local capture in gesture mode.</p>
+<h4 id="0x0604-stop-report-response"><code>0x0604</code> Stop-report response<a class="headerlink" href="#0x0604-stop-report-response" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="0x0605-single-sample-and-batch-imu-data"><code>0x0605</code> Single-sample and batch IMU data<a class="headerlink" href="#0x0605-single-sample-and-batch-imu-data" title="Permanent link">&para;</a></h4>
+<p>A successful single-sample body is <code>error_code:u16 + sequence:u32 + timestamp_ms:u32 + accel_x/y/z:i16 + gyro_x/y/z:i16</code>, exactly 22 big-endian bytes. The SDK returns a one-sample <code>SensorDataBatch</code>.</p>
+<p>Batch format follows; its successful length is <code>10 + 16*N</code>, distinct from single-sample format:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Error code.</td>
+</tr>
+<tr>
+<td><code>sequence_start</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>First sample sequence in this batch.</td>
+</tr>
+<tr>
+<td><code>frame_count</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Samples in this batch.</td>
+</tr>
+<tr>
+<td><code>sample_size</code></td>
+<td><code>u16</code></td>
+<td style="text-align: right;">2</td>
+<td>Bytes per sample, currently 16.</td>
+</tr>
+<tr>
+<td><code>samples</code></td>
+<td><code>bytes</code></td>
+<td style="text-align: right;"><code>frame_count * sample_size</code></td>
+<td>Consecutive samples.</td>
+</tr>
+</tbody>
+</table>
+<p>Each 16-byte sample has this layout:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Device capture timestamp in milliseconds.</td>
+</tr>
+<tr>
+<td><code>accel_x</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Raw X-axis acceleration.</td>
+</tr>
+<tr>
+<td><code>accel_y</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Raw Y-axis acceleration.</td>
+</tr>
+<tr>
+<td><code>accel_z</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Raw Z-axis acceleration.</td>
+</tr>
+<tr>
+<td><code>gyro_x</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Raw X-axis gyroscope value.</td>
+</tr>
+<tr>
+<td><code>gyro_y</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Raw Y-axis gyroscope value.</td>
+</tr>
+<tr>
+<td><code>gyro_z</code></td>
+<td><code>i16</code></td>
+<td style="text-align: right;">2</td>
+<td>Raw Z-axis gyroscope value.</td>
+</tr>
+</tbody>
+</table>
+<p>Successful body length must equal:</p>
+<div class="highlight"><pre><span></span><code>2 + 4 + 2 + 2 + frame_count * sample_size
+</code></pre></div>
+<p>Batches contain at most 32 samples; use <code>frame_count</code> for the actual size. The next sequence is <code>sequence_start + frame_count</code>. Firmware <code>V2.001.0002.0001</code> stops capture on disconnect and requires another <code>0x0601</code> after reconnecting. Firmware <code>V2.001.0002.0000</code> can resume local gesture-mode detection after reconnecting, but reporting still needs another subscription.</p>
+<h3 id="56-motion-and-button-events">5.6 Motion and button events<a class="headerlink" href="#56-motion-and-button-events" title="Permanent link">&para;</a></h3>
+<p>Both <code>V2.001.0002.0000</code> and <code>V2.001.0002.0001</code> retain these event layouts. Changes to capture conditions and single-press behavior are described below.</p>
+<h4 id="0x0701-physical-double-tap"><code>0x0701</code> Physical double tap<a class="headerlink" href="#0x0701-physical-double-tap" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Event timestamp in milliseconds.</td>
+</tr>
+</tbody>
+</table>
+<p>Firmware <code>V2.001.0002.0001</code> needs <code>0x0601</code> to start IMU capture before detecting taps. Firmware <code>V2.001.0002.0000</code> detects taps in gesture mode without BLE sample reporting. Timestamps are milliseconds since boot, unlike the device-second timestamps of button events.</p>
+<h4 id="0x0703-double-button-press"><code>0x0703</code> Double button press<a class="headerlink" href="#0x0703-double-button-press" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Device timestamp in seconds; SDK retains the field name <code>timestamp_ms</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>A recognized double press emits only <code>0x0703</code>, without the corresponding single press or mode change.</p>
+<h4 id="0x0704-single-button-press"><code>0x0704</code> Single button press<a class="headerlink" href="#0x0704-single-button-press" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th style="text-align: right;">Bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestamp_ms</code></td>
+<td><code>u32</code></td>
+<td style="text-align: right;">4</td>
+<td>Device timestamp in seconds; SDK retains the field name <code>timestamp_ms</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Firmware <code>V2.001.0002.0001</code> only emits <code>0x0704</code>, without switching modes. Firmware <code>V2.001.0002.0000</code> also attempts to switch recording/gesture modes. Confirmation waits for the double-press window; the body has no mode field.</p>
+<p>After synchronization, button seconds represent device Unix time. Before synchronization, do not interpret them as calendar time. Do not compare directly with IMU/tap milliseconds since boot.</p>
+<h3 id="57-remote-recording-and-settings">5.7 Remote recording and settings<a class="headerlink" href="#57-remote-recording-and-settings" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Firmware version</p>
+<p>This usage requires firmware <strong>V2.001.0002.0001 or later</strong>.</p>
+</div>
+<p>These commands implement recording-control interface v1. Start, status and configuration-read requests have empty bodies. Integers are big-endian. See <a href="recording.html">recording control</a> for application examples.</p>
+<h4 id="0x0512--0x0513-start-recording"><code>0x0512</code> / <code>0x0513</code> Start recording<a class="headerlink" href="#0x0512--0x0513-start-recording" title="Permanent link">&para;</a></h4>
+<p>Empty request. A successful response is <code>error_code:u16, session_id:u32</code>, six bytes. Nonzero session ID confirms acceptance, not completion; query <code>0x0516</code> for final status. After START timeout, query status instead of automatically retrying.</p>
+<h4 id="0x0514--0x0515-stop-recording"><code>0x0514</code> / <code>0x0515</code> Stop recording<a class="headerlink" href="#0x0514--0x0515-stop-recording" title="Permanent link">&para;</a></h4>
+<p>Request: <code>session_id:u32, cancel:u8</code>. <code>cancel=0</code> stops according to output settings; <code>cancel=1</code> discards uncommitted audio. Success: <code>error_code:u16, session_id:u32</code>. The ID must match; final status must still be awaited.</p>
+<h4 id="0x0516--0x0517-query-recording-status"><code>0x0516</code> / <code>0x0517</code> Query recording status<a class="headerlink" href="#0x0516--0x0517-query-recording-status" title="Permanent link">&para;</a></h4>
+<p>Empty request. Successful response is 14 bytes:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_code</code></td>
+<td><code>u16</code></td>
+<td>Error code for the status query.</td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td><code>u32</code></td>
+<td>Session ID; 0 when idle.</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>u8</code></td>
+<td>0 idle, 1 queued, 2 capturing, 3 finalizing, 4 complete, 5 failed, 6 cancelled.</td>
+</tr>
+<tr>
+<td><code>saved</code></td>
+<td><code>u8</code></td>
+<td>1 if a device file was saved, otherwise 0.</td>
+</tr>
+<tr>
+<td><code>recording_error</code></td>
+<td><code>u16</code></td>
+<td>Recording error code, separate from the query error.</td>
+</tr>
+<tr>
+<td><code>file_index</code></td>
+<td><code>u32</code></td>
+<td>Saved file index; 0 if not saved.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDK uses <code>saved</code> to determine whether the index is valid. Without a saved file, returned <code>file_index</code> is <code>None</code>.</p>
+<h4 id="0x0518--0x0519-read-recording-configuration"><code>0x0518</code> / <code>0x0519</code> Read recording configuration<a class="headerlink" href="#0x0518--0x0519-read-recording-configuration" title="Permanent link">&para;</a></h4>
+<p>Empty request. Response begins with <code>error_code:u16</code>; on success the 14-byte settings below are followed by sample rate, frame duration and fixed codec parameters.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td><code>u8</code></td>
+<td>Configuration structure version, currently 1.</td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>u8</code></td>
+<td>0 automatic, 1 flash, 2 live, 3 live plus flash.</td>
+</tr>
+<tr>
+<td><code>disconnect_policy</code></td>
+<td><code>u8</code></td>
+<td>0 stop, 1 continue saving on device.</td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code>u8</code></td>
+<td>1 or 2.</td>
+</tr>
+<tr>
+<td><code>bitrate</code></td>
+<td><code>u32</code></td>
+<td>Bitrate in bit/s.</td>
+</tr>
+<tr>
+<td><code>gain_left_q8</code>, <code>gain_right_q8</code></td>
+<td><code>u16</code> each</td>
+<td>Left/right digital gain; 256 means 1x.</td>
+</tr>
+<tr>
+<td><code>max_duration_ms</code></td>
+<td><code>u16</code></td>
+<td>Maximum duration in milliseconds.</td>
+</tr>
+</tbody>
+</table>
+<p>Successful responses are 34 bytes. Settings are followed by <code>sample_rate:u16</code>, <code>frame_duration_ms:u16</code>, then <code>codec:u8</code>, <code>complexity:u8</code>, <code>vbr:u8</code>, <code>constrained_vbr:u8</code>, <code>dtx:u8</code>, <code>fec:u8</code>, <code>packet_loss_percent:u8</code>, <code>signal:u16</code>, <code>bit_depth:u8</code>, <code>max_packet_size:u16</code>, <code>application:u16</code>. The device returns these fixed parameters; configuration writes cannot change them.</p>
+<h4 id="0x051a--0x051b-write-recording-configuration"><code>0x051A</code> / <code>0x051B</code> Write recording configuration<a class="headerlink" href="#0x051a--0x051b-write-recording-configuration" title="Permanent link">&para;</a></h4>
+<p>Request contains only the 14-byte settings above. Response matches configuration readback, showing accepted settings. Write only while idle. Continue-saving on disconnect requires flash or live-plus-flash output.</p>
+<h2 id="6-error-codes">6. Error codes<a class="headerlink" href="#6-error-codes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Value</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>SUCCESS</code></td>
+<td>Success.</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>UNKNOWN</code></td>
+<td>Unknown error.</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>DEVICE_BUSY</code></td>
+<td>Device busy.</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>FILE_NOT_EXIST</code></td>
+<td>File not found.</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>CMD_GROUP_NOT_EXIST</code></td>
+<td>Command group not found.</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>CMD_NOT_EXIST</code></td>
+<td>Command not found.</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>TIMEOUT</code></td>
+<td>Operation timed out.</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>PARAM_INVALID</code></td>
+<td>Invalid argument.</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>COMMUNICATION</code></td>
+<td>Communication error.</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>UNSUPPORTED_SCHEMA</code></td>
+<td>Unsupported message structure version.</td>
+</tr>
+</tbody>
+</table>
+<p>See the <a href="../guide/firmware.html">firmware update guide</a>. The SDK provides <code>update_firmware()</code> and <code>ota-update</code>; calls are documented in the <a href="../sdk/ota.html#firmware-updates">SDK firmware updates</a>.</p>
+<h2 id="capability-discovery-messages">Capability discovery messages<a class="headerlink" href="#capability-discovery-messages" title="Permanent link">&para;</a></h2>
+<p>The release tags for <code>V2.001.0002.0000</code> and <code>V2.001.0002.0001</code> do not implement the discovery commands below. This section documents the SDK parser for the discovery extension; it does not attribute that extension to the <code>V2.001.0002.0001</code> release.</p>
+<p>Protocol v4 and existing GET_INFO and recording-v1 layouts remain unchanged. All integers are big-endian.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Direction</th>
+<th>Body</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0105</code></td>
+<td>Host → device</td>
+<td>Empty</td>
+</tr>
+<tr>
+<td><code>0x0106</code></td>
+<td>Device → host</td>
+<td><code>error:u16</code>; success adds <code>schema:u8=1</code> followed by TLVs</td>
+</tr>
+<tr>
+<td><code>0x01FF</code></td>
+<td>Device → host</td>
+<td><code>original_command:u16, error:u16</code>, exactly four bytes</td>
+</tr>
+</tbody>
+</table>
+<p>Errors: 2 busy, 5 unknown command, 7 invalid argument, 9 unsupported structure version. An unknown command returns 5, nonempty discovery request returns 7, and unknown version in the 14-byte recording settings returns 9. Existing command-specific errors remain valid; not all legacy failures use generic errors. Never reply to an error with another error.</p>
+<p>TLVs contain <code>tag:u16, length:u16, value:length bytes</code>, within v4's 5120-byte limit; current firmware constructs responses in a buffer of at most 512 bytes. Duplicate tags, truncation, invalid UTF-8 and missing required device fields fail parsing. Unknown optional tags are skipped; an unknown tag with its top bit set requires an SDK upgrade.</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Full firmware version, UTF-8.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Product model, UTF-8.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Firmware compilation target, UTF-8.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Eight-byte random boot_id for this boot.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Firmware build ID, UTF-8.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Supported protocol versions as consecutive u16 values; currently 4.</td>
+</tr>
+<tr>
+<td><code>0x0100 + feature_id</code></td>
+<td>Feature interface version <code>major:u8, minor:u8</code>.</td>
+</tr>
+<tr>
+<td><code>0x0204</code></td>
+<td>Recording limits, defined below.</td>
+</tr>
+</tbody>
+</table>
+<p>Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1. The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.</p>
+<p>Firmware advertises features only for fully registered command groups. Button/tap events require connected producers in the product build. Advertisement identifies implementation support, not successful hardware initialization, current connection readiness or an idle device.</p>
+<p>Recording limits occupy exactly 26 bytes:</p>
+<table>
+<thead>
+<tr>
+<th>Position</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1–2</td>
+<td>u16, u16</td>
+<td>Sample rate and frame duration in milliseconds.</td>
+</tr>
+<tr>
+<td>3–6</td>
+<td>u8 × 4</td>
+<td>Channel mask, output mask, continue-saving output mask, reserved=0.</td>
+</tr>
+<tr>
+<td>7–8</td>
+<td>u32 × 2</td>
+<td>Minimum and maximum bitrate, inclusive.</td>
+</tr>
+<tr>
+<td>9–10</td>
+<td>u16 × 2</td>
+<td>Minimum and maximum Q8 digital gain.</td>
+</tr>
+<tr>
+<td>11–13</td>
+<td>u16 × 3</td>
+<td>Minimum and maximum duration, and duration step in milliseconds.</td>
+</tr>
+</tbody>
+</table>
+<p>Masks use enum values as bit positions: channels 1/2 give <code>0x06</code>; CONTINUE_SAVING with FLASH=1/BOTH=3 gives <code>0x0A</code>. Recording interface v1 requires these limits. Read fixed Opus parameters through the existing configuration-read command.</p>
+<h3 id="interface-evolution">Interface evolution<a class="headerlink" href="#interface-evolution" title="Permanent link">&para;</a></h3>
+<p>Use optional TLVs for additive fields so older clients can skip them. Incompatible fields or behavior need a higher major version and new command or structure. Mark client-required fields as required. Reject unsupported fields in writes. Detect recording formats from content, independently of current firmware.</p>
+<p>Requests have no transaction IDs. Query state before retrying START. Release notes specify OTA compatibility; the SDK does not infer every starting-version combination or provide automatic rollback. Application and bootloader security versions are independent.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © OpenZilo
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation.sections","navigation.indexes","content.code.copy"],"redirect":null,"search":"../assets/javascripts/workers/search.c47bb847.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a2388154.min.js"></script>
+      
+    
+  </body>
+</html>

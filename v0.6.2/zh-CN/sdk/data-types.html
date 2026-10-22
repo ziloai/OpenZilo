@@ -1,0 +1,2132 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/data-types.html">
+      
+      
+      
+        <link rel="prev" href="../developer/sdk.html">
+      
+      
+        <link rel="next" href="./errors.html">
+      
+      
+        
+          <link rel="alternate" href="data-types.html" hreflang="zh">
+        
+          <link rel="alternate" href="../../en/sdk/data-types.html" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.71">
+    
+    
+      
+        <title>数据类型 - OpenZilo SDK v0.6.2</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.e442bf79.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M20%204c1.11%200%202%20.89%202%202v12c0%201.11-.89%202-2%202H4c-1.11%200-2-.89-2-2V6c0-1.11.89-2%202-2zM8.5%2015V9H7.25v3.5L4.75%209H3.5v6h1.25v-3.5L7.3%2015zm5-4.74V9h-4v6h4v-1.25H11v-1.11h2.5v-1.26H11v-1.12zm7%203.74V9h-1.25v4.5h-1.12V10h-1.25v3.5h-1.13V9H14.5v5a1%201%200%200%200%201%201h4a1%201%200%200%200%201-1%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        跳转至
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="导航栏">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenZilo SDK v0.6.2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              数据类型
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="data-types.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../en/sdk/data-types.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="查找">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="查找">
+  <button type="button" class="md-search__button">
+    查找
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/ziloai/OpenZilo" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    OpenZilo SDK v0.6.2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ziloai/OpenZilo" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ziloai/OpenZilo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  首页
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  开始使用
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  开始使用
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./install.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  安装与运行环境
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./quickstart.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  快速开始
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/cli.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  命令行指南
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按功能使用
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  按功能使用
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./connection.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  扫描与连接
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./device-info.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  读取设备信息
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/compatibility.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  SDK 与固件兼容
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./time-sync.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  设备校时
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/recording.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  远程录音与录音设置
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./downloads.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  下载与接收已保存的录音
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./live-audio.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  实时音频
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./audio-decoding.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  音频解码与文件保存
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./imu.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  IMU 数据采集
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./events.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按键与敲击事件
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./logs.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  读取设备日志
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./ota.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  通过 SDK 升级固件
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 参考
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  API 参考
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/sdk.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API 索引
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  数据类型
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="data-types.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  数据类型
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ble-和协议类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        BLE 和协议类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#系统和日志类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        系统和日志类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#录音类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        录音类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六轴和事件类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        六轴和事件类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-imu-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Software IMU calibration
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firmwarebundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        FirmwareBundle
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./errors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  异常与问题排查
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  版本与兼容
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  版本与兼容
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/features.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  功能与版本要求
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./migration.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  版本升级与固件差异
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guide/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  设备与底层资料
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  设备与底层资料
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/first-use.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  首次使用
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/buttons.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  按键与工作模式
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/leds.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  灯光说明
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/firmware.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  固件升级
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/protocol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo BLE 协议参考
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/architecture.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo SDK 架构与数据流
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./protocol-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  协议调试工具
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  参与开发
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  参与开发
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/ai-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  使用 AI 编程工具
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  报告安全问题
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  OpenZilo 平台
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Releases
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Releases
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/changelog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ble-和协议类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        BLE 和协议类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#系统和日志类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        系统和日志类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#录音类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        录音类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六轴和事件类型" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        六轴和事件类型
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-imu-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Software IMU calibration
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firmwarebundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        FirmwareBundle
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: v0.6.2</summary><ul><li><a href="../../../stable/zh-CN/sdk/data-types.html">stable (v0.6.2)</a></li><li><a href="data-types.html" aria-current="page">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/sdk/data-types.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/sdk/data-types.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="数据类型">数据类型<a class="headerlink" href="#数据类型" title="Permanent link">&para;</a></h1>
+<div class="admonition note">
+<p class="admonition-title">适用设备</p>
+<p>本文档适用于 <strong>OpenZilo Q</strong>。</p>
+</div>
+<p>公开数据类型统一通过 <code>import openzilo as sdk</code> 使用。异常类型见<a href="errors.html">异常与问题排查</a>，函数入口见<a href="../developer/sdk.html">API 索引</a>。</p>
+<h2 id="ble-和协议类型">BLE 和协议类型<a class="headerlink" href="#ble-和协议类型" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">BleDeviceInfo</span>
+<span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>    <span class="c1"># BLE 广播名称，可能为空。</span>
+<span class="n">address</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># BLE MAC 地址。</span>
+<span class="n">rssi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>    <span class="c1"># 信号强度；部分 bleak 后端可能不提供。</span>
+
+<span class="n">Packet</span>
+<span class="n">command</span><span class="p">:</span> <span class="nb">int</span>        <span class="c1"># 命令字，例如 0x0605。</span>
+<span class="n">body</span><span class="p">:</span> <span class="nb">bytes</span>         <span class="c1"># 包体，不包含协议头。</span>
+<span class="n">version</span><span class="p">:</span> <span class="nb">int</span>        <span class="c1"># 协议版本，当前通常为 4。</span>
+<span class="n">body_crc</span><span class="p">:</span> <span class="nb">int</span>       <span class="c1"># 包体 CRC16。</span>
+
+<span class="n">OpenZiloClient</span>
+<span class="c1"># 高层 BLE 协议客户端。负责连接、收包重组、请求响应匹配和事件分发。</span>
+
+<span class="n">NusClient</span>
+<span class="c1"># 底层 Nordic UART Service BLE 客户端。发送固定按 20 字节分片，</span>
+<span class="c1"># 通常只在调试或自定义传输时直接使用。</span>
+
+<span class="n">PacketStream</span>
+<span class="c1"># 将 BLE 分片拼成完整 Packet，适合协议调试。</span>
+
+<span class="n">BinaryReader</span>
+<span class="c1"># 按网络字节序从 bytes 中读取 u8/u16/u32/i16/string_u16。</span>
+
+<span class="n">BinaryWriter</span>
+<span class="c1"># 按网络字节序构建 bytes 包体。</span>
+</code></pre></div>
+<h2 id="系统和日志类型">系统和日志类型<a class="headerlink" href="#系统和日志类型" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">SystemInfo</span>
+<span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>          <span class="c1"># 固件版本。</span>
+<span class="n">system_time</span><span class="p">:</span> <span class="nb">int</span>               <span class="c1"># 设备侧系统时间戳。</span>
+<span class="n">audio_storage_total</span><span class="p">:</span> <span class="nb">int</span>       <span class="c1"># 录音存储总字节数。</span>
+<span class="n">audio_storage_available</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 录音存储剩余字节数。</span>
+<span class="n">battery_percent</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># 电量百分比。</span>
+<span class="n">battery_charging</span><span class="p">:</span> <span class="nb">bool</span>         <span class="c1"># 是否正在充电。</span>
+<span class="n">sn</span><span class="p">:</span> <span class="nb">str</span>                        <span class="c1"># 设备序列号；设备未写入时可能为 unknown。</span>
+<span class="n">cpuid</span><span class="p">:</span> <span class="nb">str</span>                     <span class="c1"># 芯片 ID 字符串。</span>
+<span class="n">model</span><span class="p">:</span> <span class="nb">str</span>                     <span class="c1"># 设备型号。</span>
+
+<span class="n">LogStorageInfo</span>
+<span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 当前日志文件大小或页大小字段，按设备端返回解释。</span>
+<span class="n">total_len</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 日志最大可读长度。</span>
+</code></pre></div>
+<h2 id="录音类型">录音类型<a class="headerlink" href="#录音类型" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">AudioFileInfo</span>
+<span class="n">file_index</span><span class="p">:</span> <span class="nb">int</span>    <span class="c1"># 录音索引。</span>
+<span class="n">record_time</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 录音时间戳，由设备端保存。</span>
+<span class="n">data_size</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 录音原始数据字节数。</span>
+
+<span class="n">AudioDataFrame</span>
+<span class="n">file_index</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 录音索引。</span>
+<span class="n">frame_offset</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 本帧在录音数据中的起始偏移。</span>
+<span class="n">frame_size</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 本帧声明的数据长度。</span>
+<span class="n">is_end</span><span class="p">:</span> <span class="nb">bool</span>        <span class="c1"># 是否为最后一帧。</span>
+<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>         <span class="c1"># 本帧录音数据。</span>
+
+<span class="n">PcmConfig</span>
+<span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16000</span>  <span class="c1"># WAV 输出采样率。</span>
+<span class="n">channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>         <span class="c1"># WAV 输出声道数。</span>
+<span class="n">bit_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span>       <span class="c1"># WAV 输出位深。</span>
+
+<span class="n">SpeexDecodeResult</span>
+<span class="n">pcm_bytes</span><span class="p">:</span> <span class="nb">bytes</span>          <span class="c1"># 解码后的 PCM 数据。</span>
+<span class="n">pcm_config</span><span class="p">:</span> <span class="n">PcmConfig</span>     <span class="c1"># PCM 参数。</span>
+<span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span>          <span class="c1"># 源数据类型，例如 packet-speex、ogg-speex。</span>
+<span class="n">source_extension</span><span class="p">:</span> <span class="nb">str</span>     <span class="c1"># 源数据建议扩展名。</span>
+<span class="n">packet_count</span><span class="p">:</span> <span class="nb">int</span>         <span class="c1"># Speex 包数量，无法统计时为 0。</span>
+
+<span class="n">PlayableAudio</span>
+<span class="nb">bytes</span><span class="p">:</span> <span class="nb">bytes</span>              <span class="c1"># 可播放音频字节，通常是 WAV。</span>
+<span class="n">extension</span><span class="p">:</span> <span class="nb">str</span>            <span class="c1"># 建议扩展名。</span>
+<span class="n">mime</span><span class="p">:</span> <span class="nb">str</span>                 <span class="c1"># MIME 类型。</span>
+<span class="n">play_mode</span><span class="p">:</span> <span class="nb">str</span>            <span class="c1"># direct 或 speex-decode。</span>
+<span class="n">label</span><span class="p">:</span> <span class="nb">str</span>                <span class="c1"># 格式标签。</span>
+<span class="n">pcm_config</span><span class="p">:</span> <span class="n">PcmConfig</span> <span class="o">|</span> <span class="kc">None</span>
+<span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">source_extension</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">source_mime</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="n">AudioBundle</span>
+<span class="n">raw_path</span><span class="p">:</span> <span class="n">Path</span>            <span class="c1"># 原始录音保存路径。</span>
+<span class="n">raw_file_name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">play_path</span><span class="p">:</span> <span class="n">Path</span>           <span class="c1"># 解码后可播放文件路径。</span>
+<span class="n">play_file_name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">play_mode</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">format_label</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">play_description</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">pcm_summary</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">raw_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">play_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">source_extension</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="n">OpusDecodeResult</span>
+<span class="n">pcm_bytes</span><span class="p">:</span> <span class="nb">bytes</span>          <span class="c1"># 解码后的 16 kHz、单声道或双声道、16 bit PCM。</span>
+<span class="n">pcm_config</span><span class="p">:</span> <span class="n">PcmConfig</span>     <span class="c1"># PCM 参数。</span>
+<span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span>          <span class="c1"># 单声道为 opus-mono，双声道为 opus-stereo。</span>
+<span class="n">source_extension</span><span class="p">:</span> <span class="nb">str</span>     <span class="c1"># 固定为 op2c。</span>
+<span class="n">packet_count</span><span class="p">:</span> <span class="nb">int</span>         <span class="c1"># Opus 包数量。</span>
+
+<span class="n">AudioRecordResult</span>
+<span class="n">file_index</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># V2.001.0002.0001 的 0x050A 录音索引。</span>
+
+<span class="n">LiveAudioSubscription</span>
+<span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span>             <span class="c1"># 设备确认的实时录音订阅状态。</span>
+
+<span class="n">LiveAudioStart</span>
+<span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># 实时录音会话。</span>
+<span class="n">record_time</span><span class="p">:</span> <span class="nb">int</span>          <span class="c1"># 录音时间戳，单位秒。</span>
+<span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span>          <span class="c1"># 固定为 16000。</span>
+<span class="n">channels</span><span class="p">:</span> <span class="nb">int</span>             <span class="c1"># 1 或 2，与设备录音设置一致。</span>
+<span class="n">codec</span><span class="p">:</span> <span class="nb">int</span>                <span class="c1"># 固定为 3，表示 Opus。</span>
+
+<span class="n">LiveAudioData</span>
+<span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">sequence</span><span class="p">:</span> <span class="nb">int</span>             <span class="c1"># 包序号，从 0 开始。</span>
+<span class="n">byte_offset</span><span class="p">:</span> <span class="nb">int</span>          <span class="c1"># Opus 数据字节偏移，从 0 开始。</span>
+<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>               <span class="c1"># 一个 20 ms Opus 包，声道数与录音开始事件一致。</span>
+
+<span class="n">LivePcmFrame</span>
+<span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">sample_offset</span><span class="p">:</span> <span class="nb">int</span>        <span class="c1"># 每声道采样位置，从 0 开始；不是压缩字节偏移。</span>
+<span class="n">sample_count</span><span class="p">:</span> <span class="nb">int</span>         <span class="c1"># 固定为每声道 320 个采样，即 20 ms。</span>
+<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>               <span class="c1"># 单声道 640 字节或双声道 1280 字节 s16le PCM，不含 WAV 文件头。</span>
+<span class="n">pcm_config</span><span class="p">:</span> <span class="n">PcmConfig</span>     <span class="c1"># 16 kHz、16 位，声道数与录音一致。</span>
+
+<span class="n">LiveAudioEnd</span>
+<span class="n">error_code</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">produced_bytes</span><span class="p">:</span> <span class="nb">int</span>       <span class="c1"># 设备编码产生的 Opus 字节数。</span>
+<span class="n">sent_bytes</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># 设备已发送的 Opus 字节数。</span>
+<span class="n">dropped_frames</span><span class="p">:</span> <span class="nb">int</span>       <span class="c1"># 设备丢弃的帧数。</span>
+
+<span class="n">LiveAudioRecording</span>
+<span class="n">start</span><span class="p">:</span> <span class="n">LiveAudioStart</span>
+<span class="n">end</span><span class="p">:</span> <span class="n">LiveAudioEnd</span>
+<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>               <span class="c1"># 完整 OP2C 文件，可直接解码或保存。</span>
+
+<span class="n">ProgressPrinter</span>
+<span class="c1"># 可作为 download_audio_file(progress=...) 的进度回调。</span>
+</code></pre></div>
+<h2 id="六轴和事件类型">六轴和事件类型<a class="headerlink" href="#六轴和事件类型" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">SensorStartInfo</span>
+<span class="n">sample_rate_hz</span><span class="p">:</span> <span class="nb">int</span>    <span class="c1"># 设备返回的采样率。</span>
+<span class="n">accel_range_g</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 加速度计量程。</span>
+<span class="n">gyro_range_dps</span><span class="p">:</span> <span class="nb">int</span>    <span class="c1"># 陀螺仪量程。</span>
+
+<span class="n">SensorStopInfo</span>
+<span class="c1"># 停止六轴上报的成功结果；当前没有字段。</span>
+
+<span class="n">SensorDataSample</span>
+<span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>      <span class="c1"># 设备侧采样时间戳，单位 ms。</span>
+<span class="n">accel_x</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># 加速度 X 轴原始值。</span>
+<span class="n">accel_y</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># 加速度 Y 轴原始值。</span>
+<span class="n">accel_z</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># 加速度 Z 轴原始值。</span>
+<span class="n">gyro_x</span><span class="p">:</span> <span class="nb">int</span>            <span class="c1"># 陀螺仪 X 轴原始值。</span>
+<span class="n">gyro_y</span><span class="p">:</span> <span class="nb">int</span>            <span class="c1"># 陀螺仪 Y 轴原始值。</span>
+<span class="n">gyro_z</span><span class="p">:</span> <span class="nb">int</span>            <span class="c1"># 陀螺仪 Z 轴原始值。</span>
+
+<span class="n">SensorDataBatch</span>
+<span class="n">sequence_start</span><span class="p">:</span> <span class="nb">int</span>                    <span class="c1"># 本批第一个采样点序号。</span>
+<span class="n">frame_count</span><span class="p">:</span> <span class="nb">int</span>                       <span class="c1"># 本批采样点数量。</span>
+<span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span>                       <span class="c1"># 单个采样点字节数，当前为 16。</span>
+<span class="n">samples</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">SensorDataSample</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>  <span class="c1"># 批量采样点；第 n 个样本序号为 sequence_start + n。</span>
+
+<span class="n">SensorDoubleTapEvent</span>
+<span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 普通双击事件时间戳。</span>
+
+<span class="n">SensorKeyDoublePressEvent</span>
+<span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 本固件发送秒级设备时间；SDK 保留此历史字段名。</span>
+
+<span class="n">SensorKeySinglePressEvent</span>
+<span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 本固件发送秒级设备时间；SDK 保留此历史字段名。</span>
+</code></pre></div>
+<p>重连后应重新调用 <code>start_sensor_report()</code>。本地采集是否自动恢复取决于固件实现，不能从连接状态推断。</p>
+<h2 id="software-imu-calibration">Software IMU calibration<a class="headerlink" href="#software-imu-calibration" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">ImuCalibration</span>
+<span class="n">sensor_type</span><span class="p">:</span> <span class="nb">int</span>             <span class="c1"># 0 = unknown; no guessed chip identity</span>
+<span class="n">accel_range_g</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">gyro_range_dps</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">accel_bias_ug</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="n">accel_scale_ppm</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>  <span class="c1"># identity = (1000000, 1000000, 1000000)</span>
+<span class="n">gyro_bias_udps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+
+<span class="n">ImuCalibrationProfile</span>
+<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># SHA-256 of normalized local device identifier</span>
+<span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># exact match, not a version range</span>
+<span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
+<span class="n">calibration</span><span class="p">:</span> <span class="n">ImuCalibration</span>
+<span class="n">accel_validated</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="n">gyro_validated</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="n">created_at</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># ISO 8601, with timezone</span>
+
+<span class="n">CalibratedImuSample</span>
+<span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">accel_g</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<span class="n">gyro_dps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="n">CalibratedImuBatch</span>
+<span class="n">sequence_start</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">frame_count</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">samples</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CalibratedImuSample</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">applied_components</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>  <span class="c1"># e.g. ("accel",), or ("accel", "gyro")</span>
+</code></pre></div>
+<p><a href="imu.html">Software calibration workflow and APIs</a>.</p>
+<h2 id="firmwarebundle">FirmwareBundle<a class="headerlink" href="#firmwarebundle" title="Permanent link">&para;</a></h2>
+<p>The immutable result of <code>inspect_firmware_bundle()</code> contains <code>version</code>, <code>model</code>, <code>board</code>, <code>profile</code>, <code>security_version</code>, <code>source_versions</code>, <code>signing_key_id</code>, and inner OTA bytes <code>payload</code>. Its <code>manifest</code> property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © OpenZilo
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation.sections","navigation.indexes","content.code.copy"],"redirect":null,"search":"../assets/javascripts/workers/search.c47bb847.min.js","tags":null,"translations":{"clipboard.copied":"已复制","clipboard.copy":"复制","clipboard.error":"Could not copy to clipboard","search.result.more.one":"在该页上还有 1 个符合条件的结果","search.result.more.other":"在该页上还有 # 个符合条件的结果","search.result.none":"没有找到符合条件的结果","search.result.one":"找到 1 个符合条件的结果","search.result.other":"# 个符合条件的结果","search.result.placeholder":"键入以开始搜索","search.result.term.missing":"缺少","select.version":"选择当前版本"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a2388154.min.js"></script>
+      
+    
+  </body>
+</html>
