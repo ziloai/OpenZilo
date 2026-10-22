@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.0 - 2026-10-22
+## 0.6.2 - 2026-10-22
 
 ### Signed firmware bundles
 
