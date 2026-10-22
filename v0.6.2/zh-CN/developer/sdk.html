@@ -1699,7 +1699,7 @@
   <span class="md-ellipsis">
     
   
-  Releases
+  版本发布
 
     
   </span>
@@ -1715,7 +1715,7 @@
               <span class="md-nav__icon md-icon"></span>
               
   
-  Releases
+  版本发布
 
             </label>
             <ul class="md-nav__list" data-md-scrollfix>
@@ -1734,7 +1734,7 @@
   <span class="md-ellipsis">
     
   
-  Changelog
+  更新日志
 
     
   </span>
@@ -2118,13 +2118,13 @@
 <td><a href="../sdk/ota.html"><code>inspect_firmware_bundle()</code></a></td>
 <td><code>inspect_firmware_bundle(bundle, trusted_public_key=...)</code></td>
 <td><code>FirmwareBundle</code></td>
-<td>Verify a signed ZIP and inspect metadata offline.</td>
+<td>离线验证签名 ZIP 并读取元数据，无需连接设备。</td>
 </tr>
 <tr>
 <td><a href="../sdk/ota.html"><code>update_firmware()</code></a></td>
 <td><code>await update_firmware(client, firmware, trusted_public_key=..., allow_test_firmware=False, progress=..., timeout_s=30, total_timeout_s=600, reboot_timeout_s=90)</code></td>
 <td><code>SystemInfo</code></td>
-<td>Upload an official application package, wait for reboot, and verify the running version. See <a href="../sdk/ota.html">firmware updates</a>.</td>
+<td>上传已验证的应用固件，等待重启并核对运行版本，见<a href="#固件升级">固件升级</a>。</td>
 </tr>
 </tbody>
 </table>
@@ -2421,25 +2421,25 @@
 <td><a href="../sdk/imu.html"><code>open_calibrated_imu_stream()</code></a></td>
 <td><code>async with open_calibrated_imu_stream(client, profile=None, device_id=None)</code></td>
 <td><code>CalibratedImuStream</code></td>
-<td>Explicit host correction in g / deg/s, with profile binding and report cleanup; no calibration writes.</td>
+<td>匹配本机配置后显式输出 g 和度/秒，管理上报和清理，不下发校准参数。</td>
 </tr>
 <tr>
 <td><a href="../sdk/imu.html"><code>apply_imu_calibration()</code></a></td>
 <td><code>apply_imu_calibration(batch, config, calibration, accel=True, gyro=True)</code></td>
 <td><code>CalibratedImuBatch</code></td>
-<td>Offline conversion of original integer batches; input remains untouched.</td>
+<td>离线转换原始整数批次，不修改输入。</td>
 </tr>
 <tr>
 <td><a href="../sdk/imu.html"><code>load_imu_calibration_profile()</code></a></td>
 <td><code>load_imu_calibration_profile(path)</code></td>
 <td><code>ImuCalibrationProfile</code></td>
-<td>Validate local schema, units and parameters.</td>
+<td>校验本机配置的结构版本、单位和参数。</td>
 </tr>
 <tr>
 <td><a href="../sdk/imu.html"><code>save_imu_calibration_profile()</code></a></td>
 <td><code>save_imu_calibration_profile(profile, path)</code></td>
 <td><code>None</code></td>
-<td>Atomically save locally after independent validation.</td>
+<td>独立验证后原子保存本机配置。</td>
 </tr>
 <tr>
 <td><a href="../sdk/imu.html"><code>parse_sensor_data_batch()</code></a></td>

@@ -28,7 +28,7 @@
     
     
       
-        <title>Changelog - OpenZilo SDK v0.6.2</title>
+        <title>更新日志 - OpenZilo SDK v0.6.2</title>
       
     
     
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Changelog
+              更新日志
             
           </span>
         </div>
@@ -1551,7 +1551,7 @@
   <span class="md-ellipsis">
     
   
-  Releases
+  版本发布
 
     
   </span>
@@ -1567,7 +1567,7 @@
               <span class="md-nav__icon md-icon"></span>
               
   
-  Releases
+  版本发布
 
             </label>
             <ul class="md-nav__list" data-md-scrollfix>
@@ -1595,7 +1595,7 @@
   <span class="md-ellipsis">
     
   
-  Changelog
+  更新日志
 
     
   </span>
@@ -1612,7 +1612,7 @@
   <span class="md-ellipsis">
     
   
-  Changelog
+  更新日志
 
     
   </span>
@@ -1650,10 +1650,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#signed-firmware-bundles" class="md-nav__link">
+  <a href="#签名固件包" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Signed firmware bundles
+        签名固件包
       </span>
     </span>
   </a>
@@ -1661,10 +1661,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#local-imu-calibration" class="md-nav__link">
+  <a href="#本机-imu-校准" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Local IMU calibration
+        本机 IMU 校准
       </span>
     </span>
   </a>
@@ -1672,10 +1672,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#breaking-change-and-migration" class="md-nav__link">
+  <a href="#不兼容改动与迁移" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Breaking change and migration
+        不兼容改动与迁移
       </span>
     </span>
   </a>
@@ -1757,10 +1757,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#signed-firmware-bundles" class="md-nav__link">
+  <a href="#签名固件包" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Signed firmware bundles
+        签名固件包
       </span>
     </span>
   </a>
@@ -1768,10 +1768,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#local-imu-calibration" class="md-nav__link">
+  <a href="#本机-imu-校准" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Local IMU calibration
+        本机 IMU 校准
       </span>
     </span>
   </a>
@@ -1779,10 +1779,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#breaking-change-and-migration" class="md-nav__link">
+  <a href="#不兼容改动与迁移" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Breaking change and migration
+        不兼容改动与迁移
       </span>
     </span>
   </a>
@@ -1814,38 +1814,38 @@
   
 
 
-<h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>本页保留英文项目说明。</p>
-</div>
+<p><a id="changelog"></a></p>
+<h1 id="更新日志">更新日志<a class="headerlink" href="#更新日志" title="Permanent link">&para;</a></h1>
 <h2 id="062---2026-10-22">0.6.2 - 2026-10-22<a class="headerlink" href="#062---2026-10-22" title="Permanent link">&para;</a></h2>
-<h3 id="signed-firmware-bundles">Signed firmware bundles<a class="headerlink" href="#signed-firmware-bundles" title="Permanent link">&para;</a></h3>
+<p><a id="signed-firmware-bundles"></a></p>
+<h3 id="签名固件包">签名固件包<a class="headerlink" href="#签名固件包" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Add <code>inspect_firmware_bundle()</code> and <code>ota-inspect</code> for offline signature verification and complete metadata display, including JSON output.</li>
-<li>Verify the manifest signature, signing key ID, payload digest, length and encrypted APP header before an update starts.</li>
-<li>Check device model, board and allowed starting versions before transmitting only the inner OTA payload. Reconnect and verify the full running version after reboot.</li>
-<li>Require explicit opt-in for test-profile bundles. Verification requires an independently trusted P-256 public key; a downloaded bundle cannot supply its own trust anchor.</li>
+<li>新增 <code>inspect_firmware_bundle()</code> 和 <code>ota-inspect</code>，支持离线验签和完整元数据展示，包括 JSON 输出。</li>
+<li>升级开始前验证清单签名、签名密钥标识、内部数据摘要、长度和加密应用固件头。</li>
+<li>发送内部 OTA 数据前核对设备型号、板型和允许的起始版本；重启后重新连接，核对完整运行版本。</li>
+<li>测试配置包需显式允许。验签公钥必须通过独立可信渠道取得，不能直接信任下载包附带的公钥。</li>
 </ul>
-<h3 id="local-imu-calibration">Local IMU calibration<a class="headerlink" href="#local-imu-calibration" title="Permanent link">&para;</a></h3>
+<p><a id="local-imu-calibration"></a></p>
+<h3 id="本机-imu-校准">本机 IMU 校准<a class="headerlink" href="#本机-imu-校准" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Add six-face accelerometer fitting, stationary gyroscope bias fitting and independent validation.</li>
-<li>Store validated profiles locally, bound to the device identifier, model, exact firmware version and sensor ranges.</li>
-<li>Add <code>imu-calibrate</code> and explicit calibrated streams in g and deg/s. Preserve raw streaming and avoid applying corrections twice.</li>
-<li>Perform all calibration on the host without writing calibration parameters to the ring. A new firmware image is not required for supported IMU contracts.</li>
+<li>新增加速度计六面拟合、陀螺仪静止零偏拟合和独立验证。</li>
+<li>已验证的配置保存在本机，并绑定设备标识、型号、完整固件版本和传感器量程。</li>
+<li>新增 <code>imu-calibrate</code> 和显式校正数据流，以 g 和度/秒输出，保留原始数据流并避免重复校正。</li>
+<li>校准全部在电脑端完成，不向戒指写入校准参数；受支持的 IMU 功能契约无需为此升级固件。</li>
 </ul>
-<h3 id="breaking-change-and-migration">Breaking change and migration<a class="headerlink" href="#breaking-change-and-migration" title="Permanent link">&para;</a></h3>
-<p><code>update_firmware()</code> and <code>ota-update</code> now accept only signed OTA ZIPs. Raw BIN input and the <code>version</code>, <code>sha256</code> and <code>expected_model</code> overrides have been removed. Version and compatibility fields come from verified metadata.</p>
+<p><a id="breaking-change-and-migration"></a></p>
+<h3 id="不兼容改动与迁移">不兼容改动与迁移<a class="headerlink" href="#不兼容改动与迁移" title="Permanent link">&para;</a></h3>
+<p><code>update_firmware()</code> 和 <code>ota-update</code> 现在只接受签名 OTA ZIP。原始 BIN 输入及 <code>version</code>、<code>sha256</code>、<code>expected_model</code> 覆盖参数已移除，版本和适配信息改为从已验签的元数据中读取。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">openzilo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sdk</span>
 
-<span class="c1"># ring is an already connected OpenZiloClient.</span>
+<span class="c1"># ring 表示已经连接的 OpenZiloClient。</span>
 <span class="n">bundle</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"firmware.ota.zip"</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
 <span class="n">public_key</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"trusted-signing-public.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
 <span class="n">metadata</span> <span class="o">=</span> <span class="n">sdk</span><span class="o">.</span><span class="n">inspect_firmware_bundle</span><span class="p">(</span><span class="n">bundle</span><span class="p">,</span> <span class="n">trusted_public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">)</span>
 <span class="n">info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">update_firmware</span><span class="p">(</span><span class="n">ring</span><span class="p">,</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">trusted_public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">)</span>
 </code></pre></div>
-<p><code>cryptography&gt;=43</code> is now a required dependency. Existing firmware OTA wire protocols remain unchanged. Device-side encryption-key matching and rollback enforcement remain device checks; host verification does not confirm installation or hardware calibration accuracy.</p>
+<p>新增必需依赖 <code>cryptography&gt;=43</code>。现有固件 OTA 传输协议保持不变。设备侧加密密钥匹配和防回滚仍由设备检查；电脑端验签不代表已安装成功，也不能证明实机校准精度。</p>
 
 
 
@@ -1854,9 +1854,6 @@
 
 
 
-
-  
-  
 
 
 

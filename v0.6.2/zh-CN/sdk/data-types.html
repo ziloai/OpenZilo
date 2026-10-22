@@ -1010,10 +1010,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#software-imu-calibration" class="md-nav__link">
+  <a href="#本机-imu-软件校准类型" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Software IMU calibration
+        本机 IMU 软件校准类型
       </span>
     </span>
   </a>
@@ -1021,10 +1021,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#firmwarebundle" class="md-nav__link">
+  <a href="#firmwarebundle-固件包元数据" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        FirmwareBundle
+        FirmwareBundle 固件包元数据
       </span>
     </span>
   </a>
@@ -1666,7 +1666,7 @@
   <span class="md-ellipsis">
     
   
-  Releases
+  版本发布
 
     
   </span>
@@ -1682,7 +1682,7 @@
               <span class="md-nav__icon md-icon"></span>
               
   
-  Releases
+  版本发布
 
             </label>
             <ul class="md-nav__list" data-md-scrollfix>
@@ -1701,7 +1701,7 @@
   <span class="md-ellipsis">
     
   
-  Changelog
+  更新日志
 
     
   </span>
@@ -1807,10 +1807,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#software-imu-calibration" class="md-nav__link">
+  <a href="#本机-imu-软件校准类型" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Software IMU calibration
+        本机 IMU 软件校准类型
       </span>
     </span>
   </a>
@@ -1818,10 +1818,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#firmwarebundle" class="md-nav__link">
+  <a href="#firmwarebundle-固件包元数据" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        FirmwareBundle
+        FirmwareBundle 固件包元数据
       </span>
     </span>
   </a>
@@ -2031,23 +2031,24 @@
 <span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 本固件发送秒级设备时间；SDK 保留此历史字段名。</span>
 </code></pre></div>
 <p>重连后应重新调用 <code>start_sensor_report()</code>。本地采集是否自动恢复取决于固件实现，不能从连接状态推断。</p>
-<h2 id="software-imu-calibration">Software IMU calibration<a class="headerlink" href="#software-imu-calibration" title="Permanent link">&para;</a></h2>
+<p><a id="software-imu-calibration"></a></p>
+<h2 id="本机-imu-软件校准类型">本机 IMU 软件校准类型<a class="headerlink" href="#本机-imu-软件校准类型" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="n">ImuCalibration</span>
-<span class="n">sensor_type</span><span class="p">:</span> <span class="nb">int</span>             <span class="c1"># 0 = unknown; no guessed chip identity</span>
+<span class="n">sensor_type</span><span class="p">:</span> <span class="nb">int</span>             <span class="c1"># 0 表示未知，不猜测芯片型号</span>
 <span class="n">accel_range_g</span><span class="p">:</span> <span class="nb">int</span>
 <span class="n">gyro_range_dps</span><span class="p">:</span> <span class="nb">int</span>
 <span class="n">accel_bias_ug</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
-<span class="n">accel_scale_ppm</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>  <span class="c1"># identity = (1000000, 1000000, 1000000)</span>
+<span class="n">accel_scale_ppm</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>  <span class="c1"># 单位增益为 (1000000, 1000000, 1000000)</span>
 <span class="n">gyro_bias_udps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
 
 <span class="n">ImuCalibrationProfile</span>
-<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># SHA-256 of normalized local device identifier</span>
-<span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># exact match, not a version range</span>
+<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># 规范化本机设备标识的 SHA-256</span>
+<span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># 精确匹配完整固件版本，不使用版本范围</span>
 <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
 <span class="n">calibration</span><span class="p">:</span> <span class="n">ImuCalibration</span>
 <span class="n">accel_validated</span><span class="p">:</span> <span class="nb">bool</span>
 <span class="n">gyro_validated</span><span class="p">:</span> <span class="nb">bool</span>
-<span class="n">created_at</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># ISO 8601, with timezone</span>
+<span class="n">created_at</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># 带时区的 ISO 8601 时间</span>
 
 <span class="n">CalibratedImuSample</span>
 <span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span>
@@ -2058,11 +2059,12 @@
 <span class="n">sequence_start</span><span class="p">:</span> <span class="nb">int</span>
 <span class="n">frame_count</span><span class="p">:</span> <span class="nb">int</span>
 <span class="n">samples</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CalibratedImuSample</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-<span class="n">applied_components</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>  <span class="c1"># e.g. ("accel",), or ("accel", "gyro")</span>
+<span class="n">applied_components</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>  <span class="c1"># 例如 ("accel",) 或 ("accel", "gyro")</span>
 </code></pre></div>
-<p><a href="imu.html">Software calibration workflow and APIs</a>.</p>
-<h2 id="firmwarebundle">FirmwareBundle<a class="headerlink" href="#firmwarebundle" title="Permanent link">&para;</a></h2>
-<p>The immutable result of <code>inspect_firmware_bundle()</code> contains <code>version</code>, <code>model</code>, <code>board</code>, <code>profile</code>, <code>security_version</code>, <code>source_versions</code>, <code>signing_key_id</code>, and inner OTA bytes <code>payload</code>. Its <code>manifest</code> property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.</p>
+<p><a href="imu.html">软件校准流程与接口</a>。</p>
+<p><a id="firmwarebundle"></a></p>
+<h2 id="firmwarebundle-固件包元数据">FirmwareBundle 固件包元数据<a class="headerlink" href="#firmwarebundle-固件包元数据" title="Permanent link">&para;</a></h2>
+<p><code>inspect_firmware_bundle()</code> 验签成功后返回的不可变对象，包含 <code>version</code>、<code>model</code>、<code>board</code>、<code>profile</code>、<code>security_version</code>、<code>source_versions</code>、<code>signing_key_id</code> 和内部 OTA 字节 <code>payload</code>。<code>manifest</code> 属性每次返回完整已验证清单的字典副本，便于展示或输出 JSON；修改副本不会影响升级数据。离线验签不包含设备适配检查。</p>
 
 
 

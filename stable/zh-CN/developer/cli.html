@@ -502,10 +502,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#software-imu-calibration" class="md-nav__link">
+  <a href="#本机-imu-软件校准" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Software IMU calibration
+        本机 IMU 软件校准
       </span>
     </span>
   </a>
@@ -1688,7 +1688,7 @@
   <span class="md-ellipsis">
     
   
-  Releases
+  版本发布
 
     
   </span>
@@ -1704,7 +1704,7 @@
               <span class="md-nav__icon md-icon"></span>
               
   
-  Releases
+  版本发布
 
             </label>
             <ul class="md-nav__list" data-md-scrollfix>
@@ -1723,7 +1723,7 @@
   <span class="md-ellipsis">
     
   
-  Changelog
+  更新日志
 
     
   </span>
@@ -1851,10 +1851,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#software-imu-calibration" class="md-nav__link">
+  <a href="#本机-imu-软件校准" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Software IMU calibration
+        本机 IMU 软件校准
       </span>
     </span>
   </a>
@@ -1998,16 +1998,12 @@ openzilo<span class="w"> </span>ota-update<span class="w"> </span>--help
 </code></pre></div>
 <p>固件 <code>V2.001.0002.0001</code> 直接启动 IMU；<code>V2.001.0002.0000</code> 需先进入手势模式。采集达到时长、出错或取消时会尝试停止上报并断开连接。文件输出会覆盖指定路径，父目录自动创建；中途失败时已写入的批次保留。传感器数据保持协议原始数值，单位解释见 <a href="sdk.html">SDK 指南</a>。</p>
 <p>连接命令均支持 <code>--scan-timeout</code> 和 <code>--connect-timeout</code>。错误写入 stderr 并返回退出码 1；参数错误返回 2；Ctrl+C 返回 130。交互终端中的命令错误会显示并返回提示符。</p>
-<h2 id="software-imu-calibration">Software IMU calibration<a class="headerlink" href="#software-imu-calibration" title="Permanent link">&para;</a></h2>
-<p>Use <code>openzilo imu-calibrate accel</code> for six-face accelerometer calibration in the charging case,
-<code>quick</code> for stationary gyro calibration outside the case, or <code>full</code> for both stages.
-Independent validation precedes atomic local saving. <code>show</code> reads the local file; <code>reset</code>
-deletes it. <code>sensor-stream --calibrated --seconds 10</code> explicitly applies the matching profile,
-outputs g / deg/s and marks the corrected components. Default raw streaming is unchanged.
-No calibration parameters are sent to the ring. See <a href="../sdk/imu.html#local-software-calibration">the software calibration specification</a>.</p>
+<p><a id="software-imu-calibration"></a></p>
+<h2 id="本机-imu-软件校准">本机 IMU 软件校准<a class="headerlink" href="#本机-imu-软件校准" title="Permanent link">&para;</a></h2>
+<p>使用 <code>openzilo imu-calibrate accel</code> 在充电盒中完成加速度计六面校准，使用 <code>quick</code> 在盒外静置校准陀螺仪，或用 <code>full</code> 顺序完成两阶段。独立验证通过后才原子保存本机配置。<code>show</code> 读取本机文件，<code>reset</code> 删除本机文件。<code>sensor-stream --calibrated --seconds 10</code> 显式应用匹配的配置，以 g 和度/秒输出数据，并标明已校正组件。默认原始数据流保持不变，不向戒指下发校准参数。详见<a href="../sdk/imu.html#本机软件校准">本机软件校准</a>。</p>
 <h2 id="兼容诊断">兼容诊断<a class="headerlink" href="#兼容诊断" title="Permanent link">&para;</a></h2>
 <p><code>openzilo --version</code> 查看 SDK 版本；<code>openzilo device capabilities</code> 输出支持的功能、录音参数范围和信息来源；<code>openzilo doctor</code> 额外输出 SDK 版本、源码校验值和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见<a href="compatibility.html">兼容说明</a>。</p>
-<p>Inspect and verify all signed OTA ZIP metadata offline:</p>
+<p>离线验签并查看签名 OTA ZIP 的完整元数据：</p>
 <div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span>firmware.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem<span class="w"> </span>--json
 </code></pre></div>
 
