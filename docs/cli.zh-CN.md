@@ -147,20 +147,17 @@ openzilo ota-update --help
 
 连接命令均支持 `--scan-timeout` 和 `--connect-timeout`。错误写入 stderr 并返回退出码 1；参数错误返回 2；Ctrl+C 返回 130。交互终端中的命令错误会显示并返回提示符。
 
-## Software IMU calibration
+<a id="software-imu-calibration"></a>
 
-Use `openzilo imu-calibrate accel` for six-face accelerometer calibration in the charging case,
-`quick` for stationary gyro calibration outside the case, or `full` for both stages.
-Independent validation precedes atomic local saving. `show` reads the local file; `reset`
-deletes it. `sensor-stream --calibrated --seconds 10` explicitly applies the matching profile,
-outputs g / deg/s and marks the corrected components. Default raw streaming is unchanged.
-No calibration parameters are sent to the ring. See [the software calibration specification](sdk-imu.en.md#local-software-calibration).
+## 本机 IMU 软件校准
+
+使用 `openzilo imu-calibrate accel` 在充电盒中完成加速度计六面校准，使用 `quick` 在盒外静置校准陀螺仪，或用 `full` 顺序完成两阶段。独立验证通过后才原子保存本机配置。`show` 读取本机文件，`reset` 删除本机文件。`sensor-stream --calibrated --seconds 10` 显式应用匹配的配置，以 g 和度/秒输出数据，并标明已校正组件。默认原始数据流保持不变，不向戒指下发校准参数。详见[本机软件校准](sdk-imu.zh-CN.md#本机软件校准)。
 
 ## 兼容诊断
 
 `openzilo --version` 查看 SDK 版本；`openzilo device capabilities` 输出支持的功能、录音参数范围和信息来源；`openzilo doctor` 额外输出 SDK 版本、源码校验值和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见[兼容说明](compatibility.zh-CN.md)。
 
-Inspect and verify all signed OTA ZIP metadata offline:
+离线验签并查看签名 OTA ZIP 的完整元数据：
 
 ```bash
 openzilo ota-inspect firmware.ota.zip --public-key trusted-signing-public.pem --json

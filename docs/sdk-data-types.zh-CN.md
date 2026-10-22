@@ -194,25 +194,27 @@ timestamp_ms: int  # 本固件发送秒级设备时间；SDK 保留此历史字�
 
 重连后应重新调用 `start_sensor_report()`。本地采集是否自动恢复取决于固件实现，不能从连接状态推断。
 
-## Software IMU calibration
+<a id="software-imu-calibration"></a>
+
+## 本机 IMU 软件校准类型
 
 ```python
 ImuCalibration
-sensor_type: int             # 0 = unknown; no guessed chip identity
+sensor_type: int             # 0 表示未知，不猜测芯片型号
 accel_range_g: int
 gyro_range_dps: int
 accel_bias_ug: tuple[int, int, int]
-accel_scale_ppm: tuple[int, int, int]  # identity = (1000000, 1000000, 1000000)
+accel_scale_ppm: tuple[int, int, int]  # 单位增益为 (1000000, 1000000, 1000000)
 gyro_bias_udps: tuple[int, int, int]
 
 ImuCalibrationProfile
-device_key: str              # SHA-256 of normalized local device identifier
-firmware_version: str        # exact match, not a version range
+device_key: str              # 规范化本机设备标识的 SHA-256
+firmware_version: str        # 精确匹配完整固件版本，不使用版本范围
 model: str
 calibration: ImuCalibration
 accel_validated: bool
 gyro_validated: bool
-created_at: str              # ISO 8601, with timezone
+created_at: str              # 带时区的 ISO 8601 时间
 
 CalibratedImuSample
 timestamp_ms: int
@@ -223,11 +225,13 @@ CalibratedImuBatch
 sequence_start: int
 frame_count: int
 samples: tuple[CalibratedImuSample, ...]
-applied_components: tuple[str, ...]  # e.g. ("accel",), or ("accel", "gyro")
+applied_components: tuple[str, ...]  # 例如 ("accel",) 或 ("accel", "gyro")
 ```
 
-[Software calibration workflow and APIs](sdk-imu.en.md).
+[软件校准流程与接口](sdk-imu.zh-CN.md)。
 
-## FirmwareBundle
+<a id="firmwarebundle"></a>
 
-The immutable result of `inspect_firmware_bundle()` contains `version`, `model`, `board`, `profile`, `security_version`, `source_versions`, `signing_key_id`, and inner OTA bytes `payload`. Its `manifest` property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.
+## FirmwareBundle 固件包元数据
+
+`inspect_firmware_bundle()` 验签成功后返回的不可变对象，包含 `version`、`model`、`board`、`profile`、`security_version`、`source_versions`、`signing_key_id` 和内部 OTA 字节 `payload`。`manifest` 属性每次返回完整已验证清单的字典副本，便于展示或输出 JSON；修改副本不会影响升级数据。离线验签不包含设备适配检查。

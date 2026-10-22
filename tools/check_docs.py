@@ -10,6 +10,24 @@ from markdown_it import MarkdownIt
 ROOT = Path(__file__).resolve().parents[1] / "build/docs/html"
 
 
+def shared_english_prose(chinese_text, english_text):
+    """Find copied English explanations, excluding code, identifiers and examples."""
+    markdown = MarkdownIt().enable("table")
+
+    def paragraphs(text):
+        result = set()
+        for token in markdown.parse(text):
+            if token.type != "inline" or not token.children:
+                continue
+            prose = " ".join(child.content for child in token.children if child.type == "text")
+            prose = re.sub(r"\s+", " ", prose).strip()
+            if not re.search(r"[\u3400-\u9fff]", prose) and len(re.findall(r"[A-Za-z][A-Za-z'-]*", prose)) >= 9:
+                result.add(prose)
+        return result
+
+    return sorted(paragraphs(chinese_text) & paragraphs(english_text))
+
+
 class Page(HTMLParser):
     def __init__(self, path):
         super().__init__(convert_charrefs=True)
@@ -154,6 +172,8 @@ def main():
             return ([t.tag for t in tokens if t.type == "heading_open"],
                     sum(t.type == "table_open" for t in tokens),
                     [t.info.split()[0] if t.info else "" for t in tokens if t.type == "fence"])
+        for copied in shared_english_prose(chinese.read_text(encoding="utf-8"), english.read_text(encoding="utf-8")):
+            errors.add(f"English explanation copied into Chinese page: {name}: {copied[:120]!r}")
         if structure(chinese) != structure(english):
             errors.add(f"Translation structure differs: {name}")
     if errors:

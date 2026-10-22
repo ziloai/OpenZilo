@@ -62,14 +62,14 @@ PAGES = [
     ("contributing/claude", "CLAUDE.md", "CLAUDE.md"),
     ("contributing/gemini", "GEMINI.md", "GEMINI.md"),
     ("contributing/copilot", ".github/copilot-instructions.md", ".github/copilot-instructions.md"),
-    ("reference/changelog", "CHANGELOG.md", "CHANGELOG.md"),
+    ("reference/changelog", "CHANGELOG.zh-CN.md", "CHANGELOG.md"),
     ("reference/wiki-sidebar", "wiki/_Sidebar.md", "wiki/_Sidebar.en.md"),
     ("reference/wiki-entry", "wiki/OpenZilo-Documentation.md", "wiki/OpenZilo-Documentation.en.md"),
 ]
 SOURCE_MAP = {source: page for page, *sources in PAGES for source in sources}
 REPOSITORY = "https://github.com/ziloai/OpenZilo"
 REFERENCE_PAGES = {"contributing/agents", "contributing/claude", "contributing/gemini",
-                   "contributing/copilot", "reference/wiki-sidebar", "reference/wiki-entry", "reference/changelog"}
+                   "contributing/copilot", "reference/wiki-sidebar", "reference/wiki-entry"}
 
 
 def document_url(target, source, page, locale):
@@ -253,7 +253,7 @@ def navigation(source, locale):
          "developer/protocol", "developer/architecture", "sdk/protocol-tools"]),
         ("参与开发", "Development", ["developer/ai-tools", "contributing/index", "contributing/security", "overview"]),
     ]
-    groups.append(("Releases", "Releases", ["reference/changelog"]))
+    groups.append(("版本发布", "Releases", ["reference/changelog"]))
     nav = [{"首页" if locale == "zh-CN" else "Home": "index.md"}]
     for chinese, english, routes in groups:
         entries = []

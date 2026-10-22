@@ -14,7 +14,7 @@
 - 当前固件版本可以升级到目标版本。
 - 已了解录音、设置是否保留，以及该版本的已知问题。
 
-Download the versioned signed OTA ZIP and obtain its signing public key independently through a trusted channel. The signed metadata carries the target version, model, board and payload digest. Factory flashing files are not SDK OTA packages.
+下载带版本号的签名 OTA ZIP，并通过独立可信渠道取得签名公钥。目标版本、型号、板型和内部摘要均包含在受签名保护的元数据中。工厂烧录文件不用于 SDK OTA 升级。
 
 ## 2. 升级前准备
 
@@ -41,7 +41,7 @@ uv run openzilo ota-update "path/to/firmware.ota.zip" --public-key "path/to/trus
 
 命令使用已保存的默认设备；也可用 `--address` 指定地址。升级期间保持设备靠近，避免中断蓝牙和供电。
 
-`ota-inspect` verifies signatures and displays all metadata offline; add `--json` for JSON. `ota-update` checks device model, board and source version before sending only the inner OTA bytes. Raw BIN input and manual version, digest or model overrides are no longer accepted. Test-profile ZIPs require `--allow-test-firmware`; boards must be reported by the device or provided by an exact verified legacy profile; unknown boards are rejected.
+`ota-inspect` 离线验签并展示全部元数据，可用 `--json` 输出 JSON。`ota-update` 核对设备型号、板型和起始版本后，只发送内部 OTA 字节。原始 BIN 和手填版本、摘要、型号的覆盖参数已移除。测试配置 ZIP 需要 `--allow-test-firmware`；板型必须由设备报告或来自已核实的精确旧构建配置，未知板型拒绝升级。
 
 ## 4. 确认结果
 

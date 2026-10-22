@@ -152,11 +152,11 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## Local software calibration
+<a id="local-software-calibration"></a>
 
-OpenZilo computes, stores and applies calibration on the host. No calibration commands or
-parameters are written to the ring. The known legacy IMU/2 firmware is supported; unknown
-or incompatible contracts are rejected. Firmware upgrades are not required for this feature.
+## 本机软件校准
+
+OpenZilo 在电脑端计算、保存和应用校准参数，不向戒指发送校准命令或写入参数。已核实的旧版 IMU/2 固件可使用此功能；未知或不兼容的功能契约会被拒绝，无需为本机校准升级固件。
 
 ```bash
 openzilo imu-calibrate accel
@@ -167,25 +167,13 @@ openzilo imu-calibrate reset
 openzilo sensor-stream --calibrated --seconds 10
 ```
 
-`accel` collects six signed gravity directions with the ring fixed in the charging case,
-then fits diagonal accelerometer biases/gains and validates new data on three distinct axes.
-An inverted attachment and arbitrary face order are supported. Release the case before
-pressing Enter; use a support if necessary. Do not remove and reattach the ring during the six
-faces. Each face settles for 2 seconds and records at least 5 seconds.
+`accel` 在戒指固定于充电盒内时采集六个正、负重力方向，拟合各轴加速度零偏和增益，再使用三个不同轴上的新数据独立验证。支持倒置吸附和任意采集顺序。摆好盒子后松手，再按 Enter；必要时使用支架。六面采集期间不要取下戒指重新吸附。每面先等待 2 秒稳定，再采集至少 5 秒。
 
-`quick` calibrates only gyro bias. Remove the ring from the case, keep it away from magnets,
-and lay it still, with paper support to prevent rolling. Three consecutive windows must have
-mean gyro ranges within 0.08 deg/s (up to 3 minutes), followed by a minimum 20-second bias
-recording and fresh independent validation. Charging, magnetic attachment and temperature
-conditions must not be confused with normal-use bias. There is no full-turn rotation.
+`quick` 只校准陀螺仪零偏。将戒指取出充电盒，远离磁铁并平放，必要时用纸片防止滚动。软件最多等待 3 分钟，要求连续三个静止窗口的各轴均值范围均不超过 0.08 度/秒，然后采集至少 20 秒计算零偏，再用新数据独立验证。充电、磁吸和温度条件下的偏置不能直接当作日常使用的零偏；不需要旋转整圈。
 
-`full` performs both stages and replaces the local file only when both pass. Cancellation,
-drift, failed validation or storage failure preserves the previous file. Use `accel` first and
-`quick` later to retain independent progress. Each action preserves any previously validated
-parameters of the other component. Unvalidated components remain uncorrected.
+`full` 顺序执行两阶段，全部通过后才替换本机文件。取消、漂移、验证失败或存储失败均保留原文件。也可先执行 `accel`，之后再执行 `quick`，分别保留已完成的结果。每次操作都会保留另一组件已经验证的参数；未验证的组件不应用校正。
 
-Original `start_sensor_report`, `wait_sensor_data` and default `sensor-stream` semantics
-remain unchanged. Software correction is explicit:
+原有 `start_sensor_report`、`wait_sensor_data` 和默认 `sensor-stream` 的原始数据语义保持不变。软件校正需显式启用：
 
 ```python
 async with sdk.OpenZiloClient(address=ADDRESS) as ring:
@@ -196,38 +184,14 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
             print(batch.applied_components)
 ```
 
-The context starts/stops reports, cleans up on errors/cancellation, and is invalid after
-reconnect. Use an exclusive IMU consumer on the connection. Custom transports must provide
-`device_id=` for profile binding. `CalibratedImuBatch` and `CalibratedImuSample` preserve
-sequences/counts/timestamps and contain new float tuples in g and deg/s, leaving raw objects
-untouched. CLI JSONL marks `data_domain="software_calibrated"`, `accel_unit="g"`,
-`gyro_unit="deg/s"`, and `applied_components`. An accel-only profile does not subtract gyro bias.
+上下文负责启动、停止上报，并在出错或取消时清理；重连后需重新打开。同一连接应由一个 IMU 消费者独占。自定义 transport 必须通过 `device_id=` 提供配置绑定标识。`CalibratedImuBatch` 和 `CalibratedImuSample` 保留序号、数量和时间戳，以新的浮点元组输出 g 和度/秒，不修改原始对象。CLI 的 JSONL 输出带有 `data_domain="software_calibrated"`、`accel_unit="g"`、`gyro_unit="deg/s"` 和 `applied_components`。仅有加速度校准参数时，不会减去陀螺仪零偏。
 
-For range R, raw signed counts convert by `counts * R / 32768`. Per-axis corrections are
-`(accel_g - accel_bias_ug/1e6) * accel_scale_ppm/1e6` and
-`gyro_dps - gyro_bias_udps/1e6`. The six-face fit uses a diagonal ellipsoid with unit gravity
-magnitude, permitting small fixture tilt. Gravity is retained. There is no gyro gain fit,
-full cross-axis matrix, temperature compensation, orientation fusion or drift-free heading.
+量程为 R 时，原始有符号计数按 `counts * R / 32768` 换算。逐轴校正公式为 `(accel_g - accel_bias_ug/1e6) * accel_scale_ppm/1e6` 和 `gyro_dps - gyro_bias_udps/1e6`。六面拟合使用重力模长为 1 的对角椭球，允许夹具存在小幅倾斜，并保留重力分量。不拟合陀螺仪增益或完整交叉轴矩阵，也不提供温度补偿、姿态融合或航向无漂移保证。
 
-Sampling rejects gaps, clipping, movement and within-window drift. Initial thresholds are
-0.008 g accel standard deviation, 0.06 g peak-to-peak, 0.3 deg/s gyro standard deviation,
-and first/second-half mean changes of 0.003 g / 0.15 deg/s. Accel-stage quality ignores gyro
-bias/noise. Independent acceptance thresholds are 0.015 g gravity-norm error and 0.15 deg/s
-mean gyro residual per axis. Thresholds are acceptance rules, not universal accuracy claims.
+采样会拒绝序号间断、饱和、移动和窗口内漂移。初始门槛为：加速度标准差 0.008 g、峰峰值 0.06 g、陀螺仪标准差 0.3 度/秒；窗口前后半段均值变化分别不超过 0.003 g 和 0.15 度/秒。加速度阶段不使用陀螺仪偏置或噪声作为验收依据。独立验证要求重力模长误差不超过 0.015 g，陀螺仪各轴均值残差不超过 0.15 度/秒。这些是验收规则，不是所有环境下的精度承诺。
 
-Profiles live next to CLI preferences under `imu/<device_hash>.json`, normally
-`~/.config/openzilo/imu/` on Linux. They record schema, input domain, units, device hash,
-model, exact firmware version, parameters, component validation flags and creation time.
-Unknown chip type is 0. Device/model/firmware/ranges must match; recalibrate after firmware
-upgrades. Corrupt profiles fail explicitly. Save uses a temporary file, sync and atomic replace.
-Override with `imu-calibrate --profile FILE` or `sensor-stream --calibrated --calibration-profile FILE`.
+配置保存在 CLI 配置目录下的 `imu/<device_hash>.json` 中，Linux 通常为 `~/.config/openzilo/imu/`。文件记录结构版本、输入数据域、单位、设备哈希、型号、完整固件版本、参数、组件验证状态和创建时间。未知芯片类型为 0。设备、型号、固件和量程必须匹配；固件升级后应重新校准。损坏的配置会明确报错。保存过程使用临时文件、同步和原子替换。可通过 `imu-calibrate --profile FILE` 或 `sensor-stream --calibrated --calibration-profile FILE` 指定文件。
 
-Public helpers include `ImuCalibration`, `ImuCalibrationProfile`, `imu_device_key`,
-`imu_calibration_path`, `load_imu_calibration_profile`, `save_imu_calibration_profile`,
-`apply_imu_calibration`, `analyze_imu_static_window`, `collect_imu_static_window`,
-`fit_imu_six_face_calibration`, `fit_imu_gyro_bias`, and `validate_imu_calibration`.
-Offline application requires original raw samples and rejects already-calibrated batch types.
+公开辅助接口包括 `ImuCalibration`、`ImuCalibrationProfile`、`imu_device_key`、`imu_calibration_path`、`load_imu_calibration_profile`、`save_imu_calibration_profile`、`apply_imu_calibration`、`analyze_imu_static_window`、`collect_imu_static_window`、`fit_imu_six_face_calibration`、`fit_imu_gyro_bias` 和 `validate_imu_calibration`。离线应用必须传入未经校正的原始样本，已经校正的批次类型会被拒绝。
 
-Future firmware application must explicitly negotiate raw/corrected data, chip identity,
-storage and ownership. This SDK sends no calibration commands and refuses software streams
-when firmware advertises calibration feature ID 11, preventing double correction.
+若未来将校准迁移到固件，必须明确协商原始或校正数据域、芯片身份、存储和参数应用位置。本版 SDK 不发送校准命令；固件若声明校准功能 ID 11，软件校正流会拒绝启动，避免重复校正。

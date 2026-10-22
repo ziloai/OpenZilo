@@ -42,6 +42,8 @@ jobs:
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Check pages, translations, language links and search indexes
         run: uv run --group docs python tools/check_docs.py
+      - name: Check translation regression tests
+        run: uv run --group docs python -m unittest discover -s tests -p test_docs_translations.py -v
       - name: Check documentation version publishing
         run: uv run --group docs python -m unittest discover -s tests -p test_docs_publishing.py -v
       - name: Check Pages deployment identity and live verification
