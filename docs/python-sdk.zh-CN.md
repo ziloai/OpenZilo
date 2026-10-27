@@ -38,7 +38,7 @@
 | --- | --- | --- |
 | [`await get_device_capabilities(client, timeout_s=None, refresh=False)`](compatibility.zh-CN.md) | `DeviceCapabilities` | 查询设备支持的功能及录音参数范围。 |
 | [`capabilities.supports(name, major=None, min_minor=0)`](compatibility.zh-CN.md) | `bool` | 检查指定功能及其接口版本。 |
-| [`get_sdk_identity()`](compatibility.zh-CN.md) | `SdkIdentity` | 返回 SDK 版本和源码校验值，便于记录运行环境。 |
+| [`get_sdk_identity()`](compatibility.zh-CN.md) | `SdkIdentity` | 返回 SDK 版本和运行环境标识，便于记录运行环境。 |
 
 功能查询结果会在断开连接后清除。字段说明见[兼容说明](compatibility.zh-CN.md)。
 

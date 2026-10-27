@@ -63,7 +63,7 @@ uv run python your_script.py
 
 首帧超时表示 SDK 在限定时间内没有收到录音保存后的 `0x050A` 或主动上报的 `0x0505`。确认调用期间 BLE 始终连接，并在开始等待后再让用户长按录音、松开。若程序连接过晚，设备可能已经发送完毕，此时应调用 `get_audio_file_count()` 查询文件，再用 `download_audio_file()` 重新下载。
 
-不要让 `receive_auto_audio_file()` 与 `download_audio_file()`、`read_audio_frame()` 或手工 `wait_for_command(0x0505)` 并发运行；它们读取同一个 `0x0505` 接收队列，可能造成某个接收流程超时或出现偏移缺口。
+不要让 `receive_auto_audio_file()` 与 `download_audio_file()`、`read_audio_frame()` 或手工 `wait_for_command(0x0505)` 并发运行；同一连接上的录音接收必须依次执行，否则可能超时或数据不完整。
 
 ## `start_sensor_report()` 返回设备忙碌
 

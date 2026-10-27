@@ -19,7 +19,7 @@ Use `uv add` or `uv remove` to change dependencies, and commit the updated `uv.l
 
 ## Documentation changes
 
-Write documentation in Markdown. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.
+Write Markdown and keep Chinese and English synchronized. Document public APIs, wire formats, usage requirements and observable behavior. Omit threads, memory and queue layouts, internal build identities, release infrastructure and internal validation records. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.
 
 ## Submission contents
 

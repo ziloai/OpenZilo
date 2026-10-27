@@ -22,7 +22,7 @@ OpenZiloClient
 # High-level BLE client: connection, packet reconstruction, requests and event dispatch.
 
 NusClient
-# Low-level Nordic UART Service client; writes fixed 20-byte chunks.
+# Nordic UART Service client for custom transports.
 # Normally used directly only for debugging or custom transports.
 
 PacketStream
@@ -206,7 +206,7 @@ accel_scale_ppm: tuple[int, int, int]  # identity = (1000000, 1000000, 1000000)
 gyro_bias_udps: tuple[int, int, int]
 
 ImuCalibrationProfile
-device_key: str              # SHA-256 of normalized local device identifier
+device_key: str              # Opaque identifier for binding a profile to a device
 firmware_version: str        # exact match, not a version range
 model: str
 calibration: ImuCalibration
@@ -230,4 +230,4 @@ applied_components: tuple[str, ...]  # e.g. ("accel",), or ("accel", "gyro")
 
 ## FirmwareBundle
 
-The immutable result of `inspect_firmware_bundle()` contains `version`, `model`, `board`, `profile`, `security_version`, `source_versions`, `signing_key_id`, and inner OTA bytes `payload`. Its `manifest` property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.
+The immutable result of `inspect_firmware_bundle()` contains `version`, `model`, `board`, `profile`, `security_version`, `source_versions`, `signing_key_id`, and update payload bytes `payload`. Its `manifest` property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.

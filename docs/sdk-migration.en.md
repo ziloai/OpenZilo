@@ -6,7 +6,7 @@ Check API changes when upgrading the SDK and discover features again after chang
 
 ## BLE write chunks and migration from 0.3.x
 
-The SDK writes NUS RX in chunks of at most 20 bytes, with a shorter final chunk when necessary. Applications do not configure this size, and it does not disable Windows, Bleak or system MTU negotiation. Incoming notifications need not be 20 bytes; `PacketStream` reconstructs packets from their headers.
+BLE fragmentation is handled automatically; applications do not configure fragment lengths.
 
 Since `0.4.0`, `NusClient` no longer accepts `write_chunk_size`. Remove it from custom transport code using `0.3.x`:
 

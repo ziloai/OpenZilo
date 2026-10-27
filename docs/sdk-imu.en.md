@@ -203,24 +203,11 @@ sequences/counts/timestamps and contain new float tuples in g and deg/s, leaving
 untouched. CLI JSONL marks `data_domain="software_calibrated"`, `accel_unit="g"`,
 `gyro_unit="deg/s"`, and `applied_components`. An accel-only profile does not subtract gyro bias.
 
-For range R, raw signed counts convert by `counts * R / 32768`. Per-axis corrections are
-`(accel_g - accel_bias_ug/1e6) * accel_scale_ppm/1e6` and
-`gyro_dps - gyro_bias_udps/1e6`. The six-face fit uses a diagonal ellipsoid with unit gravity
-magnitude, permitting small fixture tilt. Gravity is retained. There is no gyro gain fit,
-full cross-axis matrix, temperature compensation, orientation fusion or drift-free heading.
+Corrected acceleration is expressed in g and angular velocity in deg/s, retaining gravity. Software calibration provides no temperature compensation, orientation fusion or drift-free heading guarantee.
 
-Sampling rejects gaps, clipping, movement and within-window drift. Initial thresholds are
-0.008 g accel standard deviation, 0.06 g peak-to-peak, 0.3 deg/s gyro standard deviation,
-and first/second-half mean changes of 0.003 g / 0.15 deg/s. Accel-stage quality ignores gyro
-bias/noise. Independent acceptance thresholds are 0.015 g gravity-norm error and 0.15 deg/s
-mean gyro residual per axis. Thresholds are acceptance rules, not universal accuracy claims.
+If sampling or validation fails, keep the device still and retry as instructed. Calibration results are not accuracy guarantees for every environment.
 
-Profiles live next to CLI preferences under `imu/<device_hash>.json`, normally
-`~/.config/openzilo/imu/` on Linux. They record schema, input domain, units, device hash,
-model, exact firmware version, parameters, component validation flags and creation time.
-Unknown chip type is 0. Device/model/firmware/ranges must match; recalibrate after firmware
-upgrades. Corrupt profiles fail explicitly. Save uses a temporary file, sync and atomic replace.
-Override with `imu-calibrate --profile FILE` or `sensor-stream --calibrated --calibration-profile FILE`.
+Profiles are stored locally and bound to the device, model, exact firmware version and sensor ranges. Recalibrate after firmware upgrades. Corrupt or mismatched profiles fail explicitly. Select a file with `imu-calibrate --profile FILE` or `sensor-stream --calibrated --calibration-profile FILE`.
 
 Public helpers include `ImuCalibration`, `ImuCalibrationProfile`, `imu_device_key`,
 `imu_calibration_path`, `load_imu_calibration_profile`, `save_imu_calibration_profile`,

@@ -38,9 +38,9 @@ The [OpenZilo website](https://openzilo.com) describes a broader platform. Do no
 
 - [CLI guide (简体中文)](docs/cli.zh-CN.md): default device selection, interactive shell, remote recording, and timed IMU JSONL capture.
 
-- [Public SDK API](https://raw.githubusercontent.com/ziloai/openzilo/main/src/openzilo/__init__.py): authoritative `__all__`; implementation lives in the package's private submodules.
+- [Public SDK API](https://raw.githubusercontent.com/ziloai/openzilo/main/src/openzilo/__init__.py): authoritative `__all__`.
 - [Examples](https://github.com/ziloai/openzilo/tree/main/examples): scan, system information, audio download, and IMU streaming.
-- [Live PCM example](examples/live_pcm.py): `open_live_audio_stream()` with async context/iteration, bounded queues, stereo PCM frames, and verified END; optional `pcm` extra uses PyAV.
+- [Live PCM example](examples/live_pcm.py): `open_live_audio_stream()` with async context/iteration, mono/stereo PCM frames, and verified END; optional `pcm` extra uses PyAV.
 - [Security policy](https://raw.githubusercontent.com/ziloai/openzilo/main/SECURITY.md): private vulnerability reporting.
 - [MPL-2.0 software license](https://raw.githubusercontent.com/ziloai/openzilo/main/LICENSE): current software and documentation license.
 - [CERN-OHL-W-2.0 hardware license](https://raw.githubusercontent.com/ziloai/openzilo/main/LICENSES/CERN-OHL-W-2.0.txt): hardware design license.

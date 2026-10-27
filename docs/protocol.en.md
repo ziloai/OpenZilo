@@ -23,7 +23,7 @@ The protocol uses Nordic UART Service (NUS):
 
 Connect by the scanned address (UUID on macOS), without depending on advertising names.
 
-SDK RX writes use chunks of up to 20 bytes; the last may be shorter. This is a BLE write policy, not a packet boundary or a replacement for system MTU negotiation. TX notifications can use other sizes; reconstruct them with `OpenZiloClient` or `PacketStream`.
+BLE fragments are not protocol packet boundaries. Use `OpenZiloClient` or `PacketStream` to reconstruct complete packets.
 
 ## 3. Protocol v4 packets
 
@@ -62,11 +62,11 @@ A packet can span notifications and a notification can contain multiple packets.
 | Live audio subscription | `0x050D` | `0x050E` | `set_live_audio_subscription()` |
 | Live audio data | Device `0x050F`, `0x0510`, `0x0511` | None | `receive_live_audio_file()` |
 | Delete all recordings | `0x050B` | `0x050C` | `clear_audio_files()` |
-| Start recording | `0x0512` | `0x0513` | `start_audio_recording()` |
-| Stop recording | `0x0514` | `0x0515` | `stop_audio_recording()` |
-| Recording status | `0x0516` | `0x0517` | `get_audio_recording_status()` |
-| Read recording settings | `0x0518` | `0x0519` | `get_audio_recording_config()` |
-| Write recording settings | `0x051A` | `0x051B` | `set_audio_recording_config()` |
+| Start recording | `0x0516` | `0x0517` | `start_audio_recording()` |
+| Stop recording | `0x0518` | `0x0519` | `stop_audio_recording()` |
+| Recording status | `0x051A` | `0x051B` | `get_audio_recording_status()` |
+| Read recording settings | `0x0512` | `0x0513` | `get_audio_recording_config()` |
+| Write recording settings | `0x0514` | `0x0515` | `set_audio_recording_config()` |
 | Start IMU reports | `0x0601` | `0x0602` | `start_sensor_report()` |
 | Stop IMU reports | `0x0603` | `0x0604` | `stop_sensor_report()` |
 | IMU batches | Device `0x0605` | None | `wait_sensor_data()` |
@@ -114,8 +114,8 @@ Empty body.
 | Field | Type | Bytes | Description |
 | --- | --- | ---: | --- |
 | `error_code` | `u16` | 2 | Error code. |
-| `page_size` | `u32` | 4 | Log page size or the device's current paging unit. |
-| `total_len` | `u32` | 4 | Total log data length. |
+| `page_size` | `u32` | 4 | Current log file count; the wire field retains the name `page_size`. |
+| `total_len` | `u32` | 4 | Per-file capacity in bytes, not the actual total length of all logs. |
 
 #### `0x0303` Read log data
 
@@ -197,7 +197,7 @@ Same body as `0x0503`. The device first returns `0x0504`, then consecutive `0x05
 
 After saving, legacy Speex firmware pushes this same `0x0505` format without preceding `0x0504`. `receive_auto_audio_file()` selects the first frame's index, assembles by offset, and finishes at `is_end=1`. It returns `(file_index, raw_audio)` without `AudioFileInfo`.
 
-Normal continuous push needs no extraction commands. For a gap, timeout or damaged frame, the SDK queries and verifies index and `data_size` using `0x0503 -> 0x0504`, then requests the expected offset with `0x0506`, up to three attempts. Results are bounded by `data_size`. Keep BLE connected during saving and push. If connection was too late, query the recording count and download by index.
+Normal continuous push needs no extraction commands. For a gap, timeout or damaged frame, the SDK queries and verifies index and `data_size` using `0x0503 -> 0x0504`, then requests the expected offset with `0x0506`. Results are bounded by `data_size`. Keep BLE connected during saving and push. If connection was too late, query the recording count and download by index.
 
 #### `0x0506` Request recording offset
 
@@ -405,15 +405,15 @@ After synchronization, button seconds represent device Unix time. Before synchro
 
 These commands implement recording-control interface v1. Start, status and configuration-read requests have empty bodies. Integers are big-endian. See [recording control](recording-control.md) for application examples.
 
-#### `0x0512` / `0x0513` Start recording
+#### `0x0516` / `0x0517` Start recording
 
-Empty request. A successful response is `error_code:u16, session_id:u32`, six bytes. Nonzero session ID confirms acceptance, not completion; query `0x0516` for final status. After START timeout, query status instead of automatically retrying.
+Empty request. A successful response is `error_code:u16, session_id:u32`, six bytes. Nonzero session ID confirms acceptance, not completion; query `0x051A` for final status. After START timeout, query status instead of automatically retrying.
 
-#### `0x0514` / `0x0515` Stop recording
+#### `0x0518` / `0x0519` Stop recording
 
 Request: `session_id:u32, cancel:u8`. `cancel=0` stops according to output settings; `cancel=1` discards uncommitted audio. Success: `error_code:u16, session_id:u32`. The ID must match; final status must still be awaited.
 
-#### `0x0516` / `0x0517` Query recording status
+#### `0x051A` / `0x051B` Query recording status
 
 Empty request. Successful response is 14 bytes:
 
@@ -428,7 +428,7 @@ Empty request. Successful response is 14 bytes:
 
 The SDK uses `saved` to determine whether the index is valid. Without a saved file, returned `file_index` is `None`.
 
-#### `0x0518` / `0x0519` Read recording configuration
+#### `0x0512` / `0x0513` Read recording configuration
 
 Empty request. Response begins with `error_code:u16`; on success the 14-byte settings below are followed by sample rate, frame duration and fixed codec parameters.
 
@@ -444,7 +444,7 @@ Empty request. Response begins with `error_code:u16`; on success the 14-byte set
 
 Successful responses are 34 bytes. Settings are followed by `sample_rate:u16`, `frame_duration_ms:u16`, then `codec:u8`, `complexity:u8`, `vbr:u8`, `constrained_vbr:u8`, `dtx:u8`, `fec:u8`, `packet_loss_percent:u8`, `signal:u16`, `bit_depth:u8`, `max_packet_size:u16`, `application:u16`. The device returns these fixed parameters; configuration writes cannot change them.
 
-#### `0x051A` / `0x051B` Write recording configuration
+#### `0x0514` / `0x0515` Write recording configuration
 
 Request contains only the 14-byte settings above. Response matches configuration readback, showing accepted settings. Write only while idle. Continue-saving on disconnect requires flash or live-plus-flash output.
 
@@ -480,22 +480,22 @@ Protocol v4 and existing GET_INFO and recording-v1 layouts remain unchanged. All
 
 Errors: 2 busy, 5 unknown command, 7 invalid argument, 9 unsupported structure version. An unknown command returns 5, nonempty discovery request returns 7, and unknown version in the 14-byte recording settings returns 9. Existing command-specific errors remain valid; not all legacy failures use generic errors. Never reply to an error with another error.
 
-TLVs contain `tag:u16, length:u16, value:length bytes`, within v4's 5120-byte limit; current firmware constructs responses in a buffer of at most 512 bytes. Duplicate tags, truncation, invalid UTF-8 and missing required device fields fail parsing. Unknown optional tags are skipped; an unknown tag with its top bit set requires an SDK upgrade.
+TLVs contain `tag:u16, length:u16, value:length bytes`, within v4's 5120-byte limit. Duplicate tags, truncation, invalid UTF-8 and missing required device fields fail parsing. Unknown optional tags are skipped; an unknown tag with its top bit set requires an SDK upgrade.
 
 | Tag | Content |
 |---|---|
 | 1 | Full firmware version, UTF-8. |
 | 2 | Product model, UTF-8. |
-| 3 | Firmware compilation target, UTF-8. |
+| 3 | Hardware compatibility identifier, UTF-8; use the value reported by the device. |
 | 4 | Eight-byte random boot_id for this boot. |
-| 5 | Firmware build ID, UTF-8. |
+| 5 | Opaque firmware identifier, UTF-8. |
 | 6 | Supported protocol versions as consecutive u16 values; currently 4. |
 | `0x0100 + feature_id` | Feature interface version `major:u8, minor:u8`. |
 | `0x0204` | Recording limits, defined below. |
 
 Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1. The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.
 
-Firmware advertises features only for fully registered command groups. Button/tap events require connected producers in the product build. Advertisement identifies implementation support, not successful hardware initialization, current connection readiness or an idle device.
+Advertised features identify supported interfaces, not current readiness or an idle device.
 
 Recording limits occupy exactly 26 bytes:
 
