@@ -186,11 +186,11 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
 
 上下文负责启动、停止上报，并在出错或取消时清理；重连后需重新打开。同一连接应由一个 IMU 消费者独占。自定义 transport 必须通过 `device_id=` 提供配置绑定标识。`CalibratedImuBatch` 和 `CalibratedImuSample` 保留序号、数量和时间戳，以新的浮点元组输出 g 和度/秒，不修改原始对象。CLI 的 JSONL 输出带有 `data_domain="software_calibrated"`、`accel_unit="g"`、`gyro_unit="deg/s"` 和 `applied_components`。仅有加速度校准参数时，不会减去陀螺仪零偏。
 
-量程为 R 时，原始有符号计数按 `counts * R / 32768` 换算。逐轴校正公式为 `(accel_g - accel_bias_ug/1e6) * accel_scale_ppm/1e6` 和 `gyro_dps - gyro_bias_udps/1e6`。六面拟合使用重力模长为 1 的对角椭球，允许夹具存在小幅倾斜，并保留重力分量。不拟合陀螺仪增益或完整交叉轴矩阵，也不提供温度补偿、姿态融合或航向无漂移保证。
+校正后的加速度以 g、角速度以度/秒输出，并保留重力分量。软件校准不提供温度补偿、姿态融合或航向无漂移保证。
 
-采样会拒绝序号间断、饱和、移动和窗口内漂移。初始门槛为：加速度标准差 0.008 g、峰峰值 0.06 g、陀螺仪标准差 0.3 度/秒；窗口前后半段均值变化分别不超过 0.003 g 和 0.15 度/秒。加速度阶段不使用陀螺仪偏置或噪声作为验收依据。独立验证要求重力模长误差不超过 0.015 g，陀螺仪各轴均值残差不超过 0.15 度/秒。这些是验收规则，不是所有环境下的精度承诺。
+采样或验证失败时，按提示保持设备静止并重试。校准结果不是所有环境下的精度承诺。
 
-配置保存在 CLI 配置目录下的 `imu/<device_hash>.json` 中，Linux 通常为 `~/.config/openzilo/imu/`。文件记录结构版本、输入数据域、单位、设备哈希、型号、完整固件版本、参数、组件验证状态和创建时间。未知芯片类型为 0。设备、型号、固件和量程必须匹配；固件升级后应重新校准。损坏的配置会明确报错。保存过程使用临时文件、同步和原子替换。可通过 `imu-calibrate --profile FILE` 或 `sensor-stream --calibrated --calibration-profile FILE` 指定文件。
+校准配置保存在本机，并与设备、型号、完整固件版本和量程绑定；固件升级后应重新校准。损坏或不匹配的配置会明确报错。可通过 `imu-calibrate --profile FILE` 或 `sensor-stream --calibrated --calibration-profile FILE` 指定文件。
 
 公开辅助接口包括 `ImuCalibration`、`ImuCalibrationProfile`、`imu_device_key`、`imu_calibration_path`、`load_imu_calibration_profile`、`save_imu_calibration_profile`、`apply_imu_calibration`、`analyze_imu_static_window`、`collect_imu_static_window`、`fit_imu_six_face_calibration`、`fit_imu_gyro_bias` 和 `validate_imu_calibration`。离线应用必须传入未经校正的原始样本，已经校正的批次类型会被拒绝。
 

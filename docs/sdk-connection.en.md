@@ -67,11 +67,11 @@ Common members:
 - `send_command(command, body=b"")`: send without waiting for a response.
 - `request(command, response_command, body=b"", timeout_s=None)`: send and await the specified response.
 - `wait_for_command(command, timeout_s=None)`: await an event or subsequent response.
-- `add_packet_handler(command, handler, queue_packets=True)`: register a synchronous or asynchronous handler. With `False`, the handler exclusively receives this command and no queue copy is retained; do not mix with other handlers or waiters for that command. Exceptions are logged to `openzilo` without affecting other packets. Disconnect cancels unfinished asynchronous handlers.
+- `add_packet_handler(command, handler, queue_packets=True)`: register a synchronous or asynchronous handler. With `False`, the handler exclusively receives this command instead of delivering it through waiting APIs; do not mix with other handlers or waiters for that command. Exceptions are logged to `openzilo` without affecting other packets. Disconnect cancels unfinished asynchronous handlers.
 - `remove_packet_handler(command, handler)`: remove a handler.
 
-Each command queue holds at most 256 packets by default; configure `OpenZiloClient(receive_queue_size=...)` to change it. Overflow clears the backlog and reports `ProtocolError` through waiting APIs instead of treating lost data as success. For callback-only use, prefer `queue_packets=False`. Handlers should return promptly; manage concurrency within asynchronous handlers.
+Slow reception reports `ProtocolError` through waiting APIs. Configure receive capacity with `receive_queue_size`, and return promptly from handlers. For callback-only use, select `queue_packets=False`.
 
-Requests expecting the same response command are serialized. Recording download, automatic reception, frame reads and deletion cannot compete on one connection; conflicts immediately raise `ProtocolError`. Applications combining low-level recording functions must manage the whole session. OTA rejects ordinary commands from other tasks, except automatic time replies. Stop recording and IMU before OTA.
+Recording download, automatic reception, frame reads and deletion cannot compete on one connection; conflicts immediately raise `ProtocolError`. Applications combining low-level recording functions must manage the whole session. OTA rejects ordinary commands from other tasks, except automatic time replies. Stop recording and IMU before OTA.
 
-Failed or cancelled normal downloads attempt an end command with up to two seconds for cleanup. Cleanup failure does not replace the original exception. Without transaction IDs, late responses after a timeout cannot be reliably matched; reconnect before retrying when strict isolation is required.
+Failed or cancelled downloads attempt to end extraction; reconnect before retrying if the device remains busy. Without transaction IDs, late responses after a timeout cannot be reliably matched; reconnect before retrying when strict isolation is required.

@@ -22,8 +22,7 @@ OpenZiloClient
 # 高层 BLE 协议客户端。负责连接、收包重组、请求响应匹配和事件分发。
 
 NusClient
-# 底层 Nordic UART Service BLE 客户端。发送固定按 20 字节分片，
-# 通常只在调试或自定义传输时直接使用。
+# Nordic UART Service BLE 客户端，用于调试或自定义传输。
 
 PacketStream
 # 将 BLE 分片拼成完整 Packet，适合协议调试。
@@ -208,7 +207,7 @@ accel_scale_ppm: tuple[int, int, int]  # 单位增益为 (1000000, 1000000, 1000
 gyro_bias_udps: tuple[int, int, int]
 
 ImuCalibrationProfile
-device_key: str              # 规范化本机设备标识的 SHA-256
+device_key: str              # 用于绑定设备的标识，不应依赖其内容格式
 firmware_version: str        # 精确匹配完整固件版本，不使用版本范围
 model: str
 calibration: ImuCalibration
@@ -234,4 +233,4 @@ applied_components: tuple[str, ...]  # 例如 ("accel",) 或 ("accel", "gyro")
 
 ## FirmwareBundle 固件包元数据
 
-`inspect_firmware_bundle()` 验签成功后返回的不可变对象，包含 `version`、`model`、`board`、`profile`、`security_version`、`source_versions`、`signing_key_id` 和内部 OTA 字节 `payload`。`manifest` 属性每次返回完整已验证清单的字典副本，便于展示或输出 JSON；修改副本不会影响升级数据。离线验签不包含设备适配检查。
+`inspect_firmware_bundle()` 验签成功后返回的不可变对象，包含 `version`、`model`、`board`、`profile`、`security_version`、`source_versions`、`signing_key_id` 和升级数据字节 `payload`。`manifest` 属性每次返回完整已验证清单的字典副本，便于展示或输出 JSON；修改副本不会影响升级数据。离线验签不包含设备适配检查。

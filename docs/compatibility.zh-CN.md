@@ -40,7 +40,7 @@ capabilities = await sdk.get_device_capabilities(ring)
 
 ## 查询结果从哪里来
 
-固件 `V2.001.0002.0000` 与 `V2.001.0002.0001` 的发行包没有功能查询命令，SDK 对已内置的完整版本使用配置匹配。本文说明 SDK 内部的查询与错误处理；远程录音等功能的最低固件版本直接标在对应使用小节前。
+固件 `V2.001.0002.0000` 与 `V2.001.0002.0001` 的发行包没有功能查询命令，SDK 对已内置的完整版本使用配置匹配。本文说明功能查询与错误处理；远程录音等功能的最低固件版本直接标在对应使用小节前。
 
 
 `DeviceCapabilities.source` 表示支持信息的来源：
@@ -51,7 +51,7 @@ capabilities = await sdk.get_device_capabilities(ring)
 | `legacy_profile` | 旧固件没有提供功能列表，SDK 按完整固件版本与型号使用内置配置。 |
 | `unknown` | 没有取得功能列表，也没有匹配的内置配置。 |
 
-当前内置配置对应型号 `Open Zilo`、固件 `V2.001.0002.0001-prod-7fd1dfc9`。其他版本不会只因前缀相同就套用这份配置。查询超时表示没有取得结果，并不表示设备一定缺少该功能。
+旧固件配置仅对 SDK 明确识别的型号和完整版本生效，不能仅按版本前缀推断兼容性。查询超时表示没有取得结果，并不表示设备一定缺少该功能。
 
 ## 如何判断功能是否可用
 
@@ -89,7 +89,7 @@ uv run openzilo device capabilities
 uv run openzilo doctor
 ```
 
-`device capabilities` 输出 JSON 格式的设备功能和录音参数范围；`doctor` 还显示 SDK 版本、源码校验值和 PyAV 安装情况。反馈问题时附上这些信息，并移除设备地址、序列号和私人录音。
+`device capabilities` 输出 JSON 格式的设备功能和录音参数范围；`doctor` 还显示 SDK 版本、运行环境标识和 PyAV 安装情况。反馈问题时附上这些信息，并移除设备地址、序列号和私人录音。
 
 ## 高级连接选项
 

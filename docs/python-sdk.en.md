@@ -38,7 +38,7 @@ The public API is defined by `openzilo.__all__`. Import it with `import openzilo
 | --- | --- | --- |
 | [`await get_device_capabilities(client, timeout_s=None, refresh=False)`](compatibility.en.md) | `DeviceCapabilities` | Query supported features and recording parameter ranges. |
 | [`capabilities.supports(name, major=None, min_minor=0)`](compatibility.en.md) | `bool` | Check a feature and its interface version. |
-| [`get_sdk_identity()`](compatibility.en.md) | `SdkIdentity` | Return the SDK version and source checksum for environment records. |
+| [`get_sdk_identity()`](compatibility.en.md) | `SdkIdentity` | Return the SDK version and environment identifier for environment records. |
 
 Feature discovery results are cleared on disconnect. See [compatibility](compatibility.en.md) for fields.
 

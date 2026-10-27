@@ -67,19 +67,19 @@ Events arrive in this order:
 | `LiveAudioStart` | `session_id`, device recording time, `sample_rate=16000`, `channels=1` or `2`, and `codec=3`. |
 | `LivePcmFrame` | PCM mode: `session_id`, `sample_offset`, `sample_count=320`, `data`, and `pcm_config` containing the actual channels, 16 kHz rate and 16-bit depth. |
 | `LiveAudioData` | Opus mode: `session_id`, `sequence`, compressed `byte_offset`, and original Opus `data`. |
-| `LiveAudioEnd` | Validated packet and byte counts at recording end. PCM mode drains the decoder first. |
+| `LiveAudioEnd` | Validated packet and byte counts at recording end. |
 
-`sample_offset` starts at 0 and advances by 320 per frame, measured per channel. Divide by 16000 for audio-relative time, not host reception time. Mono frames contain 640 bytes; stereo frames 1280, without WAV headers. Channel count matches the device, with no denoising or mixing. `stream.start` is available after START; `stream.end` and `stream.complete` are set only after final validation and decoder drain.
+`sample_offset` starts at 0 and advances by 320 per frame, measured per channel. Divide by 16000 for audio-relative time, not host reception time. Mono frames contain 640 bytes; stereo frames 1280, without WAV headers. Channel count matches the device, with no denoising or mixing. `stream.start` is available after START; `stream.end` and `stream.complete` are set only after validation of the complete recording.
 
 Entering the context waits only for subscription confirmation. `timeout_s` limits subscription and waiting for START separately. `recording_timeout_s` limits reception after START; inter-packet waits are capped at five seconds. A recording is at most 60 seconds and a stream receives one recording; open a new context for the next one.
 
-The application event queue holds 64 events by default. The raw notification queue holds 256 packets by default, configured by client `receive_queue_size`. Slow consumption or notification backlog raises `ProtocolError`; queues do not grow indefinitely or silently drop frames. Decoder state also uses memory. These local buffers cannot throttle the device.
+Consume audio events promptly; slow handling raises `ProtocolError`. Local consumption cannot throttle the device, so pausing reads does not pause recording.
 
 Only a validated `LiveAudioEnd` confirms a complete recording. PCM already delivered can be followed by loss, disconnect, invalid END or decoding failure. Distinguish partial audio from a complete recording. Cancellation and early exit produce no successful END. Empty recordings may contain START and END without audio frames.
 
 Missing PyAV or decoder initialization failure raises `OpusDecoderUnavailable` before subscription; decoding failure raises `AudioDecodeError`. Other protocol, device, timeout and transport exceptions match file reception. Context exit attempts unsubscribe; on failure it logs a warning. Reconnect before more audio or OTA operations. A stream cannot be reused or read by concurrent tasks.
 
-Cancellation partway through a BLE write makes the client reject further writes to avoid leaving a partial protocol packet. Unsubscribe may also fail; reconnect. The SDK does not report this as successful cleanup.
+If the connection becomes unusable after cancellation, reconnect before more audio or update operations.
 
 See [examples/live_pcm.py](../examples/live_pcm.py) for a complete example.
 
@@ -108,7 +108,7 @@ Arguments:
 - `timeout_s`: maximum seconds for subscription and waiting for recording start.
 - `recording_timeout_s`: total limit from START to END, with at most five seconds between packets.
 
-Callbacks may be synchronous or asynchronous and should return quickly. The function assembles received Opus into a complete file. Slow callbacks can fill the bounded queue and fail reception; slow synchronous callbacks also block the event loop. For PCM, use `open_live_audio_stream(output="pcm")`.
+Callbacks may be synchronous or asynchronous and should return quickly. The function assembles received Opus into a complete file. Slow callbacks can cause reception to fail. For PCM, use `open_live_audio_stream(output="pcm")`.
 
 Returns `LiveAudioRecording`; its `data` is a complete OP2C file accepted by `save_audio_bundle()` or `decode_audio_to_wav()`.
 
