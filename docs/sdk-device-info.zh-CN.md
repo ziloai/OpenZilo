@@ -29,3 +29,13 @@ print(info.firmware_version, info.battery_percent)
 返回：`SystemInfo`
 
 常见异常：超时抛出 `TimeoutError`；设备返回错误码抛出 `DeviceError`。
+
+## 连接信号强度
+
+```python
+rssi = await sdk.get_connection_rssi(ring)
+```
+
+返回 `int`，单位 dBm，表示戒指接收主机信号的 RSSI，与扫描 RSSI 不同，不能直接换算距离。命令行使用 `openzilo rssi`。
+
+此功能从固件 `V2.001.0002.0002` 引入，需要设备声明 `connection_rssi` 能力。查询超时后需重新连接再试。

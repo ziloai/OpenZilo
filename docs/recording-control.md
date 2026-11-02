@@ -77,12 +77,14 @@ Read with `get_audio_recording_config()` and write with `set_audio_recording_con
 | Channels | `channels` | 1 or 2 |
 | Bitrate | `bitrate` | 8000–32000 bit/s |
 | Digital gain | `gain_left_q8`, `gain_right_q8` | 0–1024; 256 means 1x |
-| Maximum duration | `max_duration_ms` | 20–60000 ms in multiples of 20 |
+| Maximum duration | `max_duration_ms` | 0 for unlimited; or 20–60000 ms in multiples of 20 |
 | Disconnect handling | `disconnect_policy` | `STOP` or `CONTINUE_SAVING` on device |
 
 Sample rate is fixed at 16 kHz with 20 ms frames. The device also reports allowed ranges, checked by the SDK before writing. Other fixed Opus parameters can be read but not changed through this API.
 
 `CONTINUE_SAVING` requires `FLASH` or `LIVE_AND_FLASH`.
+
+The SDK default for `max_duration_ms` remains 60000. Firmware `V2.001.0002.0002` introduces unlimited recording and falls back to flash when live streaming is unavailable at button-triggered recording start, without changing the configured output mode. Remote starts keep their existing behavior.
 
 ## Stop early or cancel
 

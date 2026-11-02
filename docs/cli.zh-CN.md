@@ -47,6 +47,9 @@ openzilo device use
 # 查看设备信息、电量、固件版本
 openzilo info
 
+# 查看连接信号强度（需要 connection_rssi 能力）
+openzilo rssi
+
 # 进入交互终端
 openzilo shell
 ```
@@ -107,7 +110,7 @@ openzilo audio-stop 123 --cancel
 
 `123` 是示例，请使用状态查询返回的实际会话编号。停止请求的确认不等于文件已经保存，命令会继续等待终态。START 超时后先查询 `audio-status`，避免重复启动。
 
-配置在重连后保留，重启后恢复默认值。`audio-record` 默认使用 Flash 输出和断连停止策略，其他未指定字段沿用设备配置；`--max-duration-ms` 是设备侧时长上限（20–60000 毫秒，20 毫秒步进），`--seconds` 是 CLI 请求停止前等待的时间（0.02–60 秒）。设备上限更短时可能提前结束。
+配置在重连后保留，重启后恢复默认值。`audio-record` 默认使用 Flash 输出和断连停止策略，其他未指定字段沿用设备配置；`--max-duration-ms` 是设备侧时长上限（0 表示不限时，或 20–60000 毫秒，20 毫秒步进），`--seconds` 是 CLI 请求停止前等待的时间（0.02–60 秒）。设备上限更短时可能提前结束。
 
 转换 Speex/Opus 为 WAV 需要可执行的 `ffmpeg`，可以通过 `--ffmpeg /path/to/ffmpeg` 指定。接收、下载和解码已保存录音：
 
@@ -155,7 +158,7 @@ openzilo ota-update --help
 
 ## 兼容诊断
 
-`openzilo --version` 查看 SDK 版本；`openzilo device capabilities` 输出支持的功能、录音参数范围和信息来源；`openzilo doctor` 额外输出 SDK 版本、运行环境标识和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见[兼容说明](compatibility.zh-CN.md)。
+`openzilo --version` 查看 SDK 版本；`openzilo device capabilities` 输出支持的功能、录音参数范围和信息来源；`openzilo doctor` 额外输出 SDK 版本、运行环境标识和音频解码依赖。RSSI、远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见[兼容说明](compatibility.zh-CN.md)。
 
 离线验签并查看签名 OTA ZIP 的完整元数据：
 

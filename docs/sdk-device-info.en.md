@@ -29,3 +29,13 @@ print(info.firmware_version, info.battery_percent)
 Returns: `SystemInfo`.
 
 Common exceptions: `TimeoutError` for timeout, `DeviceError` for a device error code.
+
+## Connection signal strength
+
+```python
+rssi = await sdk.get_connection_rssi(ring)
+```
+
+Returns an `int` in dBm measuring the host signal received by the ring. This differs from scan RSSI and cannot be converted directly to distance. Use `openzilo rssi` from the CLI.
+
+Introduced in firmware `V2.001.0002.0002`; the device must advertise `connection_rssi`. Reconnect before retrying a timed-out query.

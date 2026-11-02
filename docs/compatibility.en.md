@@ -37,7 +37,7 @@ With `async with sdk.OpenZiloClient(...)`, run this before those operations:
 capabilities = await sdk.get_device_capabilities(ring)
 ```
 
-CLI remote recording, live audio, IMU and OTA commands query features automatically. Basic information, logs, existing-file downloads and time replies do not depend on discovery.
+CLI RSSI, remote recording, live audio, IMU and OTA commands query features automatically. Basic information, logs, existing-file downloads and time replies do not depend on discovery.
 
 ## Where support information comes from
 
@@ -61,6 +61,7 @@ Use `capabilities.supports("FEATURE_NAME")`. Common feature names:
 | Feature | Purpose |
 | --- | --- |
 | `recording_control` | Start, stop and configure recordings. |
+| `connection_rssi` | Read the host signal RSSI received by the ring. |
 | `live_audio` | Receive live audio. |
 | `imu` | Receive accelerometer and gyroscope data. |
 | `key_events` | Receive button events. |

@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import asyncio
+import math
 import time
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
@@ -19,6 +21,7 @@ from ._protocol import (
 )
 from ._transport import BleDeviceInfo, DEFAULT_SCAN_TIMEOUT_S
 from ._client import DEFAULT_COMMAND_TIMEOUT_S, OpenZiloClient
+from ._errors import ProtocolError, TimeoutError, TransportError
 
 
 @dataclass(frozen=True)
@@ -98,6 +101,44 @@ async def get_system_info(
         timeout_s=timeout_s,
     )
     return parse_system_info(packet.body)
+
+
+async def get_connection_rssi(
+    client: OpenZiloClient,
+    *,
+    timeout_s: float | None = None,
+) -> int:
+    """Read the ring's received connection signal strength in dBm."""
+    from ._compatibility import get_device_capabilities
+    if timeout_s is not None and (not math.isfinite(timeout_s) or timeout_s <= 0):
+        raise ValueError("timeout_s must be finite and positive")
+    await get_device_capabilities(client, timeout_s=timeout_s)
+    async with client._rssi_lock:
+        connection = client._connection_token
+        if connection is not None and client._rssi_failed_connection is connection:
+            raise TransportError("Reconnect before retrying an ambiguous RSSI query")
+        try:
+            packet = await client.request(
+                SystemCommand.GET_RSSI, SystemCommand.RSSI_RESP, timeout_s=timeout_s,
+            )
+            if connection is None or connection is not client._connection_token:
+                raise TransportError("Connection changed during RSSI query")
+            reader = BinaryReader(packet.body)
+            error = reader.u16()
+            if error:
+                if reader.remaining:
+                    raise ProtocolError("Invalid RSSI error response length")
+                ensure_success(error)
+            if reader.remaining != 1:
+                raise ProtocolError("Invalid RSSI response length")
+            rssi = int.from_bytes(reader.bytes(1), "big", signed=True)
+            if not -127 <= rssi <= 20:
+                raise ProtocolError("RSSI is unavailable or outside the supported range")
+            return rssi
+        except (TimeoutError, ProtocolError, TransportError, asyncio.CancelledError):
+            # No transaction ID distinguishes a late reply from a new query.
+            client._rssi_failed_connection = connection
+            raise
 
 
 def parse_system_info(body: bytes) -> SystemInfo:

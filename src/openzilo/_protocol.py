@@ -23,6 +23,8 @@ class SystemCommand(IntEnum):
     INFO_RESP = 0x0102
     GET_CAPABILITIES = 0x0105
     CAPABILITIES_RESP = 0x0106
+    GET_RSSI = 0x0107
+    RSSI_RESP = 0x0108
     ERROR_RESP = 0x01FF
 
 

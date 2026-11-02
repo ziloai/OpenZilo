@@ -44,6 +44,7 @@ from ._device import (
     enable_time_sync,
     get_log_storage,
     get_system_info,
+    get_connection_rssi,
     LogStorageInfo,
     parse_system_info,
     read_log_chunk,
@@ -165,6 +166,7 @@ from ._imu_profiles import (
 )
 
 __all__ = [
+    "get_connection_rssi",
     "ImuCalibration", "ImuStaticWindow", "CalibratedImuSample", "CalibratedImuBatch",
     "ImuCalibrationProfile", "CalibratedImuStream", "apply_imu_calibration", "imu_device_key",
     "imu_calibration_path", "load_imu_calibration_profile", "save_imu_calibration_profile",

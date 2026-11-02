@@ -70,6 +70,8 @@ class OpenZiloClient:
         self._disconnected.set()
         self._connection_ready = asyncio.Event()
         self._connection_token: object | None = None
+        self._rssi_lock = asyncio.Lock()
+        self._rssi_failed_connection: object | None = None
         self._time_sync_enabled = False
         self._write_lock = asyncio.Lock()
         self._write_interrupted = False
