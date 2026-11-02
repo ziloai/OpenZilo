@@ -67,11 +67,11 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
 - `send_command(command, body=b"")`：只发送命令，不等待响应。
 - `request(command, response_command, body=b"", timeout_s=None)`：发送并等待指定响应。
 - `wait_for_command(command, timeout_s=None)`：等待设备主动上报或后续响应。
-- `add_packet_handler(command, handler, queue_packets=True)`：注册异步或同步包处理器。设为 `False` 时独占该命令的接收，不再保留队列副本；不能与同命令的其他处理器或等待接口混用。处理器抛出的异常会记录到 `openzilo` 日志，不会影响其他包；断线时会取消未完成的异步处理器。
+- `add_packet_handler(command, handler, queue_packets=True)`：注册异步或同步包处理器。设为 `False` 时独占该命令的接收，不再通过等待接口接收该命令；不能与同命令的其他处理器或等待接口混用。处理器抛出的异常会记录到 `openzilo` 日志，不会影响其他包；断线时会取消未完成的异步处理器。
 - `remove_packet_handler(command, handler)`：移除处理器。
 
-接收队列每个命令默认最多 256 个包，可通过 `OpenZiloClient(receive_queue_size=...)` 调整。溢出会清理该命令的积压包，并通过等待接口报告 `ProtocolError`，不会将数据缺失当作成功。只使用回调时建议 `queue_packets=False`；处理器应尽快返回，异步处理器自行控制处理并发。
+接收处理过慢会通过等待接口报告 `ProtocolError`。可用 `receive_queue_size` 调整接收容量；处理器应尽快返回。仅使用回调时可选择 `queue_packets=False`。
 
-同一响应命令的 `request()` 会串行执行。录音下载、自动接收、逐帧读取和清空等高层操作不能竞争同一连接，冲突时立即抛出 `ProtocolError`。手动组合低层录音接口时，应用仍需管理整段会话。OTA 期间拒绝其他任务的普通命令，自动校时应答除外；开始 OTA 前应停止录音及 IMU。
+录音下载、自动接收、逐帧读取和清空等高层操作不能竞争同一连接，冲突时立即抛出 `ProtocolError`。手动组合低层录音接口时，应用仍需管理整段会话。OTA 期间拒绝其他任务的普通命令，自动校时应答除外；开始 OTA 前应停止录音及 IMU。
 
-普通下载失败或取消后会尽力发送结束命令，清理最多等待 2 秒，清理失败不覆盖原始异常。协议没有事务 ID，同命令超时后的迟到响应无法可靠归属；需要严格隔离时应重连后再发起新请求。
+普通下载失败或取消后会尝试结束提取；若设备仍忙，请重连后重试。协议没有事务 ID，同命令超时后的迟到响应无法可靠归属；需要严格隔离时应重连后再发起新请求。

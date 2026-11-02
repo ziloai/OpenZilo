@@ -67,19 +67,19 @@ async with sdk.open_live_audio_stream(
 | `LiveAudioStart` | `session_id`、设备录音时间、`sample_rate=16000`、`channels=1` 或 `2`、`codec=3` |
 | `LivePcmFrame` | PCM 模式：`session_id`、`sample_offset`、`sample_count=320`、`data`、`pcm_config` 包含实际声道数、16 kHz 采样率和 16 位采样深度 |
 | `LiveAudioData` | Opus 模式：`session_id`、`sequence`、压缩字节 `byte_offset`、原始 Opus `data` |
-| `LiveAudioEnd` | 录音结束事件，包含已检查的包数与字节数；PCM 模式会先输出解码器中剩余的音频 |
+| `LiveAudioEnd` | 录音结束事件，包含已检查的包数与字节数。 |
 
-`sample_offset` 从 0 开始，每帧增加 320，表示每声道的采样位置；`sample_offset / 16000` 是相对音频时间，不是主机接收时间。每帧单声道为 640 字节、双声道为 1280 字节，不含 WAV 文件头。声道数与设备发送的一致，不做降噪或自动混音。`stream.start` 在收到 START 后可读，`stream.end` 和 `stream.complete` 仅在整段校验及 PCM 尾部处理成功后设置。
+`sample_offset` 从 0 开始，每帧增加 320，表示每声道的采样位置；`sample_offset / 16000` 是相对音频时间，不是主机接收时间。每帧单声道为 640 字节、双声道为 1280 字节，不含 WAV 文件头。声道数与设备发送的一致，不做降噪或自动混音。`stream.start` 在收到 START 后可读，`stream.end` 和 `stream.complete` 仅在整段录音校验成功后设置。
 
 进入上下文只等待订阅确认。`timeout_s` 分别限制订阅和等待 START；`recording_timeout_s` 限制 START 之后的接收，总包间等待上限为 5 秒。当前设备一段最多 60 秒，流接收一段后结束；下一段请重新打开上下文。
 
-应用事件队列默认最多 64 个事件；原始通知队列默认最多 256 包，由客户端 `receive_queue_size` 控制。应用处理音频太慢或 BLE 通知积压时抛出 `ProtocolError`，不会无限缓存或静默丢帧；实际内存也包含解码器的固定状态。两者都是本机缓冲，不能反向控制设备发送速度。
+应用应及时消费音频事件，处理过慢会导致 `ProtocolError`。本机接收速度不能控制设备发送速度，不能依靠暂停读取来暂停录音。
 
 收到并通过检查的 `LiveAudioEnd` 后，才能确认整段录音完整。已输出的 PCM 可能在随后遇到丢包、断线、错误 END 或解码失败，应用应区分尚未收完的音频和完整录音。取消与提前退出不产生成功 END；尚未结束的数据应视为部分音频。空录音可以包含 START 和 END 而没有音频帧。
 
 缺少 PyAV 或无法初始化解码器时抛出 `OpusDecoderUnavailable`，在开启订阅前失败；解码失败抛出 `AudioDecodeError`。协议、设备、超时和断线异常与文件接收相同。退出会尝试退订；退订失败会记录警告，请断开重连后再进行音频操作或 OTA。流对象不可复用，也不能同时由多个任务读取。
 
-如果取消发生在 BLE 分片写入中途，客户端会拒绝后续写入，以防半个协议包破坏通信；此时退订也可能失败，必须断开重连。SDK 不把这种情况报告为清理成功。
+取消操作后若连接无法继续使用，请断开重连，再执行音频或升级操作。
 
 完整例子见 [examples/live_pcm.py](../examples/live_pcm.py)。
 
@@ -108,7 +108,7 @@ recording = await sdk.receive_live_audio_file(
 - `timeout_s`：订阅和等待录音开始的最长秒数。
 - `recording_timeout_s`：从开始到结束的总上限；两个包之间最多等待 5 秒。
 
-两个回调可以是同步函数或协程，应尽快返回。该接口将实时收到的 Opus 音频整理成完整文件。回调过慢可能使接收队列积满，导致接收失败。同步耗时回调还会阻塞事件循环。需要 PCM 时使用 `open_live_audio_stream(output="pcm")`。
+两个回调可以是同步函数或协程，应尽快返回。该接口将实时收到的 Opus 音频整理成完整文件。回调处理过慢可能导致接收失败。需要 PCM 时使用 `open_live_audio_stream(output="pcm")`。
 
 返回：`LiveAudioRecording`，其中 `data` 是完整 OP2C 文件，可直接传给 `save_audio_bundle()` 或 `decode_audio_to_wav()`。
 
