@@ -1308,7 +1308,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1714,7 +1714,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 </code></pre></div>
 <p>Use <code>uv add</code> or <code>uv remove</code> to change dependencies, and commit the updated <code>uv.lock</code>. For hardware-dependent changes, describe the applicable firmware and device in the PR.</p>
 <h2 id="documentation-changes">Documentation changes<a class="headerlink" href="#documentation-changes" title="Permanent link">&para;</a></h2>
-<p>Write documentation in Markdown. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.</p>
+<p>Write Markdown and keep Chinese and English synchronized. Document public APIs, wire formats, usage requirements and observable behavior. Omit threads, memory and queue layouts, internal build identities, release infrastructure and internal validation records. State device, firmware and SDK requirements explicitly; a protocol version alone does not establish feature support.</p>
 <h2 id="submission-contents">Submission contents<a class="headerlink" href="#submission-contents" title="Permanent link">&para;</a></h2>
 <p>Use placeholder addresses in examples. Remove real device addresses, serial numbers, CPUIDs, private recordings and credentials before submitting. Do not include device captures, generated audio, firmware, APKs or CAD files in SDK changes.</p>
 <p>Software and documentation contributions use MPL-2.0. Hardware designs published in their own repository use its hardware license. Report vulnerabilities privately as described in the <a href="security.html">security policy</a>.</p>

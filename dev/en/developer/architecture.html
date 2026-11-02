@@ -30,7 +30,7 @@
     
     
       
-        <title>OpenZilo SDK architecture and data flow - OpenZilo SDK v0.6.2</title>
+        <title>OpenZilo SDK data flow - OpenZilo SDK v0.6.2</title>
       
     
     
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              OpenZilo SDK architecture and data flow
+              OpenZilo SDK data flow
             
           </span>
         </div>
@@ -1319,7 +1319,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1336,7 +1336,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1362,58 +1362,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#module-organization" class="md-nav__link">
+  <a href="#connections-and-packets" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Module organization
+        Connections and packets
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Module organization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#live-audio-streams" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Live audio streams
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#from-ble-notifications-to-sdk-apis" class="md-nav__link">
+  <a href="#live-audio" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        From BLE notifications to SDK APIs
+        Live audio
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="From BLE notifications to SDK APIs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#protocol-v4-packet-boundaries" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Protocol v4 packet boundaries
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1429,10 +1395,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recording-transfers" class="md-nav__link">
+  <a href="#recording-transfer-and-saving" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Recording transfers
+        Recording transfer and saving
       </span>
     </span>
   </a>
@@ -1440,10 +1406,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from-speex--opus-to-wav" class="md-nav__link">
+  <a href="#audio-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        From Speex / Opus to WAV
+        Audio conversion
       </span>
     </span>
   </a>
@@ -1455,17 +1421,6 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         IMU and motion events
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Debugging checklist
       </span>
     </span>
   </a>
@@ -1808,58 +1763,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#module-organization" class="md-nav__link">
+  <a href="#connections-and-packets" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Module organization
+        Connections and packets
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Module organization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#live-audio-streams" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Live audio streams
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#from-ble-notifications-to-sdk-apis" class="md-nav__link">
+  <a href="#live-audio" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        From BLE notifications to SDK APIs
+        Live audio
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="From BLE notifications to SDK APIs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#protocol-v4-packet-boundaries" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Protocol v4 packet boundaries
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1875,10 +1796,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recording-transfers" class="md-nav__link">
+  <a href="#recording-transfer-and-saving" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Recording transfers
+        Recording transfer and saving
       </span>
     </span>
   </a>
@@ -1886,10 +1807,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from-speex--opus-to-wav" class="md-nav__link">
+  <a href="#audio-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        From Speex / Opus to WAV
+        Audio conversion
       </span>
     </span>
   </a>
@@ -1901,17 +1822,6 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         IMU and motion events
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Debugging checklist
       </span>
     </span>
   </a>
@@ -1938,7 +1848,7 @@
   
 
 
-<h1 id="openzilo-sdk-architecture-and-data-flow">OpenZilo SDK architecture and data flow<a class="headerlink" href="#openzilo-sdk-architecture-and-data-flow" title="Permanent link">&para;</a></h1>
+<h1 id="openzilo-sdk-data-flow">OpenZilo SDK data flow<a class="headerlink" href="#openzilo-sdk-data-flow" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Device applicability</p>
 <p>This document applies to <strong>OpenZilo Q</strong>.</p>
@@ -1947,118 +1857,18 @@
 <p class="admonition-title">Connection requirements</p>
 <p>Your computer needs Bluetooth Low Energy (BLE). The SDK communicates with the ring through NUS and supports protocol v4.</p>
 </div>
-<p>This page explains BLE and recording processing in the current SDK. See the <a href="../guide/index.html">ring guide</a> for device operations and <a href="features.html">feature requirements</a> for firmware requirements.</p>
-<p>It covers receiving data, downloading files and producing WAV. Function signatures and examples are in the <a href="sdk.html">API index</a>; commands and fields are in the <a href="protocol.html">protocol reference</a>.</p>
-<h2 id="module-organization">Module organization<a class="headerlink" href="#module-organization" title="Permanent link">&para;</a></h2>
-<p>Applications import public names from <code>openzilo.__all__</code>. Implementation modules are private and underscore-prefixed:</p>
-<table>
-<thead>
-<tr>
-<th>Module</th>
-<th>Responsibility</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>_errors</code></td>
-<td>Exceptions and device error codes.</td>
-</tr>
-<tr>
-<td><code>_protocol</code></td>
-<td>V4 headers, CRC, command numbers and binary I/O.</td>
-</tr>
-<tr>
-<td><code>_transport</code></td>
-<td>Bleak-based NUS discovery, connection and chunked writes.</td>
-</tr>
-<tr>
-<td><code>_client</code></td>
-<td><code>OpenZiloClient</code> request matching and packet dispatch.</td>
-</tr>
-<tr>
-<td><code>_tasks</code></td>
-<td>Asyncio deadline and background callback helpers.</td>
-</tr>
-<tr>
-<td><code>_device</code></td>
-<td>Scanning, connections, system information, logs and time synchronization.</td>
-</tr>
-<tr>
-<td><code>_ota</code></td>
-<td>Application firmware updates.</td>
-</tr>
-<tr>
-<td><code>_compatibility</code></td>
-<td>Feature discovery, interface version and recording parameter checks.</td>
-</tr>
-<tr>
-<td><code>_recording</code></td>
-<td>Remote recording, status and configuration.</td>
-</tr>
-<tr>
-<td><code>_identity</code>, <code>_version</code></td>
-<td>SDK version and source checksum.</td>
-</tr>
-<tr>
-<td><code>_audio</code></td>
-<td>Stored recording queries, download and automatic reception.</td>
-</tr>
-<tr>
-<td><code>_live_audio</code></td>
-<td>Live recording subscription and reception.</td>
-</tr>
-<tr>
-<td><code>_codec</code></td>
-<td>Speex, OP2C and WAV conversion.</td>
-</tr>
-<tr>
-<td><code>_pcm</code></td>
-<td>Optional stateful PyAV Opus decoding and PCM framing, independent of BLE.</td>
-</tr>
-<tr>
-<td><code>_sensor</code></td>
-<td>IMU reporting and motion events.</td>
-</tr>
-<tr>
-<td><code>_cli</code></td>
-<td><code>python -m openzilo</code> CLI.</td>
-</tr>
-</tbody>
-</table>
-<p><code>_errors</code> and <code>_protocol</code> do not depend on BLE. <code>_codec</code> is also independent of connections and can process files offline.</p>
-<h3 id="live-audio-streams">Live audio streams<a class="headerlink" href="#live-audio-streams" title="Permanent link">&para;</a></h3>
+<p>This page explains receiving device data, saving recordings and converting audio. See the <a href="sdk.html">API index</a> for calls and the <a href="protocol.html">protocol reference</a> for wire layouts.</p>
+<h2 id="connections-and-packets">Connections and packets<a class="headerlink" href="#connections-and-packets" title="Permanent link">&para;</a></h2>
+<p>Use <code>connect_ring()</code> to connect and discover features. With <code>OpenZiloClient</code>, explicitly query features as described in <a href="compatibility.html">compatibility</a>. Connections use device addresses, or UUIDs on macOS.</p>
+<p>BLE notification boundaries are not protocol packet boundaries. SDK APIs return complete responses or events; custom transports can use <code>PacketStream</code> to reconstruct packets. Invalid headers, CRC or fields raise <code>ProtocolError</code>; disconnection during a wait raises <code>TransportError</code>.</p>
+<h2 id="live-audio">Live audio<a class="headerlink" href="#live-audio" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Firmware version</p>
 <p>This usage requires firmware <strong>V2.001.0002.0001 or later</strong>.</p>
 </div>
-<p><code>open_live_audio_stream()</code> manages subscription and cleanup with an async context, yielding START, audio frames and END for one recording. Context entry confirms subscription; users still trigger recording with the button. One task reads the stream. Context exit aborts unfinished reception and attempts unsubscribe.</p>
-<div class="highlight"><pre><span></span><code>BLE notifications -&gt; bounded _PacketInbox -&gt; background receiver: session, sequence and offset checks
-                                        -&gt; Opus events
-                                        -&gt; optional stateful decode/resample -&gt; 20 ms PCM
-                                        -&gt; bounded event queue -&gt; application async for
-</code></pre></div>
-<p>The receiver exclusively owns audio operations, excluding downloads, other receivers and OTA. Client <code>receive_queue_size</code> controls the raw queue (default 256); stream <code>queue_size</code> controls output events (default 64). Both report overflow errors instead of dropping data silently. Pausing local consumption cannot stop the ring from transmitting.</p>
-<p>The optional <code>pcm</code> extra supplies PyAV. Each recording creates a stateful decoder/resampler and processes packets sequentially in a worker thread. Output is 16 kHz signed 16-bit little-endian PCM, 320 samples per channel per frame. Channel count follows the recording, with stereo interleaved L/R. After valid END, the resampler drains and total samples are checked. No per-packet files or ffmpeg processes are created.</p>
-<p>Streaming does not accumulate an entire recording. <code>receive_live_audio_file()</code> reads the same validated Opus events and assembles OP2C. Only a checked END establishes completeness; live-only data lost after an error cannot be recovered from flash.</p>
-<h2 id="from-ble-notifications-to-sdk-apis">From BLE notifications to SDK APIs<a class="headerlink" href="#from-ble-notifications-to-sdk-apis" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>Ring Nordic UART Service
-  ↓  BLE notifications / characteristic writes
-NusClient                 scan, connect, subscribe, chunk writes
-  ↓
-PacketStream              reconstruct v4 packets, check header and CRC
-  ↓
-OpenZiloClient            dispatch responses and events by command
-  ↓
-get_system_info() / download_audio_file() / wait_sensor_data() ...
-</code></pre></div>
-<p><code>NusClient</code> uses <code>bleak</code> and connects by address, without relying on advertising names. NUS RX writes contain at most 20 bytes per chunk; system MTU negotiation remains enabled. Ring TX notifications have no matching 20-byte guarantee.</p>
-<p><code>PacketStream.feed()</code> accepts arbitrary notification sizes, including partial or consecutive packets. It uses <code>body_length</code> to extract packets and skips bytes before the magic marker. Invalid headers, CRC or lengths raise <code>ProtocolError</code>. Bodies are limited to 5120 bytes.</p>
-<p><code>OpenZiloClient</code> maintains per-command queues. <code>request()</code> serializes calls expecting the same response, drains stale queued packets, sends and waits. <code>wait_for_command()</code> receives events such as <code>0x0605</code>. Long-lived listeners use <code>add_packet_handler()</code>, as time synchronization does. Queue capacity defaults to 256; overflow clears backlog and raises <code>ProtocolError</code>. Callback-only handlers use <code>queue_packets=False</code> for exclusive delivery without queue copies. BLE disconnect during waits raises <code>TransportError</code>.</p>
-<h3 id="protocol-v4-packet-boundaries">Protocol v4 packet boundaries<a class="headerlink" href="#protocol-v4-packet-boundaries" title="Permanent link">&para;</a></h3>
-<p>The fixed header is 11 bytes:</p>
-<div class="highlight"><pre><span></span><code>magic:u8=0x3F | version:u16=4 | command:u16 | body_length:u32 | body_crc:u16 | body
-</code></pre></div>
-<p>Header and body integers are big-endian. CRC16 covers <code>body</code> only and is 0 for an empty body. <code>BinaryReader</code> and <code>BinaryWriter</code> handle these fields. Speex frame lengths are separate two-byte little-endian file fields, not protocol headers. See the <a href="protocol.html">protocol reference</a>.</p>
+<p><code>open_live_audio_stream()</code> manages subscription with <code>async with</code> and yields recording start, audio and end events through <code>async for</code>. Subscription does not start recording; use the button or a remote command. Exiting attempts to unsubscribe.</p>
+<p>PCM output is 16 kHz signed 16-bit little-endian data, with 320 samples per channel per frame and interleaved left/right stereo. Opus output preserves compressed packets. Process events promptly; slow consumption fails explicitly.</p>
+<p>Only a validated end event confirms a complete recording. Lost live-only audio cannot be retransmitted; simultaneous saving provides a device copy to download after saving finishes. Do not download or update firmware concurrently with live reception. See <a href="../sdk/live-audio.html">live audio</a>.</p>
 <h2 id="recording-formats">Recording formats<a class="headerlink" href="#recording-formats" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Firmware version</p>
@@ -2070,7 +1880,7 @@ get_system_info() / download_audio_file() / wait_sensor_data() ...
 [length:u16 little-endian][Speex payload:length bytes]
 ...
 </code></pre></div>
-<p>For example, <code>14 00</code> means 20 payload bytes. Read each length rather than splitting at fixed 20-byte boundaries. Speex Wideband frames contain 320 mono samples at 16 kHz (20 ms). Individual packets are limited to 540 bytes; default decoded PCM is 16 kHz mono 16-bit.</p>
+<p>For example, <code>14 00</code> means 20 payload bytes. Read each length rather than splitting at fixed 20-byte boundaries. Speex Wideband frames contain 320 mono samples at 16 kHz (20 ms). Default decoded PCM is 16 kHz mono 16-bit.</p>
 <p>OP2C starts with a 12-byte little-endian header followed by length-prefixed Opus packets:</p>
 <div class="highlight"><pre><span></span><code>magic:"OP2C" | version:u16=1 | channels:u16=1 or 2 | sample_rate:u16=16000 | frame_samples:u16=320
 [length:u16 little-endian][Opus payload:length bytes]
@@ -2078,135 +1888,46 @@ get_system_info() / download_audio_file() / wait_sensor_data() ...
 </code></pre></div>
 <p>Each Opus packet carries 20 ms at 16 kHz with the header's channels, in 1–100 bytes. A recording has at most 3000 packets (60 seconds), without trailing padding or terminators.</p>
 <p>Join <code>0x0505.data</code> by <code>frame_offset</code>. The file data excludes device file-management metadata; <code>AudioFileInfo.data_size</code> is its byte count. For Speex, data starts with the first length field. SDK <code>.bin</code> output preserves the original format for later decoding.</p>
-<h2 id="recording-transfers">Recording transfers<a class="headerlink" href="#recording-transfers" title="Permanent link">&para;</a></h2>
+<h2 id="recording-transfer-and-saving">Recording transfer and saving<a class="headerlink" href="#recording-transfer-and-saving" title="Permanent link">&para;</a></h2>
+<p><code>download_audio_file()</code> downloads saved recordings. <code>receive_auto_audio_file()</code> waits for a save notification or a legacy post-save transfer. Pass the returned audio to <code>save_audio_bundle()</code>. OP2C files from live reception use the same saving and decoding APIs.</p>
+<p>For automatic reception, connect and start waiting before recording finishes. If a transfer was missed, query the recording count and download the saved file. Run downloads, automatic reception and live reception sequentially on a connection. See <a href="../sdk/downloads.html">recording downloads</a>.</p>
+<h2 id="audio-conversion">Audio conversion<a class="headerlink" href="#audio-conversion" title="Permanent link">&para;</a></h2>
+<p><code>save_audio_bundle()</code> preserves the raw <code>.bin</code> and attempts to produce WAV. Converting saved Speex/OP2C requires <code>ffmpeg</code>; live PCM requires the optional <code>pcm</code> dependency. Raw files remain available if decoding fails.</p>
 <table>
 <thead>
 <tr>
-<th>Entry point</th>
-<th>Device interaction</th>
-<th>SDK API</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Normal extraction</td>
-<td><code>0x0503 → 0x0504</code> metadata, repeated <code>0x0506 → 0x0505</code> by offset, then <code>0x0507 → 0x0508</code></td>
-<td><code>download_audio_file(..., quick=False)</code></td>
-</tr>
-<tr>
-<td>Fast extraction</td>
-<td><code>0x0509 → 0x0504</code>, then consecutive <code>0x0505</code></td>
-<td><code>download_audio_file(..., quick=True)</code>, default</td>
-</tr>
-<tr>
-<td><code>V2.001.0002.0000</code> post-save push</td>
-<td>Consecutive <code>0x0505</code>, without initial <code>0x0504</code></td>
-<td><code>receive_auto_audio_file()</code></td>
-</tr>
-<tr>
-<td><code>V2.001.0002.0001</code> post-save notification</td>
-<td>Device sends <code>0x050A</code>; SDK downloads normally</td>
-<td><code>receive_auto_audio_file()</code></td>
-</tr>
-<tr>
-<td>Live recording</td>
-<td>Subscribe <code>0x050D → 0x050E</code>; button recording sends <code>0x050F</code>, consecutive <code>0x0510</code>, then <code>0x0511</code></td>
-<td><code>receive_live_audio_file()</code></td>
-</tr>
-</tbody>
-</table>
-<p>Each <code>0x0505</code> has a file index and offset. Assembly skips duplicate overlap. Gaps or timeouts in fast transfer trigger <code>0x0506</code> recovery; more than three unsuccessful recovery attempts raise <code>ProtocolError</code>. Output is truncated to <code>data_size</code>. Device data chunks are at most 4096 bytes; SDK bodies are limited to 5120.</p>
-<p>Legacy push happens after saving, with no initial extraction request. <code>receive_auto_audio_file()</code> selects the first frame's index and returns <code>(file_index, raw_audio)</code>. For missing data it queries metadata, checks file length and recovers by offset, failing rather than returning incomplete audio.</p>
-<p>The <code>0x050A</code> save notification carries a file index. The SDK performs normal extraction and sends <code>0x0507</code> to release the file, including on errors.</p>
-<p>Live-only audio is not stored and cannot be retransmitted. Simultaneous saving permits downloading a completed device copy. Live reception validates session, sequence, offsets and END counts, rejecting incomplete audio. It packages Opus as OP2C for the same decoding path used by downloaded files.</p>
-<p>Connect before automatic transmission begins. <code>receive_auto_audio_file()</code>, <code>download_audio_file()</code> and <code>read_audio_frame()</code> share <code>0x0505</code>; concurrent use is rejected with <code>ProtocolError</code>. If push was missed, query the count and download by index.</p>
-<h2 id="from-speex--opus-to-wav">From Speex / Opus to WAV<a class="headerlink" href="#from-speex--opus-to-wav" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>Speex: .bin -&gt; read frame lengths -&gt; Speex payload -&gt; temporary Ogg Speex
-            -&gt; ffmpeg s16le PCM -&gt; add RIFF/WAV header -&gt; .wav
-OP2C:  .bin -&gt; validate header and packet lengths -&gt; Opus -&gt; temporary Ogg Opus
-            -&gt; ffmpeg 16 kHz mono/stereo s16le PCM -&gt; add RIFF/WAV header -&gt; .wav
-</code></pre></div>
-<p>OP2C decoding follows its header's channel count; a caller-supplied <code>pcm_config</code> cannot override it. Missing ffmpeg raises <code>OpusDecoderUnavailable</code> on the Opus path.</p>
-<p><code>save_audio_bundle()</code> writes raw <code>.bin</code> first, then attempts WAV. The raw file survives missing ffmpeg or decode failure, reported as <code>SpeexDecoderUnavailable</code>, <code>OpusDecoderUnavailable</code> or <code>AudioDecodeError</code>.</p>
-<p><code>build_playable_audio()</code> returns existing WAV unchanged and recognizes Ogg Speex or raw Speex without lengths. <code>source_type</code> may be <code>wav</code>, <code>ogg-speex</code>, <code>packet-speex</code> or <code>raw-speex</code>; OP2C returns <code>opus-mono</code> or <code>opus-stereo</code>. Only raw-Speex fallback uses <code>quality</code> and <code>bits_size</code>: quality 3 estimates 20-byte frames, while explicit <code>bits_size</code> overrides that estimate.</p>
-<p>For legacy 1026-byte outer blocks, pass <code>allow_framed_blocks=True</code>. Low-level <code>parse_packetized_speex_stream()</code> allows them by default; higher-level decoding and saving APIs require explicit opt-in.</p>
-<p><code>build_ogg_speex()</code> constructs a temporary container with <code>speex-1.2.1</code>, Wideband, 16 kHz mono, 320 samples per frame, one frame per packet, and vendor <code>openzilo-python</code>. Granule position advances by 320 per packet. ffmpeg emits s16le; <code>build_wav_from_pcm()</code> adds a 44-byte header. If one packet decodes to multiple evenly sized frames, <code>normalize_decoded_speex_pcm()</code> retains only the first. Intermediate Ogg files are not saved separately by default.</p>
-<table>
-<thead>
-<tr>
-<th>File/data</th>
+<th>File or data</th>
 <th>Content</th>
-<th>Directly playable?</th>
+<th>Playback</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Device <code>.bin</code></td>
-<td>Length-prefixed Speex or OP2C</td>
-<td>No</td>
+<td><code>.bin</code></td>
+<td>Speex frames or OP2C</td>
+<td>Convert with the SDK</td>
 </tr>
 <tr>
 <td><code>.spx</code> / <code>.ogg</code></td>
-<td>Speex in Ogg</td>
-<td>With a Speex-capable player</td>
+<td>Ogg Speex audio</td>
+<td>Use a compatible player</td>
 </tr>
 <tr>
-<td><code>s16le</code> PCM</td>
-<td>Unwrapped 16-bit samples</td>
-<td>Requires sample rate and channels</td>
+<td>PCM</td>
+<td>Samples without a container</td>
+<td>Specify rate, bit depth and channels</td>
 </tr>
 <tr>
 <td><code>.wav</code></td>
-<td>PCM with RIFF/WAV header</td>
-<td>Yes</td>
+<td>Playable audio file</td>
+<td>Use a standard player</td>
 </tr>
 </tbody>
 </table>
-<p>Changing extensions does not convert formats. Extract, wrap and decode the Speex or Opus packets to produce WAV.</p>
+<p>Changing an extension does not convert a format. OP2C decoding follows the header's channel count. See <a href="../sdk/audio-decoding.html">audio decoding</a> for parameters and errors.</p>
 <h2 id="imu-and-motion-events">IMU and motion events<a class="headerlink" href="#imu-and-motion-events" title="Permanent link">&para;</a></h2>
-<p>Firmware <code>V2.001.0002.0001</code> starts capture and reports on <code>start_sensor_report()</code>, and stops capture on <code>stop_sensor_report()</code> or disconnect. Subscribe again after reconnecting. Firmware <code>V2.001.0002.0000</code> needs gesture mode first and can retain local detection after BLE reports stop.</p>
-<p>The SDK accepts two successful <code>0x0605</code> formats:</p>
-<ul>
-<li>Single sample: <code>error_code:u16 + sequence:u32 + timestamp_ms:u32 + six_axes:i16*6</code>, 22 bytes.</li>
-<li>Batch: <code>error_code:u16 + sequence_start:u32 + frame_count:u16 + sample_size:u16 + samples</code>, <code>10 + 16*N</code> bytes.</li>
-</ul>
-<p>Both return <code>SensorDataBatch</code>, with <code>frame_count=1</code> for single-sample input. The event layouts below are retained in <code>V2.001.0002.0000</code> and <code>V2.001.0002.0001</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Event</th>
-<th>Body</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>0x0701</code></td>
-<td>Physical double tap</td>
-<td><code>timestamp_ms:u32</code>, milliseconds since boot</td>
-</tr>
-<tr>
-<td><code>0x0703</code></td>
-<td>Double button press</td>
-<td><code>u32</code> device seconds; SDK retains <code>timestamp_ms</code></td>
-</tr>
-<tr>
-<td><code>0x0704</code></td>
-<td>Single button press</td>
-<td><code>u32</code> device seconds; SDK retains <code>timestamp_ms</code></td>
-</tr>
-</tbody>
-</table>
-<p>Firmware <code>V2.001.0002.0001</code> detects taps using IMU data enabled by subscription, and single presses (<code>0x0704</code>) no longer switch modes. Firmware <code>V2.001.0002.0000</code> detects taps in gesture mode and uses single presses for mode switching. LEDs are local indicators without an SDK query.</p>
-<p>Restart reports after reconnection. Local capture restoration depends on firmware.</p>
-<h2 id="debugging-checklist">Debugging checklist<a class="headerlink" href="#debugging-checklist" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Unplayable <code>.bin</code>: use <code>save_audio_bundle()</code> for raw Speex/OP2C conversion and check ffmpeg installation.</li>
-<li>ffmpeg format error: check file framing, offset-based assembly, and that no protocol fields were mixed into audio. Speex starts with its two-byte length; OP2C starts with its header.</li>
-<li>No <code>0x0605</code>: confirm successful <code>0x0602</code> after starting reports. Enter gesture mode first only on firmware requiring it.</li>
-<li>Consecutive <code>0x0505</code> without <code>0x0504</code>: this is post-save push; use <code>receive_auto_audio_file()</code>.</li>
-</ul>
-<p>When firmware or protocols change, compare device behavior, <code>src/openzilo/</code> and the <a href="protocol.html">protocol reference</a>, then update the SDK guide and this page.</p>
+<p><code>start_sensor_report()</code> enables reporting, <code>wait_sensor_data()</code> receives samples and <code>stop_sensor_report()</code> stops it. Firmware <code>V2.001.0002.0000</code> requires gesture mode first; <code>V2.001.0002.0001</code> starts capture directly, stops on disconnect and requires subscription again after reconnecting.</p>
+<p>IMU and tap events use milliseconds since boot. Button events use device seconds, although the SDK field is still named <code>timestamp_ms</code>. Do not compare these time domains directly. See <a href="../sdk/imu.html">IMU</a> and <a href="../sdk/events.html">events</a>.</p>
 
 
 

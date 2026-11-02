@@ -1379,7 +1379,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1767,7 +1767,7 @@
 </div>
 <p>Check API changes when upgrading the SDK and discover features again after changing firmware. SDK and firmware have separate version numbers; version ordering alone does not determine compatibility.</p>
 <h2 id="ble-write-chunks-and-migration-from-03x">BLE write chunks and migration from 0.3.x<a class="headerlink" href="#ble-write-chunks-and-migration-from-03x" title="Permanent link">&para;</a></h2>
-<p>The SDK writes NUS RX in chunks of at most 20 bytes, with a shorter final chunk when necessary. Applications do not configure this size, and it does not disable Windows, Bleak or system MTU negotiation. Incoming notifications need not be 20 bytes; <code>PacketStream</code> reconstructs packets from their headers.</p>
+<p>BLE fragmentation is handled automatically; applications do not configure fragment lengths.</p>
 <p>Since <code>0.4.0</code>, <code>NusClient</code> no longer accepts <code>write_chunk_size</code>. Remove it from custom transport code using <code>0.3.x</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Old 0.3.x usage, no longer supported</span>
 <span class="c1"># transport = sdk.NusClient(address=ADDRESS, write_chunk_size=20)</span>

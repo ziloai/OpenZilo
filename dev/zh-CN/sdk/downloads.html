@@ -1434,7 +1434,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1912,7 +1912,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">raw_path</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">play_path</span><span class="p">)</span>
 </code></pre></div>
-<p>固件 <code>V2.001.0002.0000</code> 的自动上报不会预先发送 <code>0x0504</code>，因此返回值不包含 <code>AudioFileInfo</code>。正常连续接收时 SDK 不发送额外命令；需要恢复时会在内部查询元数据，以校验文件索引并将结果限制为准确的 <code>data_size</code>。等待期间必须保持 BLE 连接，并且不能同时调用 <code>download_audio_file()</code> 或 <code>read_audio_frame()</code> 读取同一个 <code>0x0505</code> 接收队列。若连接建立过晚而错过主动上报，应查询录音数量后使用 <code>download_audio_file()</code> 重新下载。</p>
+<p>固件 <code>V2.001.0002.0000</code> 的自动上报不会预先发送 <code>0x0504</code>，因此返回值不包含 <code>AudioFileInfo</code>。正常连续接收时 SDK 不发送额外命令；需要恢复时会在内部查询元数据，以校验文件索引并将结果限制为准确的 <code>data_size</code>。等待期间必须保持 BLE 连接，并且不能同时调用 <code>download_audio_file()</code> 或 <code>read_audio_frame()</code> 接收同一段录音。若连接建立过晚而错过主动上报，应查询录音数量后使用 <code>download_audio_file()</code> 重新下载。</p>
 <h2 id="录音下载链路">录音下载链路<a class="headerlink" href="#录音下载链路" title="Permanent link">&para;</a></h2>
 <p>SDK 支持两条录音提取链路：</p>
 <table>
@@ -1995,17 +1995,17 @@
 <ul>
 <li>第一帧确定本次接收的 <code>file_index</code>，其他文件索引的帧不会混入结果。</li>
 <li>重复和重叠数据会按偏移去除。</li>
-<li>偏移出现缺口、首帧后等待超时或收到损坏帧时，SDK 先查询并校验文件索引和准确 <code>data_size</code>，再使用 <code>0x0506</code> 从当前期望偏移补传，最多重试 3 次。</li>
+<li>偏移出现缺口、首帧后等待超时或收到损坏帧时，SDK 先查询并校验文件索引和准确 <code>data_size</code>，再使用 <code>0x0506</code> 从当前期望偏移补传。</li>
 <li>正常连续数据收到 <code>is_end=True</code> 后返回；恢复数据严格按 <code>data_size</code> 裁剪，不会返回边界后的字节。</li>
 </ul>
 <p>异常：</p>
 <ul>
 <li>首帧未在超时时间内到达：<code>TimeoutError</code>。</li>
-<li>偏移缺口经过 3 次补传仍无法恢复、元数据索引不一致或帧字段不合法：<code>ProtocolError</code>。</li>
+<li>偏移缺口无法恢复、元数据索引不一致或帧字段不合法：<code>ProtocolError</code>。</li>
 <li>设备返回非 0 错误码：<code>DeviceError</code>。</li>
 <li>调用开始时未连接或等待期间 BLE 断开：<code>TransportError</code>。</li>
 </ul>
-<p>并发限制：不要与 <code>download_audio_file()</code>、<code>read_audio_frame()</code> 或其他直接等待 <code>0x0505</code> 的代码同时运行。这些函数会读取同一个命令接收队列，可能互相取走数据。若 BLE 连接建立得太晚而错过自动上报，使用 <code>get_audio_file_count()</code> 和 <code>download_audio_file()</code> 重新下载。</p>
+<p>并发限制：不要与 <code>download_audio_file()</code>、<code>read_audio_frame()</code> 或其他直接等待 <code>0x0505</code> 的代码同时运行。同一连接的录音接收操作应依次执行。若 BLE 连接建立得太晚而错过自动上报，使用 <code>get_audio_file_count()</code> 和 <code>download_audio_file()</code> 重新下载。</p>
 <p>保存示例：</p>
 <div class="highlight"><pre><span></span><code><span class="n">file_index</span><span class="p">,</span> <span class="n">raw_audio</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">receive_auto_audio_file</span><span class="p">(</span><span class="n">ring</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
 <span class="n">bundle</span> <span class="o">=</span> <span class="n">sdk</span><span class="o">.</span><span class="n">save_audio_bundle</span><span class="p">(</span>

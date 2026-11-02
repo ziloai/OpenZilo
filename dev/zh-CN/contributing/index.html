@@ -1308,7 +1308,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1714,7 +1714,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 </code></pre></div>
 <p>用 <code>uv add</code> 或 <code>uv remove</code> 修改依赖，并提交更新后的 <code>uv.lock</code>。涉及设备功能时，在 PR 中说明适用的固件和设备。</p>
 <h2 id="修改文档">修改文档<a class="headerlink" href="#修改文档" title="Permanent link">&para;</a></h2>
-<p>正文使用 Markdown。版本要求写清设备、固件和 SDK，不用协议版本代替具体功能要求。</p>
+<p>正文使用 Markdown，并同步中英文。记录公开接口、协议格式、使用条件和用户可见行为；不记录线程、内存、队列布局、内部构建身份、发布基础设施或内部验证记录。版本要求写清设备、固件和 SDK，不用协议版本代替具体功能要求。</p>
 <h2 id="提交内容">提交内容<a class="headerlink" href="#提交内容" title="Permanent link">&para;</a></h2>
 <p>示例使用占位地址。提交前移除真实设备地址、序列号、CPUID、私人录音和凭据。不要把设备采集记录、生成音频、固件、APK 或 CAD 文件混入 SDK 修改。</p>
 <p>软件和文档贡献采用 MPL-2.0。硬件设计如在相应仓库发布，采用对应硬件许可。安全漏洞请按<a href="security.html">安全报告说明</a>私下报告。</p>

@@ -1379,7 +1379,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1767,7 +1767,7 @@
 </div>
 <p>升级 SDK 时检查接口变化；更换固件时重新查询功能。SDK 与固件分别编号，不能只按版本号大小判断兼容性。</p>
 <h2 id="ble-写入分片与-03x-迁移">BLE 写入分片与 0.3.x 迁移<a class="headerlink" href="#ble-写入分片与-03x-迁移" title="Permanent link">&para;</a></h2>
-<p>SDK 向戒指的 NUS RX 特征值写入数据时固定按 20 字节分片，最后一片按实际剩余长度发送。该策略不需要调用方配置，也不会关闭 Windows、Bleak 或系统蓝牙栈的 MTU 协商。戒指发送给 SDK 的通知不限制为 20 字节，接收数据仍由 <code>PacketStream</code> 按协议包头重组。</p>
+<p>BLE 分片由 SDK 自动处理，应用无需配置分片长度。</p>
 <p>从 <code>0.4.0</code> 开始，<code>NusClient</code> 不再接受 <code>write_chunk_size</code> 参数。使用 <code>0.3.x</code> 自定义传输的代码需要移除该参数：</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># 0.3.x 旧写法，不再支持</span>
 <span class="c1"># transport = sdk.NusClient(address=ADDRESS, write_chunk_size=20)</span>

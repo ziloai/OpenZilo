@@ -1445,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -2002,7 +2002,7 @@ openzilo<span class="w"> </span>ota-update<span class="w"> </span>--help
 <h2 id="本机-imu-软件校准">本机 IMU 软件校准<a class="headerlink" href="#本机-imu-软件校准" title="Permanent link">&para;</a></h2>
 <p>使用 <code>openzilo imu-calibrate accel</code> 在充电盒中完成加速度计六面校准，使用 <code>quick</code> 在盒外静置校准陀螺仪，或用 <code>full</code> 顺序完成两阶段。独立验证通过后才原子保存本机配置。<code>show</code> 读取本机文件，<code>reset</code> 删除本机文件。<code>sensor-stream --calibrated --seconds 10</code> 显式应用匹配的配置，以 g 和度/秒输出数据，并标明已校正组件。默认原始数据流保持不变，不向戒指下发校准参数。详见<a href="../sdk/imu.html#本机软件校准">本机软件校准</a>。</p>
 <h2 id="兼容诊断">兼容诊断<a class="headerlink" href="#兼容诊断" title="Permanent link">&para;</a></h2>
-<p><code>openzilo --version</code> 查看 SDK 版本；<code>openzilo device capabilities</code> 输出支持的功能、录音参数范围和信息来源；<code>openzilo doctor</code> 额外输出 SDK 版本、源码校验值和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见<a href="compatibility.html">兼容说明</a>。</p>
+<p><code>openzilo --version</code> 查看 SDK 版本；<code>openzilo device capabilities</code> 输出支持的功能、录音参数范围和信息来源；<code>openzilo doctor</code> 额外输出 SDK 版本、运行环境标识和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见<a href="compatibility.html">兼容说明</a>。</p>
 <p>离线验签并查看签名 OTA ZIP 的完整元数据：</p>
 <div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span>firmware.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem<span class="w"> </span>--json
 </code></pre></div>

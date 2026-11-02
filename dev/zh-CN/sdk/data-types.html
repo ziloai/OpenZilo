@@ -1423,7 +1423,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1870,8 +1870,7 @@
 <span class="c1"># 高层 BLE 协议客户端。负责连接、收包重组、请求响应匹配和事件分发。</span>
 
 <span class="n">NusClient</span>
-<span class="c1"># 底层 Nordic UART Service BLE 客户端。发送固定按 20 字节分片，</span>
-<span class="c1"># 通常只在调试或自定义传输时直接使用。</span>
+<span class="c1"># Nordic UART Service BLE 客户端，用于调试或自定义传输。</span>
 
 <span class="n">PacketStream</span>
 <span class="c1"># 将 BLE 分片拼成完整 Packet，适合协议调试。</span>
@@ -2042,7 +2041,7 @@
 <span class="n">gyro_bias_udps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
 
 <span class="n">ImuCalibrationProfile</span>
-<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># 规范化本机设备标识的 SHA-256</span>
+<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># 用于绑定设备的标识，不应依赖其内容格式</span>
 <span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># 精确匹配完整固件版本，不使用版本范围</span>
 <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
 <span class="n">calibration</span><span class="p">:</span> <span class="n">ImuCalibration</span>
@@ -2064,7 +2063,7 @@
 <p><a href="imu.html">软件校准流程与接口</a>。</p>
 <p><a id="firmwarebundle"></a></p>
 <h2 id="firmwarebundle-固件包元数据">FirmwareBundle 固件包元数据<a class="headerlink" href="#firmwarebundle-固件包元数据" title="Permanent link">&para;</a></h2>
-<p><code>inspect_firmware_bundle()</code> 验签成功后返回的不可变对象，包含 <code>version</code>、<code>model</code>、<code>board</code>、<code>profile</code>、<code>security_version</code>、<code>source_versions</code>、<code>signing_key_id</code> 和内部 OTA 字节 <code>payload</code>。<code>manifest</code> 属性每次返回完整已验证清单的字典副本，便于展示或输出 JSON；修改副本不会影响升级数据。离线验签不包含设备适配检查。</p>
+<p><code>inspect_firmware_bundle()</code> 验签成功后返回的不可变对象，包含 <code>version</code>、<code>model</code>、<code>board</code>、<code>profile</code>、<code>security_version</code>、<code>source_versions</code>、<code>signing_key_id</code> 和升级数据字节 <code>payload</code>。<code>manifest</code> 属性每次返回完整已验证清单的字典副本，便于展示或输出 JSON；修改副本不会影响升级数据。离线验签不包含设备适配检查。</p>
 
 
 

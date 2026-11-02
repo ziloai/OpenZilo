@@ -1390,7 +1390,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1827,12 +1827,12 @@
 <li><code>send_command(command, body=b"")</code>: send without waiting for a response.</li>
 <li><code>request(command, response_command, body=b"", timeout_s=None)</code>: send and await the specified response.</li>
 <li><code>wait_for_command(command, timeout_s=None)</code>: await an event or subsequent response.</li>
-<li><code>add_packet_handler(command, handler, queue_packets=True)</code>: register a synchronous or asynchronous handler. With <code>False</code>, the handler exclusively receives this command and no queue copy is retained; do not mix with other handlers or waiters for that command. Exceptions are logged to <code>openzilo</code> without affecting other packets. Disconnect cancels unfinished asynchronous handlers.</li>
+<li><code>add_packet_handler(command, handler, queue_packets=True)</code>: register a synchronous or asynchronous handler. With <code>False</code>, the handler exclusively receives this command instead of delivering it through waiting APIs; do not mix with other handlers or waiters for that command. Exceptions are logged to <code>openzilo</code> without affecting other packets. Disconnect cancels unfinished asynchronous handlers.</li>
 <li><code>remove_packet_handler(command, handler)</code>: remove a handler.</li>
 </ul>
-<p>Each command queue holds at most 256 packets by default; configure <code>OpenZiloClient(receive_queue_size=...)</code> to change it. Overflow clears the backlog and reports <code>ProtocolError</code> through waiting APIs instead of treating lost data as success. For callback-only use, prefer <code>queue_packets=False</code>. Handlers should return promptly; manage concurrency within asynchronous handlers.</p>
-<p>Requests expecting the same response command are serialized. Recording download, automatic reception, frame reads and deletion cannot compete on one connection; conflicts immediately raise <code>ProtocolError</code>. Applications combining low-level recording functions must manage the whole session. OTA rejects ordinary commands from other tasks, except automatic time replies. Stop recording and IMU before OTA.</p>
-<p>Failed or cancelled normal downloads attempt an end command with up to two seconds for cleanup. Cleanup failure does not replace the original exception. Without transaction IDs, late responses after a timeout cannot be reliably matched; reconnect before retrying when strict isolation is required.</p>
+<p>Slow reception reports <code>ProtocolError</code> through waiting APIs. Configure receive capacity with <code>receive_queue_size</code>, and return promptly from handlers. For callback-only use, select <code>queue_packets=False</code>.</p>
+<p>Recording download, automatic reception, frame reads and deletion cannot compete on one connection; conflicts immediately raise <code>ProtocolError</code>. Applications combining low-level recording functions must manage the whole session. OTA rejects ordinary commands from other tasks, except automatic time replies. Stop recording and IMU before OTA.</p>
+<p>Failed or cancelled downloads attempt to end extraction; reconnect before retrying if the device remains busy. Without transaction IDs, late responses after a timeout cannot be reliably matched; reconnect before retrying when strict isolation is required.</p>
 
 
 

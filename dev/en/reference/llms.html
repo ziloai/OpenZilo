@@ -1304,7 +1304,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1753,10 +1753,10 @@
 <p><a href="../developer/cli.html">CLI guide (简体中文)</a>: default device selection, interactive shell, remote recording, and timed IMU JSONL capture.</p>
 </li>
 <li>
-<p><a href="https://raw.githubusercontent.com/ziloai/openzilo/main/src/openzilo/__init__.py">Public SDK API</a>: authoritative <code>__all__</code>; implementation lives in the package's private submodules.</p>
+<p><a href="https://raw.githubusercontent.com/ziloai/openzilo/main/src/openzilo/__init__.py">Public SDK API</a>: authoritative <code>__all__</code>.</p>
 </li>
 <li><a href="https://github.com/ziloai/openzilo/tree/main/examples">Examples</a>: scan, system information, audio download, and IMU streaming.</li>
-<li><a href="https://github.com/ziloai/OpenZilo/blob/main/examples/live_pcm.py">Live PCM example</a>: <code>open_live_audio_stream()</code> with async context/iteration, bounded queues, stereo PCM frames, and verified END; optional <code>pcm</code> extra uses PyAV.</li>
+<li><a href="https://github.com/ziloai/OpenZilo/blob/main/examples/live_pcm.py">Live PCM example</a>: <code>open_live_audio_stream()</code> with async context/iteration, mono/stereo PCM frames, and verified END; optional <code>pcm</code> extra uses PyAV.</li>
 <li><a href="https://raw.githubusercontent.com/ziloai/openzilo/main/SECURITY.md">Security policy</a>: private vulnerability reporting.</li>
 <li><a href="https://raw.githubusercontent.com/ziloai/openzilo/main/LICENSE">MPL-2.0 software license</a>: current software and documentation license.</li>
 <li><a href="https://raw.githubusercontent.com/ziloai/openzilo/main/LICENSES/CERN-OHL-W-2.0.txt">CERN-OHL-W-2.0 hardware license</a>: hardware design license.</li>

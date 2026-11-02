@@ -1368,7 +1368,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1751,10 +1751,10 @@
 <p>Use the official OTA package specified in the release notes. Match the device model, hardware revision and starting firmware version. The SDK updates application firmware only, not the bootloader.</p>
 </div>
 <p><code>update_firmware()</code> and <code>ota-update</code> update application firmware; inspect the installed command with <code>openzilo ota-update --help</code>. They do not update the bootloader. Use an official package listing your model and starting version. Back up recordings, stop recording, downloads and IMU reporting, and maintain power and connection. The update exclusively owns this connection until it finishes.</p>
-<p>Firmware packaging now produces <code>ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip</code> with <code>manifest.json</code>, <code>manifest.sig</code>, and <code>app.ota.bin</code>. The manifest carries version, model, board, test/production profile, security version, allowed source versions, and payload size/SHA-256. The outer signature can reuse the firmware P-256 signing key. Obtain the verification public key independently through a trusted channel; a key supplied inside a download is not a trust anchor.</p>
+<p>Use the signed OTA ZIP supplied in the release instructions; examples call it <code>firmware.ota.zip</code>. Obtain the verification public key independently through a trusted channel. A key supplied inside a download is not a trust anchor.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="n">bundle</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip"</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
+<span class="n">bundle</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"firmware.ota.zip"</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
 <span class="n">public_key</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"trusted-signing-public.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
 <span class="n">metadata</span> <span class="o">=</span> <span class="n">sdk</span><span class="o">.</span><span class="n">inspect_firmware_bundle</span><span class="p">(</span><span class="n">bundle</span><span class="p">,</span> <span class="n">trusted_public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">board</span><span class="p">)</span>
@@ -1762,15 +1762,14 @@
     <span class="n">info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">update_firmware</span><span class="p">(</span><span class="n">ring</span><span class="p">,</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">trusted_public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">)</span>
 </code></pre></div>
 <p>Display all verified metadata offline, without connecting to a ring:</p>
-<div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span>ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem
+<div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span>firmware.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem
 <span class="c1"># Add --json for machine-readable output.</span>
 </code></pre></div>
 <p><code>inspect_firmware_bundle()</code> returns a <code>FirmwareBundle</code> whose <code>manifest</code> property is a fresh dictionary of all verified fields. Invalid signatures fail without a success marker. Successful inspection establishes package authenticity and integrity; device compatibility is checked before uploading.</p>
-<div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-update<span class="w"> </span>--address<span class="w"> </span>ADDRESS<span class="w"> </span>ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem
+<div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-update<span class="w"> </span>--address<span class="w"> </span>ADDRESS<span class="w"> </span>firmware.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem
 </code></pre></div>
-<p>Board comparison ignores repeated <code>/</code> separators to support Zephyr qualifiers with a leading slash. Display and signature verification preserve the original metadata.</p>
-<p>Offline checks cover signature, archive structure, lengths, digest and encryption header. Before OTA starts, the SDK checks device model, board and source version. An empty <code>source_versions</code> explicitly allows any starting version. Test bundles require <code>allow_test_firmware=True</code> or <code>--allow-test-firmware</code>. When a device cannot report its board, only an exact verified legacy profile may supply it. Currently this covers <code>Open Zilo</code> firmware <code>V2.001.0002.0001-prod-7fd1dfc9</code>, whose board is recorded in that build’s delivery metadata. Other unknown boards are rejected. Security-version enforcement and matching device encryption keys remain device checks: the SDK cannot decrypt or read rollback counters. Only the inner OTA bytes are transmitted, and the running version is still checked after reboot.</p>
-<p>OTA accepts only this signed ZIP format and rejects raw BIN input. The target version and compatibility fields come from verified metadata; <code>version</code>, <code>sha256</code>, and <code>expected_model</code> overrides have been removed. The full runtime version, including debug/prod and commit suffixes, is compared after reboot. Updating to the already running version is rejected. See <a href="https://github.com/ziloai/OpenZilo/blob/main/examples/update_firmware.py">update_firmware.py</a> for a runnable example.</p>
+<p>Offline checks establish package authenticity and integrity. Before upload, the SDK checks model, hardware compatibility and source version; unknown compatibility information is rejected. An empty <code>source_versions</code> allows any starting version. Test bundles require <code>allow_test_firmware=True</code> or <code>--allow-test-firmware</code>. Device security policy may still reject installation; offline verification does not confirm installation.</p>
+<p>OTA accepts only this signed ZIP format and rejects raw BIN input. The target version and compatibility fields come from verified metadata; <code>version</code>, <code>sha256</code>, and <code>expected_model</code> overrides have been removed. The full runtime version, using the full string reported by the device, is compared after reboot. Updating to the already running version is rejected. See <a href="https://github.com/ziloai/OpenZilo/blob/main/examples/update_firmware.py">update_firmware.py</a> for a runnable example.</p>
 <table>
 <thead>
 <tr>

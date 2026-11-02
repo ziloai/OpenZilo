@@ -1445,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1946,7 +1946,7 @@
 <p>Prefer one request/response operation at a time on each connection.</p>
 <h2 id="receive_auto_audio_file-times-out"><code>receive_auto_audio_file()</code> times out<a class="headerlink" href="#receive_auto_audio_file-times-out" title="Permanent link">&para;</a></h2>
 <p>An initial timeout means no post-save <code>0x050A</code> or pushed <code>0x0505</code> arrived in time. Keep BLE connected and start waiting before asking the user to hold and release the recording button. If connection began too late, query the count and download by index.</p>
-<p>Do not run <code>receive_auto_audio_file()</code> with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or direct <code>wait_for_command(0x0505)</code> calls. Shared queue access can cause timeouts or missing offsets.</p>
+<p>Do not run <code>receive_auto_audio_file()</code> with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or direct <code>wait_for_command(0x0505)</code> calls. Run recording reception sequentially on a connection to avoid timeouts or incomplete data.</p>
 <h2 id="start_sensor_report-reports-device-busy"><code>start_sensor_report()</code> reports device busy<a class="headerlink" href="#start_sensor_report-reports-device-busy" title="Permanent link">&para;</a></h2>
 <p>Finish conflicting operations. Enter gesture mode with the button on <code>V2.001.0002.0000</code>; call <code>start_sensor_report()</code> directly on <code>V2.001.0002.0001</code>. Wait for a successful response before receiving data.</p>
 <h2 id="download-succeeds-but-decoding-fails">Download succeeds but decoding fails<a class="headerlink" href="#download-succeeds-but-decoding-fails" title="Permanent link">&para;</a></h2>

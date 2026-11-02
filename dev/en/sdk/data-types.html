@@ -1423,7 +1423,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1870,7 +1870,7 @@
 <span class="c1"># High-level BLE client: connection, packet reconstruction, requests and event dispatch.</span>
 
 <span class="n">NusClient</span>
-<span class="c1"># Low-level Nordic UART Service client; writes fixed 20-byte chunks.</span>
+<span class="c1"># Nordic UART Service client for custom transports.</span>
 <span class="c1"># Normally used directly only for debugging or custom transports.</span>
 
 <span class="n">PacketStream</span>
@@ -2041,7 +2041,7 @@
 <span class="n">gyro_bias_udps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
 
 <span class="n">ImuCalibrationProfile</span>
-<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># SHA-256 of normalized local device identifier</span>
+<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># Opaque identifier for binding a profile to a device</span>
 <span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># exact match, not a version range</span>
 <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
 <span class="n">calibration</span><span class="p">:</span> <span class="n">ImuCalibration</span>
@@ -2062,7 +2062,7 @@
 </code></pre></div>
 <p><a href="imu.html">Software calibration workflow and APIs</a>.</p>
 <h2 id="firmwarebundle">FirmwareBundle<a class="headerlink" href="#firmwarebundle" title="Permanent link">&para;</a></h2>
-<p>The immutable result of <code>inspect_firmware_bundle()</code> contains <code>version</code>, <code>model</code>, <code>board</code>, <code>profile</code>, <code>security_version</code>, <code>source_versions</code>, <code>signing_key_id</code>, and inner OTA bytes <code>payload</code>. Its <code>manifest</code> property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.</p>
+<p>The immutable result of <code>inspect_firmware_bundle()</code> contains <code>version</code>, <code>model</code>, <code>board</code>, <code>profile</code>, <code>security_version</code>, <code>source_versions</code>, <code>signing_key_id</code>, and update payload bytes <code>payload</code>. Its <code>manifest</code> property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.</p>
 
 
 

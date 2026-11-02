@@ -1434,7 +1434,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1912,7 +1912,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">raw_path</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">play_path</span><span class="p">)</span>
 </code></pre></div>
-<p>Automatic transfers from <code>V2.001.0002.0000</code> do not begin with <code>0x0504</code>, so the return value has no <code>AudioFileInfo</code>. During normal continuous reception the SDK sends no extra commands. Recovery queries file metadata, verifies the index, and bounds the result by <code>data_size</code>. Keep BLE connected and do not simultaneously call <code>download_audio_file()</code> or <code>read_audio_frame()</code> on the same <code>0x0505</code> queue. If you connected too late, query the file count and download by index.</p>
+<p>Automatic transfers from <code>V2.001.0002.0000</code> do not begin with <code>0x0504</code>, so the return value has no <code>AudioFileInfo</code>. During normal continuous reception the SDK sends no extra commands. Recovery queries file metadata, verifies the index, and bounds the result by <code>data_size</code>. Keep BLE connected and do not simultaneously call <code>download_audio_file()</code> or <code>read_audio_frame()</code> on the same connection. If you connected too late, query the file count and download by index.</p>
 <h2 id="recording-transfer-sequences">Recording transfer sequences<a class="headerlink" href="#recording-transfer-sequences" title="Permanent link">&para;</a></h2>
 <p>The SDK supports normal and fast downloads, plus automatic reception and live streaming:</p>
 <table>
@@ -1995,17 +1995,17 @@
 <ul>
 <li>The first frame selects the file index; frames belonging to other files are excluded.</li>
 <li>Duplicate and overlapping bytes are removed by offset.</li>
-<li>For gaps, post-first-frame timeouts or damaged frames, the SDK queries and validates file index and exact <code>data_size</code>, then requests the expected offset with <code>0x0506</code>, up to three retries.</li>
+<li>For gaps, post-first-frame timeouts or damaged frames, the SDK queries and validates file index and exact <code>data_size</code>, then requests the expected offset with <code>0x0506</code>.</li>
 <li>Normal reception returns at <code>is_end=True</code>. Recovered data is truncated to <code>data_size</code> without extra bytes.</li>
 </ul>
 <p>Exceptions:</p>
 <ul>
 <li>No initial frame before timeout: <code>TimeoutError</code>.</li>
-<li>A gap unrecovered after three retries, mismatched metadata index, or invalid frame fields: <code>ProtocolError</code>.</li>
+<li>An unrecoverable gap, mismatched metadata index, or invalid frame fields: <code>ProtocolError</code>.</li>
 <li>Nonzero device error: <code>DeviceError</code>.</li>
 <li>Disconnected before the call or during the wait: <code>TransportError</code>.</li>
 </ul>
-<p>Do not run concurrently with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or other direct <code>0x0505</code> waiters. They share a receive queue and can take each other's packets. If connection began too late for the push, use <code>get_audio_file_count()</code> and <code>download_audio_file()</code>.</p>
+<p>Do not run concurrently with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or other direct <code>0x0505</code> waiters. Run recording reception sequentially on a connection. If connection began too late for the push, use <code>get_audio_file_count()</code> and <code>download_audio_file()</code>.</p>
 <p>Saving example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">file_index</span><span class="p">,</span> <span class="n">raw_audio</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">receive_auto_audio_file</span><span class="p">(</span><span class="n">ring</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
 <span class="n">bundle</span> <span class="o">=</span> <span class="n">sdk</span><span class="o">.</span><span class="n">save_audio_bundle</span><span class="p">(</span>

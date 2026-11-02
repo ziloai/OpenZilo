@@ -1445,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1999,7 +1999,7 @@ openzilo<span class="w"> </span>ota-update<span class="w"> </span>--help
 <p>Firmware <code>V2.001.0002.0001</code> starts IMU directly; <code>V2.001.0002.0000</code> requires gesture mode first. At the time limit, error or cancellation, the command attempts to stop reports and disconnect. File output overwrites its path, creating parent directories; batches already written remain after failure. Values remain in protocol units; see the <a href="../sdk/imu.html">IMU guide</a>.</p>
 <p>Connection commands accept <code>--scan-timeout</code> and <code>--connect-timeout</code>. Errors go to stderr and exit with 1; argument errors with 2; Ctrl+C with 130. Interactive command errors return to the prompt.</p>
 <h2 id="compatibility-diagnostics">Compatibility diagnostics<a class="headerlink" href="#compatibility-diagnostics" title="Permanent link">&para;</a></h2>
-<p><code>openzilo --version</code> shows the SDK version. <code>openzilo device capabilities</code> shows features, recording limits and information source. <code>openzilo doctor</code> also shows the SDK source checksum and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See <a href="compatibility.html">compatibility</a>.</p>
+<p><code>openzilo --version</code> shows the SDK version. <code>openzilo device capabilities</code> shows features, recording limits and information source. <code>openzilo doctor</code> also shows the SDK environment identifier and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See <a href="compatibility.html">compatibility</a>.</p>
 <h2 id="software-imu-calibration">Software IMU calibration<a class="headerlink" href="#software-imu-calibration" title="Permanent link">&para;</a></h2>
 <p>Use <code>openzilo imu-calibrate accel</code> for six-face accelerometer calibration in the charging case,
 <code>quick</code> for stationary gyro calibration outside the case, or <code>full</code> for both stages.
