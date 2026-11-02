@@ -152,7 +152,7 @@ Connection commands accept `--scan-timeout` and `--connect-timeout`. Errors go t
 
 ## Compatibility diagnostics
 
-`openzilo --version` shows the SDK version. `openzilo device capabilities` shows features, recording limits and information source. `openzilo doctor` also shows the SDK environment identifier and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See [compatibility](compatibility.en.md).
+`openzilo --version` shows the SDK version. `openzilo device capabilities` shows features, recording limits and information source. `openzilo doctor` also shows the SDK environment identifier and audio dependencies. RSSI, remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See [compatibility](compatibility.en.md).
 
 ## Software IMU calibration
 

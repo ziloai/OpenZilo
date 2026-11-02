@@ -36,7 +36,7 @@ asyncio.run(main())
 capabilities = await sdk.get_device_capabilities(ring)
 ```
 
-命令行中的远程录音、实时音频、IMU 和 OTA 操作会自动执行查询。读取系统信息、日志、下载已有录音和校时不依赖这项查询。
+命令行中的 RSSI、远程录音、实时音频、IMU 和 OTA 操作会自动执行查询。读取系统信息、日志、下载已有录音和校时不依赖这项查询。
 
 ## 查询结果从哪里来
 
