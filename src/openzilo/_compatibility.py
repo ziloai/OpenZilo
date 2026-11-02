@@ -17,10 +17,11 @@ if TYPE_CHECKING:
 # subscription; v1 required a separate gesture mode and is not interchangeable.
 FEATURE_MAJORS = {"system": 1, "time_sync": 1, "audio_files": 1,
                   "recording_control": 1, "live_audio": 1, "imu": 2,
-                  "key_events": 1, "double_tap": 1, "ota": 1, "gesture": 1}
+                  "key_events": 1, "double_tap": 1, "ota": 1, "gesture": 1,
+                  "connection_rssi": 1}
 FEATURE_NAMES = {1: "system", 2: "time_sync", 3: "audio_files", 4: "recording_control",
                  5: "live_audio", 6: "imu", 7: "key_events", 8: "double_tap",
-                 9: "ota", 10: "gesture", 11: "imu_calibration"}
+                 9: "ota", 10: "gesture", 11: "imu_calibration", 12: "connection_rssi"}
 _LIMITS = struct.Struct(">HHBBBBIIHHHHH")
 
 
@@ -54,7 +55,8 @@ class RecordingLimits:
                 and self.bitrate_min <= c.bitrate <= self.bitrate_max
                 and self.gain_min_q8 <= c.gain_left_q8 <= self.gain_max_q8
                 and self.gain_min_q8 <= c.gain_right_q8 <= self.gain_max_q8
-                and self.duration_min_ms <= c.max_duration_ms <= self.duration_max_ms
+                and (c.max_duration_ms == 0 or
+                     self.duration_min_ms <= c.max_duration_ms <= self.duration_max_ms)
                 and c.max_duration_ms % self.duration_step_ms == 0
                 and (int(c.disconnect_policy) == 0 or
                      self.continue_outputs_mask & (1 << int(c.output)))):
@@ -200,7 +202,8 @@ async def get_device_capabilities(
 
 # Only enhanced commands are guarded. Basic info, logs, file retrieval and time
 # replies retain their existing baseline behaviour on unrecognized old devices.
-COMMAND_FEATURES = {**{c: "recording_control" for c in (0x0512, 0x0514, 0x0516, 0x0518, 0x051A)},
+COMMAND_FEATURES = {0x0107: "connection_rssi",
+                   **{c: "recording_control" for c in (0x0512, 0x0514, 0x0516, 0x0518, 0x051A)},
                     0x050D: "live_audio", 0x0601: "imu", 0x0603: "imu", 0x0605: "imu",
                     0x0701: "double_tap", 0x0702: "gesture",
                     0x0703: "key_events", 0x0704: "key_events", 1005: "ota"}

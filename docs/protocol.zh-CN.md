@@ -48,6 +48,7 @@ BLE 通知可能拆分一个协议包，也可能连续携带多个包。调用�
 | --- | --- | --- | --- |
 | 系统信息 | `0x0101` | `0x0102` | `get_system_info()` |
 | 查询支持功能 | `0x0105` | `0x0106` | `get_device_capabilities()` |
+| 连接 RSSI | `0x0107` | `0x0108` | `get_connection_rssi()` |
 | 命令错误 | `0x01FF` 设备响应 | 无 | `DeviceError` |
 | 日志存储信息 | `0x0301` | `0x0302` | `get_log_storage()` |
 | 日志数据 | `0x0303` | `0x0304` | `read_log_chunk()` |
@@ -102,6 +103,10 @@ BLE 通知可能拆分一个协议包，也可能连续携带多个包。调用�
 | `cpuid` | UTF-8 | 可变 | 设备 CPUID |
 | `model_len` | `u16` | 2 | 型号字符串长度 |
 | `model` | UTF-8 | 可变 | 设备型号 |
+
+#### `0x0107` / `0x0108` 连接 RSSI
+
+请求包体为空，需要 `connection_rssi/1.0`。成功响应为 `error_code:u16=0` 和 `rssi:i8`（dBm，共 3 字节）；失败响应仅含 `error_code:u16`（2 字节）。错误码 1 表示读取失败或不可用，7 表示请求无效。多字节整数采用大端序；有效 RSSI 为 -127～20，127 表示不可用。
 
 ### 5.2 日志
 
@@ -440,7 +445,7 @@ SDK 用 `saved` 判断文件索引是否有效；没有文件时，返回对象�
 | `channels` | `u8` | 1 或 2 |
 | `bitrate` | `u32` | 码率，单位 bit/s |
 | `gain_left_q8`、`gain_right_q8` | 各 `u16` | 左右数字增益，256 表示 1 倍 |
-| `max_duration_ms` | `u16` | 最长录音时间，单位毫秒 |
+| `max_duration_ms` | `u16` | 最长录音时间，单位毫秒；0 表示不限时 |
 
 成功响应固定为 34 字节。设置字段后依次为 `sample_rate:u16`、`frame_duration_ms:u16`，以及编码参数 `codec:u8`、`complexity:u8`、`vbr:u8`、`constrained_vbr:u8`、`dtx:u8`、`fec:u8`、`packet_loss_percent:u8`、`signal:u16`、`bit_depth:u8`、`max_packet_size:u16`、`application:u16`。这些参数由设备返回，不能通过修改设置命令写入。
 
@@ -493,7 +498,7 @@ TLV 为 `tag:u16, length:u16, value:length bytes`，总长受 v4 的 5120 字节
 | `0x0100 + feature_id` | 功能接口版本 `major:u8, minor:u8` |
 | `0x0204` | 录音限制，见下表 |
 
-功能 ID：1 system/1，2 time_sync/1，3 audio_files/1，4 recording_control/1，5 live_audio/1，6 imu/2，7 key_events/1，8 double_tap/1，9 ota/1，10 gesture/1。其中斜杠后是本 SDK 支持的主版本。当前固件不声明 gesture。IMU/2 表示订阅直接启动采集；需要额外手势模式的实现不能声明该接口版本。
+功能 ID：1 system/1，2 time_sync/1，3 audio_files/1，4 recording_control/1，5 live_audio/1，6 imu/2，7 key_events/1，8 double_tap/1，9 ota/1，10 gesture/1，12 connection_rssi/1（TLV `0x010C`）。其中斜杠后是本 SDK 支持的主版本。当前固件不声明 gesture。IMU/2 表示订阅直接启动采集；需要额外手势模式的实现不能声明该接口版本。
 
 固件按完整命令组是否注册声明能力；按键及双击事件只在连接了相应生产者的产品构建中声明。声明表示实现支持，不保证当前硬件初始化成功、连接条件满足或设备不忙。
 

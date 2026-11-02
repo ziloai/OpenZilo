@@ -60,6 +60,7 @@ capabilities = await sdk.get_device_capabilities(ring)
 | 功能名 | 用途 |
 | --- | --- |
 | `recording_control` | 开始、停止录音及修改录音设置 |
+| `connection_rssi` | 读取戒指接收主机信号的 RSSI |
 | `live_audio` | 实时接收音频 |
 | `imu` | 接收加速度计和陀螺仪数据 |
 | `key_events` | 接收按键事件 |

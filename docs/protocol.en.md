@@ -48,6 +48,7 @@ A packet can span notifications and a notification can contain multiple packets.
 | --- | --- | --- | --- |
 | System information | `0x0101` | `0x0102` | `get_system_info()` |
 | Feature discovery | `0x0105` | `0x0106` | `get_device_capabilities()` |
+| Connection RSSI | `0x0107` | `0x0108` | `get_connection_rssi()` |
 | Command error | `0x01FF` device response | None | `DeviceError` |
 | Log storage information | `0x0301` | `0x0302` | `get_log_storage()` |
 | Log data | `0x0303` | `0x0304` | `read_log_chunk()` |
@@ -102,6 +103,10 @@ Empty body.
 | `cpuid` | UTF-8 | variable | Device CPUID. |
 | `model_len` | `u16` | 2 | Model string length. |
 | `model` | UTF-8 | variable | Device model. |
+
+#### `0x0107` / `0x0108` Connection RSSI
+
+Empty request; requires `connection_rssi/1.0`. Success returns `error_code:u16=0` followed by `rssi:i8` in dBm (3 bytes total). Failure returns only `error_code:u16` (2 bytes): 1 for read failure or unavailable, 7 for an invalid request. Multibyte integers are big-endian; valid RSSI is -127 to 20, and 127 means unavailable.
 
 ### 5.2 Logs
 
@@ -440,7 +445,7 @@ Empty request. Response begins with `error_code:u16`; on success the 14-byte set
 | `channels` | `u8` | 1 or 2. |
 | `bitrate` | `u32` | Bitrate in bit/s. |
 | `gain_left_q8`, `gain_right_q8` | `u16` each | Left/right digital gain; 256 means 1x. |
-| `max_duration_ms` | `u16` | Maximum duration in milliseconds. |
+| `max_duration_ms` | `u16` | Maximum duration in milliseconds; 0 for unlimited. |
 
 Successful responses are 34 bytes. Settings are followed by `sample_rate:u16`, `frame_duration_ms:u16`, then `codec:u8`, `complexity:u8`, `vbr:u8`, `constrained_vbr:u8`, `dtx:u8`, `fec:u8`, `packet_loss_percent:u8`, `signal:u16`, `bit_depth:u8`, `max_packet_size:u16`, `application:u16`. The device returns these fixed parameters; configuration writes cannot change them.
 
@@ -493,7 +498,7 @@ TLVs contain `tag:u16, length:u16, value:length bytes`, within v4's 5120-byte li
 | `0x0100 + feature_id` | Feature interface version `major:u8, minor:u8`. |
 | `0x0204` | Recording limits, defined below. |
 
-Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1. The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.
+Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1, 12 connection_rssi/1 (TLV `0x010C`). The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.
 
 Firmware advertises features only for fully registered command groups. Button/tap events require connected producers in the product build. Advertisement identifies implementation support, not successful hardware initialization, current connection readiness or an idle device.
 

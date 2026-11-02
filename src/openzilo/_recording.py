@@ -73,8 +73,8 @@ class AudioRecordingConfig:
             raise ValueError("Supported audio is mono/stereo at 8000..32000 bits/s")
         if not 0 <= self.gain_left_q8 <= 1024 or not 0 <= self.gain_right_q8 <= 1024:
             raise ValueError("Digital gains must be 0..1024 (256 = unity)")
-        if not 20 <= self.max_duration_ms <= 60000 or self.max_duration_ms % 20:
-            raise ValueError("max_duration_ms must be 20..60000 in 20 ms increments")
+        if self.max_duration_ms != 0 and (not 20 <= self.max_duration_ms <= 60000 or self.max_duration_ms % 20):
+            raise ValueError("max_duration_ms must be 0 or 20..60000 in 20 ms increments")
         if (self.sample_rate, self.frame_duration_ms) != (16000, 20):
             raise ValueError("This firmware supports 16000 Hz and 20 ms frames")
         if (self.codec, self.complexity, self.vbr, self.constrained_vbr, self.dtx,

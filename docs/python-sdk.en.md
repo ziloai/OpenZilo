@@ -26,6 +26,7 @@ The public API is defined by `openzilo.__all__`. Import it with `import openzilo
 | [`scan_rings()`](sdk-connection.en.md) | `await scan_rings(address=None, timeout_s=25.0)` | `list[BleDeviceInfo]` | Scan BLE devices, optionally filtering by address. |
 | [`connect_ring()`](sdk-connection.en.md) | `await connect_ring(address=..., command_timeout_s=10.0, auto_time_sync=False)` | `OpenZiloClient` | Create and connect a client; the caller must disconnect it. |
 | [`get_system_info()`](sdk-device-info.en.md) | `await get_system_info(client, timeout_s=None)` | `SystemInfo` | Read device information. |
+| [`get_connection_rssi()`](sdk-device-info.en.md) | `await get_connection_rssi(client, timeout_s=None)` | `int` | Read the host signal RSSI received by the ring, in dBm. |
 | [`parse_system_info()`](sdk-device-info.en.md) | `parse_system_info(body)` | `SystemInfo` | Parse a `0x0102` body, normally for tests or protocol debugging. |
 | [`enable_time_sync()`](sdk-time-sync.en.md) | `enable_time_sync(client)` | `None` | Register an automatic responder for `0x0401`. |
 | [`send_time_response()`](sdk-time-sync.en.md) | `await send_time_response(client, request_time, response_time=None, send_time=None)` | `None` | Send a manual `0x0402` time response. |

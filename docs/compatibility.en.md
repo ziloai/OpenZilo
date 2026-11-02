@@ -61,6 +61,7 @@ Use `capabilities.supports("FEATURE_NAME")`. Common feature names:
 | Feature | Purpose |
 | --- | --- |
 | `recording_control` | Start, stop and configure recordings. |
+| `connection_rssi` | Read the host signal RSSI received by the ring. |
 | `live_audio` | Receive live audio. |
 | `imu` | Receive accelerometer and gyroscope data. |
 | `key_events` | Receive button events. |
