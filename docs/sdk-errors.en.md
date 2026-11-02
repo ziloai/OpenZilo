@@ -63,7 +63,7 @@ Prefer one request/response operation at a time on each connection.
 
 An initial timeout means no post-save `0x050A` or pushed `0x0505` arrived in time. Keep BLE connected and start waiting before asking the user to hold and release the recording button. If connection began too late, query the count and download by index.
 
-Do not run `receive_auto_audio_file()` with `download_audio_file()`, `read_audio_frame()` or direct `wait_for_command(0x0505)` calls. Shared queue access can cause timeouts or missing offsets.
+Do not run `receive_auto_audio_file()` with `download_audio_file()`, `read_audio_frame()` or direct `wait_for_command(0x0505)` calls. Run recording reception sequentially on a connection to avoid timeouts or incomplete data.
 
 ## `start_sensor_report()` reports device busy
 

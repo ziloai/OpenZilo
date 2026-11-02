@@ -12,12 +12,12 @@ Code snippets use `import openzilo as sdk`; `ring` is a connected client. See th
 
 `update_firmware()` and `ota-update` update application firmware; inspect the installed command with `openzilo ota-update --help`. They do not update the bootloader. Use an official package listing your model and starting version. Back up recordings, stop recording, downloads and IMU reporting, and maintain power and connection. The update exclusively owns this connection until it finishes.
 
-Firmware packaging now produces `ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip` with `manifest.json`, `manifest.sig`, and `app.ota.bin`. The manifest carries version, model, board, test/production profile, security version, allowed source versions, and payload size/SHA-256. The outer signature can reuse the firmware P-256 signing key. Obtain the verification public key independently through a trusted channel; a key supplied inside a download is not a trust anchor.
+Use the signed OTA ZIP supplied in the release instructions; examples call it `firmware.ota.zip`. Obtain the verification public key independently through a trusted channel. A key supplied inside a download is not a trust anchor.
 
 ```python
 from pathlib import Path
 
-bundle = Path("ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip").read_bytes()
+bundle = Path("firmware.ota.zip").read_bytes()
 public_key = Path("trusted-signing-public.pem").read_bytes()
 metadata = sdk.inspect_firmware_bundle(bundle, trusted_public_key=public_key)
 print(metadata.version, metadata.model, metadata.board)
@@ -28,21 +28,19 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
 Display all verified metadata offline, without connecting to a ring:
 
 ```bash
-openzilo ota-inspect ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip --public-key trusted-signing-public.pem
+openzilo ota-inspect firmware.ota.zip --public-key trusted-signing-public.pem
 # Add --json for machine-readable output.
 ```
 
 `inspect_firmware_bundle()` returns a `FirmwareBundle` whose `manifest` property is a fresh dictionary of all verified fields. Invalid signatures fail without a success marker. Successful inspection establishes package authenticity and integrity; device compatibility is checked before uploading.
 
 ```bash
-openzilo ota-update --address ADDRESS ring_sound-V2.001.0002.0001-prod-1234abcd.ota.zip --public-key trusted-signing-public.pem
+openzilo ota-update --address ADDRESS firmware.ota.zip --public-key trusted-signing-public.pem
 ```
 
-Board comparison ignores repeated `/` separators to support Zephyr qualifiers with a leading slash. Display and signature verification preserve the original metadata.
+Offline checks establish package authenticity and integrity. Before upload, the SDK checks model, hardware compatibility and source version; unknown compatibility information is rejected. An empty `source_versions` allows any starting version. Test bundles require `allow_test_firmware=True` or `--allow-test-firmware`. Device security policy may still reject installation; offline verification does not confirm installation.
 
-Offline checks cover signature, archive structure, lengths, digest and encryption header. Before OTA starts, the SDK checks device model, board and source version. An empty `source_versions` explicitly allows any starting version. Test bundles require `allow_test_firmware=True` or `--allow-test-firmware`. When a device cannot report its board, only an exact verified legacy profile may supply it. Currently this covers `Open Zilo` firmware `V2.001.0002.0001-prod-7fd1dfc9`, whose board is recorded in that build’s delivery metadata. Other unknown boards are rejected. Security-version enforcement and matching device encryption keys remain device checks: the SDK cannot decrypt or read rollback counters. Only the inner OTA bytes are transmitted, and the running version is still checked after reboot.
-
-OTA accepts only this signed ZIP format and rejects raw BIN input. The target version and compatibility fields come from verified metadata; `version`, `sha256`, and `expected_model` overrides have been removed. The full runtime version, including debug/prod and commit suffixes, is compared after reboot. Updating to the already running version is rejected. See [update_firmware.py](../examples/update_firmware.py) for a runnable example.
+OTA accepts only this signed ZIP format and rejects raw BIN input. The target version and compatibility fields come from verified metadata; `version`, `sha256`, and `expected_model` overrides have been removed. The full runtime version, using the full string reported by the device, is compared after reboot. Updating to the already running version is rejected. See [update_firmware.py](../examples/update_firmware.py) for a runnable example.
 
 | Argument | Meaning |
 | --- | --- |

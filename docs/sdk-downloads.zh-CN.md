@@ -52,7 +52,7 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
     print(bundle.play_path)
 ```
 
-固件 `V2.001.0002.0000` 的自动上报不会预先发送 `0x0504`，因此返回值不包含 `AudioFileInfo`。正常连续接收时 SDK 不发送额外命令；需要恢复时会在内部查询元数据，以校验文件索引并将结果限制为准确的 `data_size`。等待期间必须保持 BLE 连接，并且不能同时调用 `download_audio_file()` 或 `read_audio_frame()` 读取同一个 `0x0505` 接收队列。若连接建立过晚而错过主动上报，应查询录音数量后使用 `download_audio_file()` 重新下载。
+固件 `V2.001.0002.0000` 的自动上报不会预先发送 `0x0504`，因此返回值不包含 `AudioFileInfo`。正常连续接收时 SDK 不发送额外命令；需要恢复时会在内部查询元数据，以校验文件索引并将结果限制为准确的 `data_size`。等待期间必须保持 BLE 连接，并且不能同时调用 `download_audio_file()` 或 `read_audio_frame()` 接收同一段录音。若连接建立过晚而错过主动上报，应查询录音数量后使用 `download_audio_file()` 重新下载。
 
 ## 录音下载链路
 
@@ -126,17 +126,17 @@ file_index, raw_audio = await sdk.receive_auto_audio_file(
 
 - 第一帧确定本次接收的 `file_index`，其他文件索引的帧不会混入结果。
 - 重复和重叠数据会按偏移去除。
-- 偏移出现缺口、首帧后等待超时或收到损坏帧时，SDK 先查询并校验文件索引和准确 `data_size`，再使用 `0x0506` 从当前期望偏移补传，最多重试 3 次。
+- 偏移出现缺口、首帧后等待超时或收到损坏帧时，SDK 先查询并校验文件索引和准确 `data_size`，再使用 `0x0506` 从当前期望偏移补传。
 - 正常连续数据收到 `is_end=True` 后返回；恢复数据严格按 `data_size` 裁剪，不会返回边界后的字节。
 
 异常：
 
 - 首帧未在超时时间内到达：`TimeoutError`。
-- 偏移缺口经过 3 次补传仍无法恢复、元数据索引不一致或帧字段不合法：`ProtocolError`。
+- 偏移缺口无法恢复、元数据索引不一致或帧字段不合法：`ProtocolError`。
 - 设备返回非 0 错误码：`DeviceError`。
 - 调用开始时未连接或等待期间 BLE 断开：`TransportError`。
 
-并发限制：不要与 `download_audio_file()`、`read_audio_frame()` 或其他直接等待 `0x0505` 的代码同时运行。这些函数会读取同一个命令接收队列，可能互相取走数据。若 BLE 连接建立得太晚而错过自动上报，使用 `get_audio_file_count()` 和 `download_audio_file()` 重新下载。
+并发限制：不要与 `download_audio_file()`、`read_audio_frame()` 或其他直接等待 `0x0505` 的代码同时运行。同一连接的录音接收操作应依次执行。若 BLE 连接建立得太晚而错过自动上报，使用 `get_audio_file_count()` 和 `download_audio_file()` 重新下载。
 
 保存示例：
 

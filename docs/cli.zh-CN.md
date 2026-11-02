@@ -155,7 +155,7 @@ openzilo ota-update --help
 
 ## 兼容诊断
 
-`openzilo --version` 查看 SDK 版本；`openzilo device capabilities` 输出支持的功能、录音参数范围和信息来源；`openzilo doctor` 额外输出 SDK 版本、源码校验值和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见[兼容说明](compatibility.zh-CN.md)。
+`openzilo --version` 查看 SDK 版本；`openzilo device capabilities` 输出支持的功能、录音参数范围和信息来源；`openzilo doctor` 额外输出 SDK 版本、运行环境标识和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见[兼容说明](compatibility.zh-CN.md)。
 
 离线验签并查看签名 OTA ZIP 的完整元数据：
 

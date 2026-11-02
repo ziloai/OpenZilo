@@ -52,7 +52,7 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
     print(bundle.play_path)
 ```
 
-Automatic transfers from `V2.001.0002.0000` do not begin with `0x0504`, so the return value has no `AudioFileInfo`. During normal continuous reception the SDK sends no extra commands. Recovery queries file metadata, verifies the index, and bounds the result by `data_size`. Keep BLE connected and do not simultaneously call `download_audio_file()` or `read_audio_frame()` on the same `0x0505` queue. If you connected too late, query the file count and download by index.
+Automatic transfers from `V2.001.0002.0000` do not begin with `0x0504`, so the return value has no `AudioFileInfo`. During normal continuous reception the SDK sends no extra commands. Recovery queries file metadata, verifies the index, and bounds the result by `data_size`. Keep BLE connected and do not simultaneously call `download_audio_file()` or `read_audio_frame()` on the same connection. If you connected too late, query the file count and download by index.
 
 ## Recording transfer sequences
 
@@ -126,17 +126,17 @@ Reception behavior:
 
 - The first frame selects the file index; frames belonging to other files are excluded.
 - Duplicate and overlapping bytes are removed by offset.
-- For gaps, post-first-frame timeouts or damaged frames, the SDK queries and validates file index and exact `data_size`, then requests the expected offset with `0x0506`, up to three retries.
+- For gaps, post-first-frame timeouts or damaged frames, the SDK queries and validates file index and exact `data_size`, then requests the expected offset with `0x0506`.
 - Normal reception returns at `is_end=True`. Recovered data is truncated to `data_size` without extra bytes.
 
 Exceptions:
 
 - No initial frame before timeout: `TimeoutError`.
-- A gap unrecovered after three retries, mismatched metadata index, or invalid frame fields: `ProtocolError`.
+- An unrecoverable gap, mismatched metadata index, or invalid frame fields: `ProtocolError`.
 - Nonzero device error: `DeviceError`.
 - Disconnected before the call or during the wait: `TransportError`.
 
-Do not run concurrently with `download_audio_file()`, `read_audio_frame()` or other direct `0x0505` waiters. They share a receive queue and can take each other's packets. If connection began too late for the push, use `get_audio_file_count()` and `download_audio_file()`.
+Do not run concurrently with `download_audio_file()`, `read_audio_frame()` or other direct `0x0505` waiters. Run recording reception sequentially on a connection. If connection began too late for the push, use `get_audio_file_count()` and `download_audio_file()`.
 
 Saving example:
 

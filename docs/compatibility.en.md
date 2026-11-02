@@ -52,7 +52,7 @@ Release builds `V2.001.0002.0000` and `V2.001.0002.0001` have no feature-discove
 | `legacy_profile` | The old firmware returned no list, so the SDK selected a built-in profile by exact firmware version and model. |
 | `unknown` | No feature list or matching built-in profile is available. |
 
-The current built-in profile matches model `Open Zilo` and firmware `V2.001.0002.0001-prod-7fd1dfc9`. A shared version prefix does not select it. Discovery timeout means no response was obtained, not necessarily that a feature is absent.
+Legacy profiles apply only to models and full versions explicitly recognized by the SDK. A shared version prefix does not establish compatibility. Discovery timeout means no response was obtained, not necessarily that a feature is absent.
 
 ## Check feature availability
 
@@ -90,7 +90,7 @@ uv run openzilo device capabilities
 uv run openzilo doctor
 ```
 
-`device capabilities` outputs features and recording limits as JSON. `doctor` also reports the SDK version, source checksum and PyAV availability. Include these when reporting issues, after removing addresses, serial numbers and private audio.
+`device capabilities` outputs features and recording limits as JSON. `doctor` also reports the SDK version, environment identifier and PyAV availability. Include these when reporting issues, after removing addresses, serial numbers and private audio.
 
 ## Advanced connection options
 
