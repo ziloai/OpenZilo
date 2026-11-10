@@ -1947,7 +1947,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 <tr>
 <td>最长录音时间</td>
 <td><code>max_duration_ms</code></td>
-<td>20–60000 毫秒，须为 20 的整数倍</td>
+<td>0 表示不限时；或 20–60000 毫秒，须为 20 的整数倍</td>
 </tr>
 <tr>
 <td>断线处理</td>
@@ -1958,6 +1958,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 </table>
 <p>采样率固定为 16 kHz，每帧 20 ms。设备还会返回自己允许的参数范围，SDK 会在发送设置前检查。Opus 编码器的其余固定参数可以读取，不能通过此接口修改。</p>
 <p><code>CONTINUE_SAVING</code> 只能与 <code>FLASH</code> 或 <code>LIVE_AND_FLASH</code> 搭配使用。</p>
+<p>SDK 的 <code>max_duration_ms</code> 默认值仍为 60000。固件 <code>V2.001.0002.0002</code> 起支持不限时录音；按键启动录音时，若实时传输不可用，会回退到 Flash 保存，不改变已配置的输出模式。远程启动行为保持不变。</p>
 <h2 id="提前结束或取消录音">提前结束或取消录音<a class="headerlink" href="#提前结束或取消录音" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">固件版本</p>

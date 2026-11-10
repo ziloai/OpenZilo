@@ -1903,7 +1903,7 @@
 <p>With <code>async with sdk.OpenZiloClient(...)</code>, run this before those operations:</p>
 <div class="highlight"><pre><span></span><code><span class="n">capabilities</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">get_device_capabilities</span><span class="p">(</span><span class="n">ring</span><span class="p">)</span>
 </code></pre></div>
-<p>CLI remote recording, live audio, IMU and OTA commands query features automatically. Basic information, logs, existing-file downloads and time replies do not depend on discovery.</p>
+<p>CLI RSSI, remote recording, live audio, IMU and OTA commands query features automatically. Basic information, logs, existing-file downloads and time replies do not depend on discovery.</p>
 <h2 id="where-support-information-comes-from">Where support information comes from<a class="headerlink" href="#where-support-information-comes-from" title="Permanent link">&para;</a></h2>
 <p>Release builds <code>V2.001.0002.0000</code> and <code>V2.001.0002.0001</code> have no feature-discovery command. The SDK uses a built-in profile for exact versions it recognizes. This page explains SDK discovery and error handling; the minimum firmware version for a usage is stated directly in its feature section.</p>
 <p><code>DeviceCapabilities.source</code> identifies the source:</p>
@@ -1943,6 +1943,10 @@
 <tr>
 <td><code>recording_control</code></td>
 <td>Start, stop and configure recordings.</td>
+</tr>
+<tr>
+<td><code>connection_rssi</code></td>
+<td>Read the host signal RSSI received by the ring.</td>
 </tr>
 <tr>
 <td><code>live_audio</code></td>

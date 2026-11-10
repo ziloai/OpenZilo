@@ -1903,7 +1903,7 @@
 <p>如果用 <code>async with sdk.OpenZiloClient(...)</code> 建立连接，请在调用上述功能前执行：</p>
 <div class="highlight"><pre><span></span><code><span class="n">capabilities</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">get_device_capabilities</span><span class="p">(</span><span class="n">ring</span><span class="p">)</span>
 </code></pre></div>
-<p>命令行中的远程录音、实时音频、IMU 和 OTA 操作会自动执行查询。读取系统信息、日志、下载已有录音和校时不依赖这项查询。</p>
+<p>命令行中的 RSSI、远程录音、实时音频、IMU 和 OTA 操作会自动执行查询。读取系统信息、日志、下载已有录音和校时不依赖这项查询。</p>
 <h2 id="查询结果从哪里来">查询结果从哪里来<a class="headerlink" href="#查询结果从哪里来" title="Permanent link">&para;</a></h2>
 <p>固件 <code>V2.001.0002.0000</code> 与 <code>V2.001.0002.0001</code> 的发行包没有功能查询命令，SDK 对已内置的完整版本使用配置匹配。本文说明功能查询与错误处理；远程录音等功能的最低固件版本直接标在对应使用小节前。</p>
 <p><code>DeviceCapabilities.source</code> 表示支持信息的来源：</p>
@@ -1943,6 +1943,10 @@
 <tr>
 <td><code>recording_control</code></td>
 <td>开始、停止录音及修改录音设置</td>
+</tr>
+<tr>
+<td><code>connection_rssi</code></td>
+<td>读取戒指接收主机信号的 RSSI</td>
 </tr>
 <tr>
 <td><code>live_audio</code></td>

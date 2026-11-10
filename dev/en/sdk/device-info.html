@@ -596,6 +596,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#connection-signal-strength" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Connection signal strength
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1740,6 +1751,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#connection-signal-strength" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Connection signal strength
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1780,6 +1802,11 @@
 </code></pre></div>
 <p>Returns: <code>SystemInfo</code>.</p>
 <p>Common exceptions: <code>TimeoutError</code> for timeout, <code>DeviceError</code> for a device error code.</p>
+<h2 id="connection-signal-strength">Connection signal strength<a class="headerlink" href="#connection-signal-strength" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">rssi</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">get_connection_rssi</span><span class="p">(</span><span class="n">ring</span><span class="p">)</span>
+</code></pre></div>
+<p>Returns an <code>int</code> in dBm measuring the host signal received by the ring. This differs from scan RSSI and cannot be converted directly to distance. Use <code>openzilo rssi</code> from the CLI.</p>
+<p>Introduced in firmware <code>V2.001.0002.0002</code>; the device must advertise <code>connection_rssi</code>. Reconnect before retrying a timed-out query.</p>
 
 
 

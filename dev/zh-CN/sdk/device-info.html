@@ -596,6 +596,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#连接信号强度" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        连接信号强度
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1740,6 +1751,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#连接信号强度" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        连接信号强度
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1780,6 +1802,11 @@
 </code></pre></div>
 <p>返回：<code>SystemInfo</code></p>
 <p>常见异常：超时抛出 <code>TimeoutError</code>；设备返回错误码抛出 <code>DeviceError</code>。</p>
+<h2 id="连接信号强度">连接信号强度<a class="headerlink" href="#连接信号强度" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">rssi</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">get_connection_rssi</span><span class="p">(</span><span class="n">ring</span><span class="p">)</span>
+</code></pre></div>
+<p>返回 <code>int</code>，单位 dBm，表示戒指接收主机信号的 RSSI，与扫描 RSSI 不同，不能直接换算距离。命令行使用 <code>openzilo rssi</code>。</p>
+<p>此功能从固件 <code>V2.001.0002.0002</code> 引入，需要设备声明 <code>connection_rssi</code> 能力。查询超时后需重新连接再试。</p>
 
 
 

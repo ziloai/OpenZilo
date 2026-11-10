@@ -1424,6 +1424,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#0x0107--0x0108-connection-rssi" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0107</code> / <code>0x0108</code> Connection RSSI
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2423,6 +2434,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#0x0107--0x0108-connection-rssi" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0107</code> / <code>0x0108</code> Connection RSSI
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3115,6 +3137,12 @@
 <td><code>get_device_capabilities()</code></td>
 </tr>
 <tr>
+<td>Connection RSSI</td>
+<td><code>0x0107</code></td>
+<td><code>0x0108</code></td>
+<td><code>get_connection_rssi()</code></td>
+</tr>
+<tr>
 <td>Command error</td>
 <td><code>0x01FF</code> device response</td>
 <td>None</td>
@@ -3368,6 +3396,8 @@
 </tr>
 </tbody>
 </table>
+<h4 id="0x0107--0x0108-connection-rssi"><code>0x0107</code> / <code>0x0108</code> Connection RSSI<a class="headerlink" href="#0x0107--0x0108-connection-rssi" title="Permanent link">&para;</a></h4>
+<p>Empty request; requires <code>connection_rssi/1.0</code>. Success returns <code>error_code:u16=0</code> followed by <code>rssi:i8</code> in dBm (3 bytes total). Failure returns only <code>error_code:u16</code> (2 bytes): 1 for read failure or unavailable, 7 for an invalid request. Multibyte integers are big-endian; valid RSSI is -127 to 20, and 127 means unavailable.</p>
 <h3 id="52-logs">5.2 Logs<a class="headerlink" href="#52-logs" title="Permanent link">&para;</a></h3>
 <h4 id="0x0301-get-log-storage"><code>0x0301</code> Get log storage<a class="headerlink" href="#0x0301-get-log-storage" title="Permanent link">&para;</a></h4>
 <p>Empty body.</p>
@@ -4326,7 +4356,7 @@
 <tr>
 <td><code>max_duration_ms</code></td>
 <td><code>u16</code></td>
-<td>Maximum duration in milliseconds.</td>
+<td>Maximum duration in milliseconds; 0 for unlimited.</td>
 </tr>
 </tbody>
 </table>
@@ -4469,7 +4499,7 @@
 </tr>
 </tbody>
 </table>
-<p>Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1. The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.</p>
+<p>Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1, 12 connection_rssi/1 (TLV <code>0x010C</code>). The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.</p>
 <p>Advertised features identify supported interfaces, not current readiness or an idle device.</p>
 <p>Recording limits occupy exactly 26 bytes:</p>
 <table>

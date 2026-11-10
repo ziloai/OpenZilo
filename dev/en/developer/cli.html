@@ -1924,6 +1924,9 @@ openzilo<span class="w"> </span>device<span class="w"> </span>use
 <span class="c1"># Read device information, battery and firmware version</span>
 openzilo<span class="w"> </span>info
 
+<span class="c1"># Read connection signal strength (requires connection_rssi)</span>
+openzilo<span class="w"> </span>rssi
+
 <span class="c1"># Enter the interactive shell</span>
 openzilo<span class="w"> </span>shell
 </code></pre></div>
@@ -1969,7 +1972,7 @@ openzilo<span class="w"> </span>audio-stop<span class="w"> </span><span class="m
 openzilo<span class="w"> </span>audio-stop<span class="w"> </span><span class="m">123</span><span class="w"> </span>--cancel
 </code></pre></div>
 <p><code>123</code> is illustrative; use the session ID returned by status. A stop acknowledgment does not confirm saving; the command waits for final state. If START times out, query <code>audio-status</code> before another START.</p>
-<p>Configuration survives reconnection and resets on reboot. <code>audio-record</code> defaults to flash storage and stopping on disconnect; unspecified settings retain device values. <code>--max-duration-ms</code> is the device limit (20–60000 ms in 20 ms steps); <code>--seconds</code> is how long the CLI waits before requesting stop (0.02–60 seconds). A shorter device limit ends recording earlier.</p>
+<p>Configuration survives reconnection and resets on reboot. <code>audio-record</code> defaults to flash storage and stopping on disconnect; unspecified settings retain device values. <code>--max-duration-ms</code> is the device limit (0 for unlimited, or 20–60000 ms in 20 ms steps); <code>--seconds</code> is how long the CLI waits before requesting stop (0.02–60 seconds). A shorter device limit ends recording earlier.</p>
 <p>Converting Speex/Opus to WAV requires an <code>ffmpeg</code> executable; specify it with <code>--ffmpeg /path/to/ffmpeg</code>. Legacy recordings can be received after a button recording or downloaded:</p>
 <div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>audio-receive<span class="w"> </span>recordings/button.wav
 openzilo<span class="w"> </span>audio-download<span class="w"> </span><span class="m">0</span><span class="w"> </span>recordings/saved.wav
@@ -1999,7 +2002,7 @@ openzilo<span class="w"> </span>ota-update<span class="w"> </span>--help
 <p>Firmware <code>V2.001.0002.0001</code> starts IMU directly; <code>V2.001.0002.0000</code> requires gesture mode first. At the time limit, error or cancellation, the command attempts to stop reports and disconnect. File output overwrites its path, creating parent directories; batches already written remain after failure. Values remain in protocol units; see the <a href="../sdk/imu.html">IMU guide</a>.</p>
 <p>Connection commands accept <code>--scan-timeout</code> and <code>--connect-timeout</code>. Errors go to stderr and exit with 1; argument errors with 2; Ctrl+C with 130. Interactive command errors return to the prompt.</p>
 <h2 id="compatibility-diagnostics">Compatibility diagnostics<a class="headerlink" href="#compatibility-diagnostics" title="Permanent link">&para;</a></h2>
-<p><code>openzilo --version</code> shows the SDK version. <code>openzilo device capabilities</code> shows features, recording limits and information source. <code>openzilo doctor</code> also shows the SDK environment identifier and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See <a href="compatibility.html">compatibility</a>.</p>
+<p><code>openzilo --version</code> shows the SDK version. <code>openzilo device capabilities</code> shows features, recording limits and information source. <code>openzilo doctor</code> also shows the SDK environment identifier and audio dependencies. RSSI, remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See <a href="compatibility.html">compatibility</a>.</p>
 <h2 id="software-imu-calibration">Software IMU calibration<a class="headerlink" href="#software-imu-calibration" title="Permanent link">&para;</a></h2>
 <p>Use <code>openzilo imu-calibrate accel</code> for six-face accelerometer calibration in the charging case,
 <code>quick</code> for stationary gyro calibration outside the case, or <code>full</code> for both stages.

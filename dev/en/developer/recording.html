@@ -1947,7 +1947,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 <tr>
 <td>Maximum duration</td>
 <td><code>max_duration_ms</code></td>
-<td>20–60000 ms in multiples of 20</td>
+<td>0 for unlimited; or 20–60000 ms in multiples of 20</td>
 </tr>
 <tr>
 <td>Disconnect handling</td>
@@ -1958,6 +1958,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 </table>
 <p>Sample rate is fixed at 16 kHz with 20 ms frames. The device also reports allowed ranges, checked by the SDK before writing. Other fixed Opus parameters can be read but not changed through this API.</p>
 <p><code>CONTINUE_SAVING</code> requires <code>FLASH</code> or <code>LIVE_AND_FLASH</code>.</p>
+<p>The SDK default for <code>max_duration_ms</code> remains 60000. Firmware <code>V2.001.0002.0002</code> introduces unlimited recording and falls back to flash when live streaming is unavailable at button-triggered recording start, without changing the configured output mode. Remote starts keep their existing behavior.</p>
 <h2 id="stop-early-or-cancel">Stop early or cancel<a class="headerlink" href="#stop-early-or-cancel" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Firmware version</p>
