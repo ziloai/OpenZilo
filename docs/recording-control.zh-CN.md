@@ -77,12 +77,14 @@ asyncio.run(main())
 | 声道 | `channels` | 1 或 2 |
 | 码率 | `bitrate` | 8000–32000 bit/s |
 | 数字增益 | `gain_left_q8`、`gain_right_q8` | 0–1024，256 表示 1 倍 |
-| 最长录音时间 | `max_duration_ms` | 20–60000 毫秒，须为 20 的整数倍 |
+| 最长录音时间 | `max_duration_ms` | 0 表示不限时；或 20–60000 毫秒，须为 20 的整数倍 |
 | 断线处理 | `disconnect_policy` | `STOP` 停止，或 `CONTINUE_SAVING` 继续保存在设备 |
 
 采样率固定为 16 kHz，每帧 20 ms。设备还会返回自己允许的参数范围，SDK 会在发送设置前检查。Opus 编码器的其余固定参数可以读取，不能通过此接口修改。
 
 `CONTINUE_SAVING` 只能与 `FLASH` 或 `LIVE_AND_FLASH` 搭配使用。
+
+SDK 的 `max_duration_ms` 默认值仍为 60000。固件 `V2.001.0002.0002` 起支持不限时录音；按键启动录音时，若实时传输不可用，会回退到 Flash 保存，不改变已配置的输出模式。远程启动行为保持不变。
 
 ## 提前结束或取消录音
 

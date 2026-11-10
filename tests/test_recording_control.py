@@ -89,6 +89,14 @@ class RecordingControlTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(sdk.ProtocolError):
             await sdk.set_audio_recording_config(peer.client, sdk.AudioRecordingConfig())
 
+    async def test_unlimited_duration_write_and_readback(self):
+        from test_compatibility import VECTOR
+        peer = RecordingPeer()
+        peer.client.capabilities = sdk.parse_device_capabilities(VECTOR)
+        config = sdk.AudioRecordingConfig(output=sdk.AudioOutput.FLASH, max_duration_ms=0)
+        self.assertEqual(await sdk.set_audio_recording_config(peer.client, config), config)
+        self.assertEqual(peer.commands[-1], (0x0514, bytes.fromhex("0101000200007d00010001000000")))
+
     async def test_stop_ack_is_not_completion_and_index_zero_is_valid(self):
         peer = RecordingPeer()
         session = await sdk.start_audio_recording(peer.client)

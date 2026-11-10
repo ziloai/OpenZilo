@@ -47,6 +47,9 @@ openzilo device use
 # Read device information, battery and firmware version
 openzilo info
 
+# Read connection signal strength (requires connection_rssi)
+openzilo rssi
+
 # Enter the interactive shell
 openzilo shell
 ```
@@ -107,7 +110,7 @@ openzilo audio-stop 123 --cancel
 
 `123` is illustrative; use the session ID returned by status. A stop acknowledgment does not confirm saving; the command waits for final state. If START times out, query `audio-status` before another START.
 
-Configuration survives reconnection and resets on reboot. `audio-record` defaults to flash storage and stopping on disconnect; unspecified settings retain device values. `--max-duration-ms` is the device limit (20–60000 ms in 20 ms steps); `--seconds` is how long the CLI waits before requesting stop (0.02–60 seconds). A shorter device limit ends recording earlier.
+Configuration survives reconnection and resets on reboot. `audio-record` defaults to flash storage and stopping on disconnect; unspecified settings retain device values. `--max-duration-ms` is the device limit (0 for unlimited, or 20–60000 ms in 20 ms steps); `--seconds` is how long the CLI waits before requesting stop (0.02–60 seconds). A shorter device limit ends recording earlier.
 
 Converting Speex/Opus to WAV requires an `ffmpeg` executable; specify it with `--ffmpeg /path/to/ffmpeg`. Legacy recordings can be received after a button recording or downloaded:
 
@@ -149,7 +152,7 @@ Connection commands accept `--scan-timeout` and `--connect-timeout`. Errors go t
 
 ## Compatibility diagnostics
 
-`openzilo --version` shows the SDK version. `openzilo device capabilities` shows features, recording limits and information source. `openzilo doctor` also shows the SDK environment identifier and audio dependencies. Remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See [compatibility](compatibility.en.md).
+`openzilo --version` shows the SDK version. `openzilo device capabilities` shows features, recording limits and information source. `openzilo doctor` also shows the SDK environment identifier and audio dependencies. RSSI, remote recording, live audio, IMU and OTA query capabilities before running; support is checked from the response, not firmware version ordering. See [compatibility](compatibility.en.md).
 
 ## Software IMU calibration
 

@@ -26,6 +26,7 @@
 | [`scan_rings()`](sdk-connection.zh-CN.md) | `await scan_rings(address=None, timeout_s=25.0)` | `list[BleDeviceInfo]` | 扫描 BLE 设备，可按 MAC 地址过滤。 |
 | [`connect_ring()`](sdk-connection.zh-CN.md) | `await connect_ring(address=..., command_timeout_s=10.0, auto_time_sync=False)` | `OpenZiloClient` | 创建并连接客户端，调用方负责 `disconnect()`。 |
 | [`get_system_info()`](sdk-device-info.zh-CN.md) | `await get_system_info(client, timeout_s=None)` | `SystemInfo` | 读取设备系统信息。 |
+| [`get_connection_rssi()`](sdk-device-info.zh-CN.md) | `await get_connection_rssi(client, timeout_s=None)` | `int` | 读取戒指接收主机信号的 RSSI，单位 dBm。 |
 | [`parse_system_info()`](sdk-device-info.zh-CN.md) | `parse_system_info(body)` | `SystemInfo` | 解析 `0x0102` 包体，通常只用于测试或协议调试。 |
 | [`enable_time_sync()`](sdk-time-sync.zh-CN.md) | `enable_time_sync(client)` | `None` | 注册 `0x0401` 自动应答处理器。 |
 | [`send_time_response()`](sdk-time-sync.zh-CN.md) | `await send_time_response(client, request_time, response_time=None, send_time=None)` | `None` | 手动发送 `0x0402` 校时应答。 |

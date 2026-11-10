@@ -75,9 +75,9 @@ class CapabilityParserTests(unittest.TestCase):
                     disconnect_policy=sdk.AudioDisconnectPolicy.CONTINUE_SAVING))
 
     def test_unknown_optional_tlv_and_feature_are_forward_compatible(self):
-        caps = sdk.parse_device_capabilities(VECTOR + tlv(0x300, b"future") + tlv(0x10C, b"\1\0"))
+        caps = sdk.parse_device_capabilities(VECTOR + tlv(0x300, b"future") + tlv(0x10D, b"\1\0"))
         self.assertTrue(caps.supports("recording_control"))
-        self.assertTrue(caps.supports("unknown_12", major=1))
+        self.assertTrue(caps.supports("unknown_13", major=1))
         with self.assertRaises(sdk.CompatibilityError):
             sdk.parse_device_capabilities(VECTOR + tlv(0x8001, b"required"))
 

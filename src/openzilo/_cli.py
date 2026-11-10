@@ -30,6 +30,7 @@ from ._device import (
     enable_time_sync,
     get_log_storage,
     get_system_info,
+    get_connection_rssi,
     read_log_chunk,
     scan_rings,
 )
@@ -245,6 +246,14 @@ async def cmd_capabilities(args: argparse.Namespace) -> None:
         result["host"] = {"opus_decoder_installed": importlib.util.find_spec("av") is not None}
         result["notes"] = ["Capabilities describe support, not current busy state or BLE readiness."]
     print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+async def cmd_rssi(args: argparse.Namespace) -> None:
+    async with OpenZiloClient(address=args.address, scan_timeout_s=args.scan_timeout,
+                              connect_timeout_s=args.connect_timeout,
+                              allow_unverified_features=args.allow_unverified_features) as client:
+        rssi = await get_connection_rssi(client, timeout_s=args.timeout)
+    print(f"{rssi} dBm")
 
 
 async def cmd_info(args: argparse.Namespace) -> None:
@@ -589,6 +598,11 @@ def build_parser() -> argparse.ArgumentParser:
     info = subparsers.add_parser("info", help="Print system information.")
     add_connection_args(info)
     info.set_defaults(func=cmd_info)
+
+    rssi = subparsers.add_parser("rssi", help="Read the ring's received connection RSSI in dBm.")
+    add_connection_args(rssi)
+    rssi.add_argument("--timeout", type=positive_seconds, default=3.0)
+    rssi.set_defaults(func=cmd_rssi)
 
     time_sync = subparsers.add_parser(
         "time-sync",
