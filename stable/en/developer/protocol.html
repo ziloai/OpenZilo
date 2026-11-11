@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/developer/protocol.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/developer/protocol.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>OpenZilo BLE protocol reference - OpenZilo SDK v0.6.2</title>
+        <title>OpenZilo BLE protocol reference - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1424,6 +1424,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#0x0107--0x0108-connection-rssi" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0107</code> / <code>0x0108</code> Connection RSSI
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1868,10 +1879,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#0x0512--0x0513-start-recording" class="md-nav__link">
+  <a href="#0x0516--0x0517-start-recording" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0512</code> / <code>0x0513</code> Start recording
+        <code>0x0516</code> / <code>0x0517</code> Start recording
       </span>
     </span>
   </a>
@@ -1879,10 +1890,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0514--0x0515-stop-recording" class="md-nav__link">
+  <a href="#0x0518--0x0519-stop-recording" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0514</code> / <code>0x0515</code> Stop recording
+        <code>0x0518</code> / <code>0x0519</code> Stop recording
       </span>
     </span>
   </a>
@@ -1890,10 +1901,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0516--0x0517-query-recording-status" class="md-nav__link">
+  <a href="#0x051a--0x051b-query-recording-status" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0516</code> / <code>0x0517</code> Query recording status
+        <code>0x051A</code> / <code>0x051B</code> Query recording status
       </span>
     </span>
   </a>
@@ -1901,10 +1912,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0518--0x0519-read-recording-configuration" class="md-nav__link">
+  <a href="#0x0512--0x0513-read-recording-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0518</code> / <code>0x0519</code> Read recording configuration
+        <code>0x0512</code> / <code>0x0513</code> Read recording configuration
       </span>
     </span>
   </a>
@@ -1912,10 +1923,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x051a--0x051b-write-recording-configuration" class="md-nav__link">
+  <a href="#0x0514--0x0515-write-recording-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x051A</code> / <code>0x051B</code> Write recording configuration
+        <code>0x0514</code> / <code>0x0515</code> Write recording configuration
       </span>
     </span>
   </a>
@@ -1994,7 +2005,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -2423,6 +2434,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#0x0107--0x0108-connection-rssi" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0107</code> / <code>0x0108</code> Connection RSSI
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2867,10 +2889,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#0x0512--0x0513-start-recording" class="md-nav__link">
+  <a href="#0x0516--0x0517-start-recording" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0512</code> / <code>0x0513</code> Start recording
+        <code>0x0516</code> / <code>0x0517</code> Start recording
       </span>
     </span>
   </a>
@@ -2878,10 +2900,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0514--0x0515-stop-recording" class="md-nav__link">
+  <a href="#0x0518--0x0519-stop-recording" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0514</code> / <code>0x0515</code> Stop recording
+        <code>0x0518</code> / <code>0x0519</code> Stop recording
       </span>
     </span>
   </a>
@@ -2889,10 +2911,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0516--0x0517-query-recording-status" class="md-nav__link">
+  <a href="#0x051a--0x051b-query-recording-status" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0516</code> / <code>0x0517</code> Query recording status
+        <code>0x051A</code> / <code>0x051B</code> Query recording status
       </span>
     </span>
   </a>
@@ -2900,10 +2922,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0518--0x0519-read-recording-configuration" class="md-nav__link">
+  <a href="#0x0512--0x0513-read-recording-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0518</code> / <code>0x0519</code> Read recording configuration
+        <code>0x0512</code> / <code>0x0513</code> Read recording configuration
       </span>
     </span>
   </a>
@@ -2911,10 +2933,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x051a--0x051b-write-recording-configuration" class="md-nav__link">
+  <a href="#0x0514--0x0515-write-recording-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x051A</code> / <code>0x051B</code> Write recording configuration
+        <code>0x0514</code> / <code>0x0515</code> Write recording configuration
       </span>
     </span>
   </a>
@@ -2981,7 +3003,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.2)</summary><ul><li><a href="protocol.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/en/developer/protocol.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/developer/protocol.html">v0.6.1</a></li><li><a href="../../../dev/en/developer/protocol.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="protocol.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/developer/protocol.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/developer/protocol.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/developer/protocol.html">v0.6.1</a></li><li><a href="../../../dev/en/developer/protocol.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -3031,7 +3053,7 @@
 </tbody>
 </table>
 <p>Connect by the scanned address (UUID on macOS), without depending on advertising names.</p>
-<p>SDK RX writes use chunks of up to 20 bytes; the last may be shorter. This is a BLE write policy, not a packet boundary or a replacement for system MTU negotiation. TX notifications can use other sizes; reconstruct them with <code>OpenZiloClient</code> or <code>PacketStream</code>.</p>
+<p>BLE fragments are not protocol packet boundaries. Use <code>OpenZiloClient</code> or <code>PacketStream</code> to reconstruct complete packets.</p>
 <h2 id="3-protocol-v4-packets">3. Protocol v4 packets<a class="headerlink" href="#3-protocol-v4-packets" title="Permanent link">&para;</a></h2>
 <p>The fixed header is 11 bytes:</p>
 <table>
@@ -3113,6 +3135,12 @@
 <td><code>0x0105</code></td>
 <td><code>0x0106</code></td>
 <td><code>get_device_capabilities()</code></td>
+</tr>
+<tr>
+<td>Connection RSSI</td>
+<td><code>0x0107</code></td>
+<td><code>0x0108</code></td>
+<td><code>get_connection_rssi()</code></td>
 </tr>
 <tr>
 <td>Command error</td>
@@ -3200,32 +3228,32 @@
 </tr>
 <tr>
 <td>Start recording</td>
-<td><code>0x0512</code></td>
-<td><code>0x0513</code></td>
+<td><code>0x0516</code></td>
+<td><code>0x0517</code></td>
 <td><code>start_audio_recording()</code></td>
 </tr>
 <tr>
 <td>Stop recording</td>
-<td><code>0x0514</code></td>
-<td><code>0x0515</code></td>
+<td><code>0x0518</code></td>
+<td><code>0x0519</code></td>
 <td><code>stop_audio_recording()</code></td>
 </tr>
 <tr>
 <td>Recording status</td>
-<td><code>0x0516</code></td>
-<td><code>0x0517</code></td>
+<td><code>0x051A</code></td>
+<td><code>0x051B</code></td>
 <td><code>get_audio_recording_status()</code></td>
 </tr>
 <tr>
 <td>Read recording settings</td>
-<td><code>0x0518</code></td>
-<td><code>0x0519</code></td>
+<td><code>0x0512</code></td>
+<td><code>0x0513</code></td>
 <td><code>get_audio_recording_config()</code></td>
 </tr>
 <tr>
 <td>Write recording settings</td>
-<td><code>0x051A</code></td>
-<td><code>0x051B</code></td>
+<td><code>0x0514</code></td>
+<td><code>0x0515</code></td>
 <td><code>set_audio_recording_config()</code></td>
 </tr>
 <tr>
@@ -3368,6 +3396,8 @@
 </tr>
 </tbody>
 </table>
+<h4 id="0x0107--0x0108-connection-rssi"><code>0x0107</code> / <code>0x0108</code> Connection RSSI<a class="headerlink" href="#0x0107--0x0108-connection-rssi" title="Permanent link">&para;</a></h4>
+<p>Empty request; requires <code>connection_rssi/1.0</code>. Success returns <code>error_code:u16=0</code> followed by <code>rssi:i8</code> in dBm (3 bytes total). Failure returns only <code>error_code:u16</code> (2 bytes): 1 for read failure or unavailable, 7 for an invalid request. Multibyte integers are big-endian; valid RSSI is -127 to 20, and 127 means unavailable.</p>
 <h3 id="52-logs">5.2 Logs<a class="headerlink" href="#52-logs" title="Permanent link">&para;</a></h3>
 <h4 id="0x0301-get-log-storage"><code>0x0301</code> Get log storage<a class="headerlink" href="#0x0301-get-log-storage" title="Permanent link">&para;</a></h4>
 <p>Empty body.</p>
@@ -3392,13 +3422,13 @@
 <td><code>page_size</code></td>
 <td><code>u32</code></td>
 <td style="text-align: right;">4</td>
-<td>Log page size or the device's current paging unit.</td>
+<td>Current log file count; the wire field retains the name <code>page_size</code>.</td>
 </tr>
 <tr>
 <td><code>total_len</code></td>
 <td><code>u32</code></td>
 <td style="text-align: right;">4</td>
-<td>Total log data length.</td>
+<td>Per-file capacity in bytes, not the actual total length of all logs.</td>
 </tr>
 </tbody>
 </table>
@@ -3658,7 +3688,7 @@
 </table>
 <p><code>data</code> is a raw file fragment: OP2C on Opus firmware, or consecutive little-endian two-byte lengths followed by Speex payloads on legacy firmware. See <a href="architecture.html#recording-formats">recording formats</a>. File-internal little-endian lengths do not change big-endian protocol fields.</p>
 <p>After saving, legacy Speex firmware pushes this same <code>0x0505</code> format without preceding <code>0x0504</code>. <code>receive_auto_audio_file()</code> selects the first frame's index, assembles by offset, and finishes at <code>is_end=1</code>. It returns <code>(file_index, raw_audio)</code> without <code>AudioFileInfo</code>.</p>
-<p>Normal continuous push needs no extraction commands. For a gap, timeout or damaged frame, the SDK queries and verifies index and <code>data_size</code> using <code>0x0503 -&gt; 0x0504</code>, then requests the expected offset with <code>0x0506</code>, up to three attempts. Results are bounded by <code>data_size</code>. Keep BLE connected during saving and push. If connection was too late, query the recording count and download by index.</p>
+<p>Normal continuous push needs no extraction commands. For a gap, timeout or damaged frame, the SDK queries and verifies index and <code>data_size</code> using <code>0x0503 -&gt; 0x0504</code>, then requests the expected offset with <code>0x0506</code>. Results are bounded by <code>data_size</code>. Keep BLE connected during saving and push. If connection was too late, query the recording count and download by index.</p>
 <h4 id="0x0506-request-recording-offset"><code>0x0506</code> Request recording offset<a class="headerlink" href="#0x0506-request-recording-offset" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -4234,11 +4264,11 @@
 <p>This usage requires firmware <strong>V2.001.0002.0001 or later</strong>.</p>
 </div>
 <p>These commands implement recording-control interface v1. Start, status and configuration-read requests have empty bodies. Integers are big-endian. See <a href="recording.html">recording control</a> for application examples.</p>
-<h4 id="0x0512--0x0513-start-recording"><code>0x0512</code> / <code>0x0513</code> Start recording<a class="headerlink" href="#0x0512--0x0513-start-recording" title="Permanent link">&para;</a></h4>
-<p>Empty request. A successful response is <code>error_code:u16, session_id:u32</code>, six bytes. Nonzero session ID confirms acceptance, not completion; query <code>0x0516</code> for final status. After START timeout, query status instead of automatically retrying.</p>
-<h4 id="0x0514--0x0515-stop-recording"><code>0x0514</code> / <code>0x0515</code> Stop recording<a class="headerlink" href="#0x0514--0x0515-stop-recording" title="Permanent link">&para;</a></h4>
+<h4 id="0x0516--0x0517-start-recording"><code>0x0516</code> / <code>0x0517</code> Start recording<a class="headerlink" href="#0x0516--0x0517-start-recording" title="Permanent link">&para;</a></h4>
+<p>Empty request. A successful response is <code>error_code:u16, session_id:u32</code>, six bytes. Nonzero session ID confirms acceptance, not completion; query <code>0x051A</code> for final status. After START timeout, query status instead of automatically retrying.</p>
+<h4 id="0x0518--0x0519-stop-recording"><code>0x0518</code> / <code>0x0519</code> Stop recording<a class="headerlink" href="#0x0518--0x0519-stop-recording" title="Permanent link">&para;</a></h4>
 <p>Request: <code>session_id:u32, cancel:u8</code>. <code>cancel=0</code> stops according to output settings; <code>cancel=1</code> discards uncommitted audio. Success: <code>error_code:u16, session_id:u32</code>. The ID must match; final status must still be awaited.</p>
-<h4 id="0x0516--0x0517-query-recording-status"><code>0x0516</code> / <code>0x0517</code> Query recording status<a class="headerlink" href="#0x0516--0x0517-query-recording-status" title="Permanent link">&para;</a></h4>
+<h4 id="0x051a--0x051b-query-recording-status"><code>0x051A</code> / <code>0x051B</code> Query recording status<a class="headerlink" href="#0x051a--0x051b-query-recording-status" title="Permanent link">&para;</a></h4>
 <p>Empty request. Successful response is 14 bytes:</p>
 <table>
 <thead>
@@ -4282,7 +4312,7 @@
 </tbody>
 </table>
 <p>The SDK uses <code>saved</code> to determine whether the index is valid. Without a saved file, returned <code>file_index</code> is <code>None</code>.</p>
-<h4 id="0x0518--0x0519-read-recording-configuration"><code>0x0518</code> / <code>0x0519</code> Read recording configuration<a class="headerlink" href="#0x0518--0x0519-read-recording-configuration" title="Permanent link">&para;</a></h4>
+<h4 id="0x0512--0x0513-read-recording-configuration"><code>0x0512</code> / <code>0x0513</code> Read recording configuration<a class="headerlink" href="#0x0512--0x0513-read-recording-configuration" title="Permanent link">&para;</a></h4>
 <p>Empty request. Response begins with <code>error_code:u16</code>; on success the 14-byte settings below are followed by sample rate, frame duration and fixed codec parameters.</p>
 <table>
 <thead>
@@ -4326,12 +4356,12 @@
 <tr>
 <td><code>max_duration_ms</code></td>
 <td><code>u16</code></td>
-<td>Maximum duration in milliseconds.</td>
+<td>Maximum duration in milliseconds; 0 for unlimited.</td>
 </tr>
 </tbody>
 </table>
 <p>Successful responses are 34 bytes. Settings are followed by <code>sample_rate:u16</code>, <code>frame_duration_ms:u16</code>, then <code>codec:u8</code>, <code>complexity:u8</code>, <code>vbr:u8</code>, <code>constrained_vbr:u8</code>, <code>dtx:u8</code>, <code>fec:u8</code>, <code>packet_loss_percent:u8</code>, <code>signal:u16</code>, <code>bit_depth:u8</code>, <code>max_packet_size:u16</code>, <code>application:u16</code>. The device returns these fixed parameters; configuration writes cannot change them.</p>
-<h4 id="0x051a--0x051b-write-recording-configuration"><code>0x051A</code> / <code>0x051B</code> Write recording configuration<a class="headerlink" href="#0x051a--0x051b-write-recording-configuration" title="Permanent link">&para;</a></h4>
+<h4 id="0x0514--0x0515-write-recording-configuration"><code>0x0514</code> / <code>0x0515</code> Write recording configuration<a class="headerlink" href="#0x0514--0x0515-write-recording-configuration" title="Permanent link">&para;</a></h4>
 <p>Request contains only the 14-byte settings above. Response matches configuration readback, showing accepted settings. Write only while idle. Continue-saving on disconnect requires flash or live-plus-flash output.</p>
 <h2 id="6-error-codes">6. Error codes<a class="headerlink" href="#6-error-codes" title="Permanent link">&para;</a></h2>
 <table>
@@ -4426,7 +4456,7 @@
 </tbody>
 </table>
 <p>Errors: 2 busy, 5 unknown command, 7 invalid argument, 9 unsupported structure version. An unknown command returns 5, nonempty discovery request returns 7, and unknown version in the 14-byte recording settings returns 9. Existing command-specific errors remain valid; not all legacy failures use generic errors. Never reply to an error with another error.</p>
-<p>TLVs contain <code>tag:u16, length:u16, value:length bytes</code>, within v4's 5120-byte limit; current firmware constructs responses in a buffer of at most 512 bytes. Duplicate tags, truncation, invalid UTF-8 and missing required device fields fail parsing. Unknown optional tags are skipped; an unknown tag with its top bit set requires an SDK upgrade.</p>
+<p>TLVs contain <code>tag:u16, length:u16, value:length bytes</code>, within v4's 5120-byte limit. Duplicate tags, truncation, invalid UTF-8 and missing required device fields fail parsing. Unknown optional tags are skipped; an unknown tag with its top bit set requires an SDK upgrade.</p>
 <table>
 <thead>
 <tr>
@@ -4445,7 +4475,7 @@
 </tr>
 <tr>
 <td>3</td>
-<td>Firmware compilation target, UTF-8.</td>
+<td>Hardware compatibility identifier, UTF-8; use the value reported by the device.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4453,7 +4483,7 @@
 </tr>
 <tr>
 <td>5</td>
-<td>Firmware build ID, UTF-8.</td>
+<td>Opaque firmware identifier, UTF-8.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4469,8 +4499,8 @@
 </tr>
 </tbody>
 </table>
-<p>Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1. The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.</p>
-<p>Firmware advertises features only for fully registered command groups. Button/tap events require connected producers in the product build. Advertisement identifies implementation support, not successful hardware initialization, current connection readiness or an idle device.</p>
+<p>Feature IDs: 1 system/1, 2 time_sync/1, 3 audio_files/1, 4 recording_control/1, 5 live_audio/1, 6 imu/2, 7 key_events/1, 8 double_tap/1, 9 ota/1, 10 gesture/1, 12 connection_rssi/1 (TLV <code>0x010C</code>). The suffix is the supported major version. Current firmware does not advertise gesture. IMU/2 starts capture on subscription; an implementation requiring separate gesture mode must not advertise it.</p>
+<p>Advertised features identify supported interfaces, not current readiness or an idle device.</p>
 <p>Recording limits occupy exactly 26 bytes:</p>
 <table>
 <thead>

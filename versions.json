@@ -2,11 +2,13 @@
   "commits": {
     "dev": "765605cb68d55d7e928db868f4f1e669c4c90c24",
     "v0.6.1": "34f21f5a81af12ca7d310c9f5c9155240e19fc9c",
-    "v0.6.2": "6d0faa7da5213437ec785650f1c09a0a8cb11f62"
+    "v0.6.2": "6d0faa7da5213437ec785650f1c09a0a8cb11f62",
+    "v0.6.3": "518804b781bb191a5278cd66cb4983bde97c23eb"
   },
-  "stable": "v0.6.2",
+  "stable": "v0.6.3",
   "versions": [
     "stable",
+    "v0.6.3",
     "v0.6.2",
     "v0.6.1",
     "dev"

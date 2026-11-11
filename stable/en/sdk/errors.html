@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/sdk/errors.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/sdk/errors.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>Exceptions and troubleshooting - OpenZilo SDK v0.6.2</title>
+        <title>Exceptions and troubleshooting - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1445,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1883,7 +1883,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.2)</summary><ul><li><a href="errors.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/en/sdk/errors.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/errors.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/errors.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="errors.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/sdk/errors.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/errors.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/errors.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/errors.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1946,7 +1946,7 @@
 <p>Prefer one request/response operation at a time on each connection.</p>
 <h2 id="receive_auto_audio_file-times-out"><code>receive_auto_audio_file()</code> times out<a class="headerlink" href="#receive_auto_audio_file-times-out" title="Permanent link">&para;</a></h2>
 <p>An initial timeout means no post-save <code>0x050A</code> or pushed <code>0x0505</code> arrived in time. Keep BLE connected and start waiting before asking the user to hold and release the recording button. If connection began too late, query the count and download by index.</p>
-<p>Do not run <code>receive_auto_audio_file()</code> with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or direct <code>wait_for_command(0x0505)</code> calls. Shared queue access can cause timeouts or missing offsets.</p>
+<p>Do not run <code>receive_auto_audio_file()</code> with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or direct <code>wait_for_command(0x0505)</code> calls. Run recording reception sequentially on a connection to avoid timeouts or incomplete data.</p>
 <h2 id="start_sensor_report-reports-device-busy"><code>start_sensor_report()</code> reports device busy<a class="headerlink" href="#start_sensor_report-reports-device-busy" title="Permanent link">&para;</a></h2>
 <p>Finish conflicting operations. Enter gesture mode with the button on <code>V2.001.0002.0000</code>; call <code>start_sensor_report()</code> directly on <code>V2.001.0002.0001</code>. Wait for a successful response before receiving data.</p>
 <h2 id="download-succeeds-but-decoding-fails">Download succeeds but decoding fails<a class="headerlink" href="#download-succeeds-but-decoding-fails" title="Permanent link">&para;</a></h2>

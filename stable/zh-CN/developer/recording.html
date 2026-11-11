@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/recording.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/zh-CN/developer/recording.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>远程录音与录音设置 - OpenZilo SDK v0.6.2</title>
+        <title>远程录音与录音设置 - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1423,7 +1423,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1839,7 +1839,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.2)</summary><ul><li><a href="recording.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/zh-CN/developer/recording.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/recording.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/recording.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.3)</summary><ul><li><a href="recording.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/zh-CN/developer/recording.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/developer/recording.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/recording.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/recording.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1947,7 +1947,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 <tr>
 <td>最长录音时间</td>
 <td><code>max_duration_ms</code></td>
-<td>20–60000 毫秒，须为 20 的整数倍</td>
+<td>0 表示不限时；或 20–60000 毫秒，须为 20 的整数倍</td>
 </tr>
 <tr>
 <td>断线处理</td>
@@ -1958,6 +1958,7 @@ uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </
 </table>
 <p>采样率固定为 16 kHz，每帧 20 ms。设备还会返回自己允许的参数范围，SDK 会在发送设置前检查。Opus 编码器的其余固定参数可以读取，不能通过此接口修改。</p>
 <p><code>CONTINUE_SAVING</code> 只能与 <code>FLASH</code> 或 <code>LIVE_AND_FLASH</code> 搭配使用。</p>
+<p>SDK 的 <code>max_duration_ms</code> 默认值仍为 60000。固件 <code>V2.001.0002.0002</code> 起支持不限时录音；按键启动录音时，若实时传输不可用，会回退到 Flash 保存，不改变已配置的输出模式。远程启动行为保持不变。</p>
 <h2 id="提前结束或取消录音">提前结束或取消录音<a class="headerlink" href="#提前结束或取消录音" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">固件版本</p>

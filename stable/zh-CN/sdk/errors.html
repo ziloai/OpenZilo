@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/errors.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/zh-CN/sdk/errors.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>异常与问题排查 - OpenZilo SDK v0.6.2</title>
+        <title>异常与问题排查 - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1445,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1883,7 +1883,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.2)</summary><ul><li><a href="errors.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/zh-CN/sdk/errors.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/sdk/errors.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/sdk/errors.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.3)</summary><ul><li><a href="errors.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/zh-CN/sdk/errors.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/sdk/errors.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/sdk/errors.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/sdk/errors.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1946,7 +1946,7 @@
 <p>建议同一连接上同一时间只发起一个“命令-响应”类请求。</p>
 <h2 id="receive_auto_audio_file-等待超时"><code>receive_auto_audio_file()</code> 等待超时<a class="headerlink" href="#receive_auto_audio_file-等待超时" title="Permanent link">&para;</a></h2>
 <p>首帧超时表示 SDK 在限定时间内没有收到录音保存后的 <code>0x050A</code> 或主动上报的 <code>0x0505</code>。确认调用期间 BLE 始终连接，并在开始等待后再让用户长按录音、松开。若程序连接过晚，设备可能已经发送完毕，此时应调用 <code>get_audio_file_count()</code> 查询文件，再用 <code>download_audio_file()</code> 重新下载。</p>
-<p>不要让 <code>receive_auto_audio_file()</code> 与 <code>download_audio_file()</code>、<code>read_audio_frame()</code> 或手工 <code>wait_for_command(0x0505)</code> 并发运行；它们读取同一个 <code>0x0505</code> 接收队列，可能造成某个接收流程超时或出现偏移缺口。</p>
+<p>不要让 <code>receive_auto_audio_file()</code> 与 <code>download_audio_file()</code>、<code>read_audio_frame()</code> 或手工 <code>wait_for_command(0x0505)</code> 并发运行；同一连接上的录音接收必须依次执行，否则可能超时或数据不完整。</p>
 <h2 id="start_sensor_report-返回设备忙碌"><code>start_sensor_report()</code> 返回设备忙碌<a class="headerlink" href="#start_sensor_report-返回设备忙碌" title="Permanent link">&para;</a></h2>
 <p>先结束冲突操作。固件 <code>V2.001.0002.0000</code> 需先用按键进入手势模式；<code>V2.001.0002.0001</code> 直接调用 <code>start_sensor_report()</code>。确认成功响应后再等待数据。</p>
 <h2 id="录音可以下载但不能解码">录音可以下载但不能解码<a class="headerlink" href="#录音可以下载但不能解码" title="Permanent link">&para;</a></h2>

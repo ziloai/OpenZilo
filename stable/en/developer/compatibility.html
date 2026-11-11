@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/developer/compatibility.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/developer/compatibility.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>SDK and firmware compatibility - OpenZilo SDK v0.6.2</title>
+        <title>SDK and firmware compatibility - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1434,7 +1434,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1861,7 +1861,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.2)</summary><ul><li><a href="compatibility.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/en/developer/compatibility.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/developer/compatibility.html">v0.6.1</a></li><li><a href="../../../dev/en/developer/compatibility.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="compatibility.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/developer/compatibility.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/developer/compatibility.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/developer/compatibility.html">v0.6.1</a></li><li><a href="../../../dev/en/developer/compatibility.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1903,7 +1903,7 @@
 <p>With <code>async with sdk.OpenZiloClient(...)</code>, run this before those operations:</p>
 <div class="highlight"><pre><span></span><code><span class="n">capabilities</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">get_device_capabilities</span><span class="p">(</span><span class="n">ring</span><span class="p">)</span>
 </code></pre></div>
-<p>CLI remote recording, live audio, IMU and OTA commands query features automatically. Basic information, logs, existing-file downloads and time replies do not depend on discovery.</p>
+<p>CLI RSSI, remote recording, live audio, IMU and OTA commands query features automatically. Basic information, logs, existing-file downloads and time replies do not depend on discovery.</p>
 <h2 id="where-support-information-comes-from">Where support information comes from<a class="headerlink" href="#where-support-information-comes-from" title="Permanent link">&para;</a></h2>
 <p>Release builds <code>V2.001.0002.0000</code> and <code>V2.001.0002.0001</code> have no feature-discovery command. The SDK uses a built-in profile for exact versions it recognizes. This page explains SDK discovery and error handling; the minimum firmware version for a usage is stated directly in its feature section.</p>
 <p><code>DeviceCapabilities.source</code> identifies the source:</p>
@@ -1929,7 +1929,7 @@
 </tr>
 </tbody>
 </table>
-<p>The current built-in profile matches model <code>Open Zilo</code> and firmware <code>V2.001.0002.0001-prod-7fd1dfc9</code>. A shared version prefix does not select it. Discovery timeout means no response was obtained, not necessarily that a feature is absent.</p>
+<p>Legacy profiles apply only to models and full versions explicitly recognized by the SDK. A shared version prefix does not establish compatibility. Discovery timeout means no response was obtained, not necessarily that a feature is absent.</p>
 <h2 id="check-feature-availability">Check feature availability<a class="headerlink" href="#check-feature-availability" title="Permanent link">&para;</a></h2>
 <p>Use <code>capabilities.supports("FEATURE_NAME")</code>. Common feature names:</p>
 <table>
@@ -1943,6 +1943,10 @@
 <tr>
 <td><code>recording_control</code></td>
 <td>Start, stop and configure recordings.</td>
+</tr>
+<tr>
+<td><code>connection_rssi</code></td>
+<td>Read the host signal RSSI received by the ring.</td>
 </tr>
 <tr>
 <td><code>live_audio</code></td>
@@ -2006,7 +2010,7 @@
 uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </span>device<span class="w"> </span>capabilities
 uv<span class="w"> </span>run<span class="w"> </span>openzilo<span class="w"> </span>doctor
 </code></pre></div>
-<p><code>device capabilities</code> outputs features and recording limits as JSON. <code>doctor</code> also reports the SDK version, source checksum and PyAV availability. Include these when reporting issues, after removing addresses, serial numbers and private audio.</p>
+<p><code>device capabilities</code> outputs features and recording limits as JSON. <code>doctor</code> also reports the SDK version, environment identifier and PyAV availability. Include these when reporting issues, after removing addresses, serial numbers and private audio.</p>
 <h2 id="advanced-connection-options">Advanced connection options<a class="headerlink" href="#advanced-connection-options" title="Permanent link">&para;</a></h2>
 <p><code>allow_unverified_features=True</code> permits feature calls when discovery is <code>unknown</code>, for applications that already know the interface. It does not override an explicit version mismatch. The CLI equivalent is <code>--allow-unverified-features</code>.</p>
 <p><code>negotiate_capabilities=False</code> disables automatic discovery; the caller must establish compatibility. This matches the default low-level <code>OpenZiloClient</code> connection behavior.</p>

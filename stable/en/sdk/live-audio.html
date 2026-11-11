@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/sdk/live-audio.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/sdk/live-audio.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>Live audio - OpenZilo SDK v0.6.2</title>
+        <title>Live audio - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1390,7 +1390,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1773,7 +1773,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.2)</summary><ul><li><a href="live-audio.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/en/sdk/live-audio.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/live-audio.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/live-audio.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="live-audio.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/sdk/live-audio.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/live-audio.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/live-audio.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/live-audio.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1859,16 +1859,16 @@
 </tr>
 <tr>
 <td><code>LiveAudioEnd</code></td>
-<td>Validated packet and byte counts at recording end. PCM mode drains the decoder first.</td>
+<td>Validated packet and byte counts at recording end.</td>
 </tr>
 </tbody>
 </table>
-<p><code>sample_offset</code> starts at 0 and advances by 320 per frame, measured per channel. Divide by 16000 for audio-relative time, not host reception time. Mono frames contain 640 bytes; stereo frames 1280, without WAV headers. Channel count matches the device, with no denoising or mixing. <code>stream.start</code> is available after START; <code>stream.end</code> and <code>stream.complete</code> are set only after final validation and decoder drain.</p>
+<p><code>sample_offset</code> starts at 0 and advances by 320 per frame, measured per channel. Divide by 16000 for audio-relative time, not host reception time. Mono frames contain 640 bytes; stereo frames 1280, without WAV headers. Channel count matches the device, with no denoising or mixing. <code>stream.start</code> is available after START; <code>stream.end</code> and <code>stream.complete</code> are set only after validation of the complete recording.</p>
 <p>Entering the context waits only for subscription confirmation. <code>timeout_s</code> limits subscription and waiting for START separately. <code>recording_timeout_s</code> limits reception after START; inter-packet waits are capped at five seconds. A recording is at most 60 seconds and a stream receives one recording; open a new context for the next one.</p>
-<p>The application event queue holds 64 events by default. The raw notification queue holds 256 packets by default, configured by client <code>receive_queue_size</code>. Slow consumption or notification backlog raises <code>ProtocolError</code>; queues do not grow indefinitely or silently drop frames. Decoder state also uses memory. These local buffers cannot throttle the device.</p>
+<p>Consume audio events promptly; slow handling raises <code>ProtocolError</code>. Local consumption cannot throttle the device, so pausing reads does not pause recording.</p>
 <p>Only a validated <code>LiveAudioEnd</code> confirms a complete recording. PCM already delivered can be followed by loss, disconnect, invalid END or decoding failure. Distinguish partial audio from a complete recording. Cancellation and early exit produce no successful END. Empty recordings may contain START and END without audio frames.</p>
 <p>Missing PyAV or decoder initialization failure raises <code>OpusDecoderUnavailable</code> before subscription; decoding failure raises <code>AudioDecodeError</code>. Other protocol, device, timeout and transport exceptions match file reception. Context exit attempts unsubscribe; on failure it logs a warning. Reconnect before more audio or OTA operations. A stream cannot be reused or read by concurrent tasks.</p>
-<p>Cancellation partway through a BLE write makes the client reject further writes to avoid leaving a partial protocol packet. Unsubscribe may also fail; reconnect. The SDK does not report this as successful cleanup.</p>
+<p>If the connection becomes unusable after cancellation, reconnect before more audio or update operations.</p>
 <p>See <a href="https://github.com/ziloai/OpenZilo/blob/main/examples/live_pcm.py">examples/live_pcm.py</a> for a complete example.</p>
 <h2 id="receive_live_audio_file"><code>receive_live_audio_file()</code><a class="headerlink" href="#receive_live_audio_file" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
@@ -1892,7 +1892,7 @@
 <li><code>timeout_s</code>: maximum seconds for subscription and waiting for recording start.</li>
 <li><code>recording_timeout_s</code>: total limit from START to END, with at most five seconds between packets.</li>
 </ul>
-<p>Callbacks may be synchronous or asynchronous and should return quickly. The function assembles received Opus into a complete file. Slow callbacks can fill the bounded queue and fail reception; slow synchronous callbacks also block the event loop. For PCM, use <code>open_live_audio_stream(output="pcm")</code>.</p>
+<p>Callbacks may be synchronous or asynchronous and should return quickly. The function assembles received Opus into a complete file. Slow callbacks can cause reception to fail. For PCM, use <code>open_live_audio_stream(output="pcm")</code>.</p>
 <p>Returns <code>LiveAudioRecording</code>; its <code>data</code> is a complete OP2C file accepted by <code>save_audio_bundle()</code> or <code>decode_audio_to_wav()</code>.</p>
 <p>Exceptions:</p>
 <ul>

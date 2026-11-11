@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/sdk/connection.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/zh-CN/sdk/connection.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>扫描与连接 - OpenZilo SDK v0.6.2</title>
+        <title>扫描与连接 - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1390,7 +1390,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1773,7 +1773,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.2)</summary><ul><li><a href="connection.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/zh-CN/sdk/connection.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/sdk/connection.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/sdk/connection.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.3)</summary><ul><li><a href="connection.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/zh-CN/sdk/connection.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/sdk/connection.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/sdk/connection.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/sdk/connection.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1827,12 +1827,12 @@
 <li><code>send_command(command, body=b"")</code>：只发送命令，不等待响应。</li>
 <li><code>request(command, response_command, body=b"", timeout_s=None)</code>：发送并等待指定响应。</li>
 <li><code>wait_for_command(command, timeout_s=None)</code>：等待设备主动上报或后续响应。</li>
-<li><code>add_packet_handler(command, handler, queue_packets=True)</code>：注册异步或同步包处理器。设为 <code>False</code> 时独占该命令的接收，不再保留队列副本；不能与同命令的其他处理器或等待接口混用。处理器抛出的异常会记录到 <code>openzilo</code> 日志，不会影响其他包；断线时会取消未完成的异步处理器。</li>
+<li><code>add_packet_handler(command, handler, queue_packets=True)</code>：注册异步或同步包处理器。设为 <code>False</code> 时独占该命令的接收，不再通过等待接口接收该命令；不能与同命令的其他处理器或等待接口混用。处理器抛出的异常会记录到 <code>openzilo</code> 日志，不会影响其他包；断线时会取消未完成的异步处理器。</li>
 <li><code>remove_packet_handler(command, handler)</code>：移除处理器。</li>
 </ul>
-<p>接收队列每个命令默认最多 256 个包，可通过 <code>OpenZiloClient(receive_queue_size=...)</code> 调整。溢出会清理该命令的积压包，并通过等待接口报告 <code>ProtocolError</code>，不会将数据缺失当作成功。只使用回调时建议 <code>queue_packets=False</code>；处理器应尽快返回，异步处理器自行控制处理并发。</p>
-<p>同一响应命令的 <code>request()</code> 会串行执行。录音下载、自动接收、逐帧读取和清空等高层操作不能竞争同一连接，冲突时立即抛出 <code>ProtocolError</code>。手动组合低层录音接口时，应用仍需管理整段会话。OTA 期间拒绝其他任务的普通命令，自动校时应答除外；开始 OTA 前应停止录音及 IMU。</p>
-<p>普通下载失败或取消后会尽力发送结束命令，清理最多等待 2 秒，清理失败不覆盖原始异常。协议没有事务 ID，同命令超时后的迟到响应无法可靠归属；需要严格隔离时应重连后再发起新请求。</p>
+<p>接收处理过慢会通过等待接口报告 <code>ProtocolError</code>。可用 <code>receive_queue_size</code> 调整接收容量；处理器应尽快返回。仅使用回调时可选择 <code>queue_packets=False</code>。</p>
+<p>录音下载、自动接收、逐帧读取和清空等高层操作不能竞争同一连接，冲突时立即抛出 <code>ProtocolError</code>。手动组合低层录音接口时，应用仍需管理整段会话。OTA 期间拒绝其他任务的普通命令，自动校时应答除外；开始 OTA 前应停止录音及 IMU。</p>
+<p>普通下载失败或取消后会尝试结束提取；若设备仍忙，请重连后重试。协议没有事务 ID，同命令超时后的迟到响应无法可靠归属；需要严格隔离时应重连后再发起新请求。</p>
 
 
 

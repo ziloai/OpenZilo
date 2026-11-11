@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/protocol.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/zh-CN/developer/protocol.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>OpenZilo BLE 协议参考 - OpenZilo SDK v0.6.2</title>
+        <title>OpenZilo BLE 协议参考 - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1424,6 +1424,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#0x0107--0x0108-连接-rssi" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0107</code> / <code>0x0108</code> 连接 RSSI
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1868,10 +1879,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#0x0512--0x0513-开始录音" class="md-nav__link">
+  <a href="#0x0516--0x0517-开始录音" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0512</code> / <code>0x0513</code> 开始录音
+        <code>0x0516</code> / <code>0x0517</code> 开始录音
       </span>
     </span>
   </a>
@@ -1879,10 +1890,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0514--0x0515-停止录音" class="md-nav__link">
+  <a href="#0x0518--0x0519-停止录音" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0514</code> / <code>0x0515</code> 停止录音
+        <code>0x0518</code> / <code>0x0519</code> 停止录音
       </span>
     </span>
   </a>
@@ -1890,10 +1901,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0516--0x0517-查询录音状态" class="md-nav__link">
+  <a href="#0x051a--0x051b-查询录音状态" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0516</code> / <code>0x0517</code> 查询录音状态
+        <code>0x051A</code> / <code>0x051B</code> 查询录音状态
       </span>
     </span>
   </a>
@@ -1901,10 +1912,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0518--0x0519-读取录音设置" class="md-nav__link">
+  <a href="#0x0512--0x0513-读取录音设置" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0518</code> / <code>0x0519</code> 读取录音设置
+        <code>0x0512</code> / <code>0x0513</code> 读取录音设置
       </span>
     </span>
   </a>
@@ -1912,10 +1923,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x051a--0x051b-修改录音设置" class="md-nav__link">
+  <a href="#0x0514--0x0515-修改录音设置" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x051A</code> / <code>0x051B</code> 修改录音设置
+        <code>0x0514</code> / <code>0x0515</code> 修改录音设置
       </span>
     </span>
   </a>
@@ -1994,7 +2005,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -2423,6 +2434,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#0x0107--0x0108-连接-rssi" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>0x0107</code> / <code>0x0108</code> 连接 RSSI
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2867,10 +2889,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#0x0512--0x0513-开始录音" class="md-nav__link">
+  <a href="#0x0516--0x0517-开始录音" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0512</code> / <code>0x0513</code> 开始录音
+        <code>0x0516</code> / <code>0x0517</code> 开始录音
       </span>
     </span>
   </a>
@@ -2878,10 +2900,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0514--0x0515-停止录音" class="md-nav__link">
+  <a href="#0x0518--0x0519-停止录音" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0514</code> / <code>0x0515</code> 停止录音
+        <code>0x0518</code> / <code>0x0519</code> 停止录音
       </span>
     </span>
   </a>
@@ -2889,10 +2911,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0516--0x0517-查询录音状态" class="md-nav__link">
+  <a href="#0x051a--0x051b-查询录音状态" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0516</code> / <code>0x0517</code> 查询录音状态
+        <code>0x051A</code> / <code>0x051B</code> 查询录音状态
       </span>
     </span>
   </a>
@@ -2900,10 +2922,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x0518--0x0519-读取录音设置" class="md-nav__link">
+  <a href="#0x0512--0x0513-读取录音设置" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x0518</code> / <code>0x0519</code> 读取录音设置
+        <code>0x0512</code> / <code>0x0513</code> 读取录音设置
       </span>
     </span>
   </a>
@@ -2911,10 +2933,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#0x051a--0x051b-修改录音设置" class="md-nav__link">
+  <a href="#0x0514--0x0515-修改录音设置" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code>0x051A</code> / <code>0x051B</code> 修改录音设置
+        <code>0x0514</code> / <code>0x0515</code> 修改录音设置
       </span>
     </span>
   </a>
@@ -2981,7 +3003,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.2)</summary><ul><li><a href="protocol.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/zh-CN/developer/protocol.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/protocol.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/protocol.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.3)</summary><ul><li><a href="protocol.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/zh-CN/developer/protocol.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/developer/protocol.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/protocol.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/protocol.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -3031,7 +3053,7 @@
 </tbody>
 </table>
 <p>SDK 按扫描得到的设备地址连接设备（macOS 使用 UUID），不依赖广播设备名。</p>
-<p>SDK 写入 RX Characteristic 时固定按 20 字节分片，最后一片按实际剩余长度发送。该分片是 SDK 的 BLE 发送策略，不是 v4 协议包边界，也不会关闭系统蓝牙栈的 MTU 协商。戒指发送的 TX Characteristic 通知可采用其他分片长度，调用方应交由 <code>OpenZiloClient</code> 或 <code>PacketStream</code> 重组。</p>
+<p>BLE 分片长度不属于协议包边界。调用方应使用 <code>OpenZiloClient</code> 或 <code>PacketStream</code> 重组完整包。</p>
 <h2 id="3-v4-协议包">3. v4 协议包<a class="headerlink" href="#3-v4-协议包" title="Permanent link">&para;</a></h2>
 <p>协议头固定为 11 字节：</p>
 <table>
@@ -3113,6 +3135,12 @@
 <td><code>0x0105</code></td>
 <td><code>0x0106</code></td>
 <td><code>get_device_capabilities()</code></td>
+</tr>
+<tr>
+<td>连接 RSSI</td>
+<td><code>0x0107</code></td>
+<td><code>0x0108</code></td>
+<td><code>get_connection_rssi()</code></td>
 </tr>
 <tr>
 <td>命令错误</td>
@@ -3200,32 +3228,32 @@
 </tr>
 <tr>
 <td>开始录音</td>
-<td><code>0x0512</code></td>
-<td><code>0x0513</code></td>
+<td><code>0x0516</code></td>
+<td><code>0x0517</code></td>
 <td><code>start_audio_recording()</code></td>
 </tr>
 <tr>
 <td>停止录音</td>
-<td><code>0x0514</code></td>
-<td><code>0x0515</code></td>
+<td><code>0x0518</code></td>
+<td><code>0x0519</code></td>
 <td><code>stop_audio_recording()</code></td>
 </tr>
 <tr>
 <td>录音状态</td>
-<td><code>0x0516</code></td>
-<td><code>0x0517</code></td>
+<td><code>0x051A</code></td>
+<td><code>0x051B</code></td>
 <td><code>get_audio_recording_status()</code></td>
 </tr>
 <tr>
 <td>读取录音设置</td>
-<td><code>0x0518</code></td>
-<td><code>0x0519</code></td>
+<td><code>0x0512</code></td>
+<td><code>0x0513</code></td>
 <td><code>get_audio_recording_config()</code></td>
 </tr>
 <tr>
 <td>修改录音设置</td>
-<td><code>0x051A</code></td>
-<td><code>0x051B</code></td>
+<td><code>0x0514</code></td>
+<td><code>0x0515</code></td>
 <td><code>set_audio_recording_config()</code></td>
 </tr>
 <tr>
@@ -3368,6 +3396,8 @@
 </tr>
 </tbody>
 </table>
+<h4 id="0x0107--0x0108-连接-rssi"><code>0x0107</code> / <code>0x0108</code> 连接 RSSI<a class="headerlink" href="#0x0107--0x0108-连接-rssi" title="Permanent link">&para;</a></h4>
+<p>请求包体为空，需要 <code>connection_rssi/1.0</code>。成功响应为 <code>error_code:u16=0</code> 和 <code>rssi:i8</code>（dBm，共 3 字节）；失败响应仅含 <code>error_code:u16</code>（2 字节）。错误码 1 表示读取失败或不可用，7 表示请求无效。多字节整数采用大端序；有效 RSSI 为 -127～20，127 表示不可用。</p>
 <h3 id="52-日志">5.2 日志<a class="headerlink" href="#52-日志" title="Permanent link">&para;</a></h3>
 <h4 id="0x0301-获取日志存储信息"><code>0x0301</code> 获取日志存储信息<a class="headerlink" href="#0x0301-获取日志存储信息" title="Permanent link">&para;</a></h4>
 <p>包体为空。</p>
@@ -3392,13 +3422,13 @@
 <td><code>page_size</code></td>
 <td><code>u32</code></td>
 <td style="text-align: right;">4</td>
-<td>日志页大小或设备当前返回的分页单位</td>
+<td>当前日志文件数量；沿用协议字段名 <code>page_size</code></td>
 </tr>
 <tr>
 <td><code>total_len</code></td>
 <td><code>u32</code></td>
 <td style="text-align: right;">4</td>
-<td>日志数据总长度</td>
+<td>单个日志文件容量上限，单位字节；不是全部日志的实际总长度</td>
 </tr>
 </tbody>
 </table>
@@ -3658,7 +3688,7 @@
 </table>
 <p><code>data</code> 是原始文件片段：<code>V2.001.0002.0001</code> 为 OP2C 文件；<code>V2.001.0002.0000</code> 为连续“2 字节小端 Speex 长度 + Speex payload”片段。两种布局见<a href="architecture.html#录音文件格式">录音文件格式</a>。这里的小端长度属于录音文件内部格式，不改变 v4 协议字段使用大端序的规则。</p>
 <p>固件 <code>V2.001.0002.0000</code>录音保存成功后，设备会主动连续发送同一格式的 <code>0x0505</code>，但不会预先发送 <code>0x0504</code>。SDK 的 <code>receive_auto_audio_file()</code> 以第一帧的 <code>file_index</code> 确定文件，按 <code>frame_offset</code> 拼接数据，并以 <code>is_end=1</code> 判断连续传输结束。该函数只返回 <code>(file_index, raw_audio)</code>，不返回 <code>AudioFileInfo</code>。</p>
-<p>自动链路正常连续时 SDK 不发送提取命令。发现偏移缺口、等待后续帧超时或收到损坏帧时，SDK 先通过 <code>0x0503 -&gt; 0x0504</code> 获取并校验文件索引和 <code>data_size</code>，再使用 <code>0x0506</code> 请求当前期望偏移，最多补传 3 次。最终结果以 <code>data_size</code> 为边界；应用必须在录音结束和主动上报期间保持 BLE 连接。如果连接建立过晚而错过数据，应查询录音数量并使用 <code>download_audio_file()</code> 重新下载。</p>
+<p>自动链路正常连续时 SDK 不发送提取命令。发现偏移缺口、等待后续帧超时或收到损坏帧时，SDK 先通过 <code>0x0503 -&gt; 0x0504</code> 获取并校验文件索引和 <code>data_size</code>，再使用 <code>0x0506</code> 请求当前期望偏移。最终结果以 <code>data_size</code> 为边界；应用必须在录音结束和主动上报期间保持 BLE 连接。如果连接建立过晚而错过数据，应查询录音数量并使用 <code>download_audio_file()</code> 重新下载。</p>
 <h4 id="0x0506-请求指定录音偏移"><code>0x0506</code> 请求指定录音偏移<a class="headerlink" href="#0x0506-请求指定录音偏移" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -3692,7 +3722,7 @@
 <td><code>reserved</code></td>
 <td><code>u16</code></td>
 <td style="text-align: right;">2</td>
-<td>当前固件长度检查需要的保留填充，固定填写 0</td>
+<td>保留字段，固定填写 0</td>
 </tr>
 </tbody>
 </table>
@@ -4234,11 +4264,11 @@
 <p>此用法需要固件 <strong>V2.001.0002.0001 或更新版本</strong>。</p>
 </div>
 <p>以下命令对应录音控制接口第 1 版。开始、查询状态和读取设置的请求包体为空，数值字段均为大端序。应用调用示例见<a href="recording.html">远程录音</a>。</p>
-<h4 id="0x0512--0x0513-开始录音"><code>0x0512</code> / <code>0x0513</code> 开始录音<a class="headerlink" href="#0x0512--0x0513-开始录音" title="Permanent link">&para;</a></h4>
-<p>请求包体为空。成功响应为 <code>error_code:u16, session_id:u32</code>，共 6 字节。录音编号非 0，响应表示设备已接受开始请求；最终状态通过 <code>0x0516</code> 查询。开始请求超时后先查状态，不自动重发。</p>
-<h4 id="0x0514--0x0515-停止录音"><code>0x0514</code> / <code>0x0515</code> 停止录音<a class="headerlink" href="#0x0514--0x0515-停止录音" title="Permanent link">&para;</a></h4>
+<h4 id="0x0516--0x0517-开始录音"><code>0x0516</code> / <code>0x0517</code> 开始录音<a class="headerlink" href="#0x0516--0x0517-开始录音" title="Permanent link">&para;</a></h4>
+<p>请求包体为空。成功响应为 <code>error_code:u16, session_id:u32</code>，共 6 字节。录音编号非 0，响应表示设备已接受开始请求；最终状态通过 <code>0x051A</code> 查询。开始请求超时后先查状态，不自动重发。</p>
+<h4 id="0x0518--0x0519-停止录音"><code>0x0518</code> / <code>0x0519</code> 停止录音<a class="headerlink" href="#0x0518--0x0519-停止录音" title="Permanent link">&para;</a></h4>
 <p>请求为 <code>session_id:u32, cancel:u8</code>。<code>cancel=0</code> 结束并按输出设置处理录音，<code>cancel=1</code> 丢弃尚未保存的录音。成功响应为 <code>error_code:u16, session_id:u32</code>。响应中的编号必须与请求一致；收到响应后仍需等待最终状态。</p>
-<h4 id="0x0516--0x0517-查询录音状态"><code>0x0516</code> / <code>0x0517</code> 查询录音状态<a class="headerlink" href="#0x0516--0x0517-查询录音状态" title="Permanent link">&para;</a></h4>
+<h4 id="0x051a--0x051b-查询录音状态"><code>0x051A</code> / <code>0x051B</code> 查询录音状态<a class="headerlink" href="#0x051a--0x051b-查询录音状态" title="Permanent link">&para;</a></h4>
 <p>请求包体为空。成功响应共 14 字节：</p>
 <table>
 <thead>
@@ -4282,7 +4312,7 @@
 </tbody>
 </table>
 <p>SDK 用 <code>saved</code> 判断文件索引是否有效；没有文件时，返回对象的 <code>file_index</code> 为 <code>None</code>。</p>
-<h4 id="0x0518--0x0519-读取录音设置"><code>0x0518</code> / <code>0x0519</code> 读取录音设置<a class="headerlink" href="#0x0518--0x0519-读取录音设置" title="Permanent link">&para;</a></h4>
+<h4 id="0x0512--0x0513-读取录音设置"><code>0x0512</code> / <code>0x0513</code> 读取录音设置<a class="headerlink" href="#0x0512--0x0513-读取录音设置" title="Permanent link">&para;</a></h4>
 <p>请求包体为空，响应以 <code>error_code:u16</code> 开头。成功时后接下表中的 14 字节设置，再接采样率、帧时长和固定编码参数。</p>
 <table>
 <thead>
@@ -4326,12 +4356,12 @@
 <tr>
 <td><code>max_duration_ms</code></td>
 <td><code>u16</code></td>
-<td>最长录音时间，单位毫秒</td>
+<td>最长录音时间，单位毫秒；0 表示不限时</td>
 </tr>
 </tbody>
 </table>
 <p>成功响应固定为 34 字节。设置字段后依次为 <code>sample_rate:u16</code>、<code>frame_duration_ms:u16</code>，以及编码参数 <code>codec:u8</code>、<code>complexity:u8</code>、<code>vbr:u8</code>、<code>constrained_vbr:u8</code>、<code>dtx:u8</code>、<code>fec:u8</code>、<code>packet_loss_percent:u8</code>、<code>signal:u16</code>、<code>bit_depth:u8</code>、<code>max_packet_size:u16</code>、<code>application:u16</code>。这些参数由设备返回，不能通过修改设置命令写入。</p>
-<h4 id="0x051a--0x051b-修改录音设置"><code>0x051A</code> / <code>0x051B</code> 修改录音设置<a class="headerlink" href="#0x051a--0x051b-修改录音设置" title="Permanent link">&para;</a></h4>
+<h4 id="0x0514--0x0515-修改录音设置"><code>0x0514</code> / <code>0x0515</code> 修改录音设置<a class="headerlink" href="#0x0514--0x0515-修改录音设置" title="Permanent link">&para;</a></h4>
 <p>请求仅包含上表的 14 字节设置。响应与读取设置相同，返回设备接受后的完整设置。仅空闲时可修改；断线后继续保存只允许用于设备存储或同时保存模式。</p>
 <h2 id="6-错误码">6. 错误码<a class="headerlink" href="#6-错误码" title="Permanent link">&para;</a></h2>
 <table>
@@ -4426,7 +4456,7 @@
 </tbody>
 </table>
 <p>错误码含义如下：2 忙碌，5 未实现命令，7 参数非法，新增 9 为不支持的结构版本。未知命令返回 5；能力查询非空请求返回 7；14 字节录音配置请求使用未知版本时返回 9。现有命令的已有错误响应继续有效；未将全部旧错误路径迁移到通用回复。收到错误包不再回错误包。</p>
-<p>TLV 为 <code>tag:u16, length:u16, value:length bytes</code>，总长受 v4 的 5120 字节上限约束；当前固件使用最多 512 字节的缓冲区生成响应。重复 tag、截断、非法 UTF-8、缺失必要的设备信息字段会报协议错误；未知的可选 tag 跳过，最高位为 1 的未知 tag 要求升级 SDK，不能静默忽略。</p>
+<p>TLV 为 <code>tag:u16, length:u16, value:length bytes</code>，总长受 v4 的 5120 字节上限约束。重复 tag、截断、非法 UTF-8、缺失必要的设备信息字段会报协议错误；未知的可选 tag 跳过，最高位为 1 的未知 tag 要求升级 SDK，不能静默忽略。</p>
 <table>
 <thead>
 <tr>
@@ -4445,7 +4475,7 @@
 </tr>
 <tr>
 <td>3</td>
-<td>固件编译目标，UTF-8</td>
+<td>硬件兼容标识，UTF-8；按设备返回值使用</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4453,7 +4483,7 @@
 </tr>
 <tr>
 <td>5</td>
-<td>固件构建 ID，UTF-8</td>
+<td>固件标识，UTF-8；视为不透明字符串</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4469,8 +4499,8 @@
 </tr>
 </tbody>
 </table>
-<p>功能 ID：1 system/1，2 time_sync/1，3 audio_files/1，4 recording_control/1，5 live_audio/1，6 imu/2，7 key_events/1，8 double_tap/1，9 ota/1，10 gesture/1。其中斜杠后是本 SDK 支持的主版本。当前固件不声明 gesture。IMU/2 表示订阅直接启动采集；需要额外手势模式的实现不能声明该接口版本。</p>
-<p>固件按完整命令组是否注册声明能力；按键及双击事件只在连接了相应生产者的产品构建中声明。声明表示实现支持，不保证当前硬件初始化成功、连接条件满足或设备不忙。</p>
+<p>功能 ID：1 system/1，2 time_sync/1，3 audio_files/1，4 recording_control/1，5 live_audio/1，6 imu/2，7 key_events/1，8 double_tap/1，9 ota/1，10 gesture/1，12 connection_rssi/1（TLV <code>0x010C</code>）。其中斜杠后是本 SDK 支持的主版本。当前固件不声明 gesture。IMU/2 表示订阅直接启动采集；需要额外手势模式的实现不能声明该接口版本。</p>
+<p>设备声明能力表示支持对应接口，不保证当前操作条件满足或设备不忙。</p>
 <p>录音限制固定 26 字节：</p>
 <table>
 <thead>

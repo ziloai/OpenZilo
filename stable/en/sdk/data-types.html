@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/sdk/data-types.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/sdk/data-types.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>Data types - OpenZilo SDK v0.6.2</title>
+        <title>Data types - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1423,7 +1423,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1839,7 +1839,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.2)</summary><ul><li><a href="data-types.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/en/sdk/data-types.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/data-types.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/data-types.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="data-types.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/sdk/data-types.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/data-types.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/data-types.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/data-types.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1870,7 +1870,7 @@
 <span class="c1"># High-level BLE client: connection, packet reconstruction, requests and event dispatch.</span>
 
 <span class="n">NusClient</span>
-<span class="c1"># Low-level Nordic UART Service client; writes fixed 20-byte chunks.</span>
+<span class="c1"># Nordic UART Service client for custom transports.</span>
 <span class="c1"># Normally used directly only for debugging or custom transports.</span>
 
 <span class="n">PacketStream</span>
@@ -2041,7 +2041,7 @@
 <span class="n">gyro_bias_udps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
 
 <span class="n">ImuCalibrationProfile</span>
-<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># SHA-256 of normalized local device identifier</span>
+<span class="n">device_key</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># Opaque identifier for binding a profile to a device</span>
 <span class="n">firmware_version</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># exact match, not a version range</span>
 <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
 <span class="n">calibration</span><span class="p">:</span> <span class="n">ImuCalibration</span>
@@ -2062,7 +2062,7 @@
 </code></pre></div>
 <p><a href="imu.html">Software calibration workflow and APIs</a>.</p>
 <h2 id="firmwarebundle">FirmwareBundle<a class="headerlink" href="#firmwarebundle" title="Permanent link">&para;</a></h2>
-<p>The immutable result of <code>inspect_firmware_bundle()</code> contains <code>version</code>, <code>model</code>, <code>board</code>, <code>profile</code>, <code>security_version</code>, <code>source_versions</code>, <code>signing_key_id</code>, and inner OTA bytes <code>payload</code>. Its <code>manifest</code> property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.</p>
+<p>The immutable result of <code>inspect_firmware_bundle()</code> contains <code>version</code>, <code>model</code>, <code>board</code>, <code>profile</code>, <code>security_version</code>, <code>source_versions</code>, <code>signing_key_id</code>, and update payload bytes <code>payload</code>. Its <code>manifest</code> property returns a fresh dictionary of every verified field, suitable for display or JSON output. Mutating that copy cannot change update data. Inspection does not check device compatibility.</p>
 
 
 

@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/en/sdk/downloads.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/sdk/downloads.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>Download and receive saved recordings - OpenZilo SDK v0.6.2</title>
+        <title>Download and receive saved recordings - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1434,7 +1434,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK architecture and data flow
+  OpenZilo SDK data flow
 
     
   </span>
@@ -1861,7 +1861,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.2)</summary><ul><li><a href="downloads.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/en/sdk/downloads.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/downloads.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/downloads.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="downloads.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/sdk/downloads.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/downloads.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/downloads.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/downloads.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1912,7 +1912,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">raw_path</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">play_path</span><span class="p">)</span>
 </code></pre></div>
-<p>Automatic transfers from <code>V2.001.0002.0000</code> do not begin with <code>0x0504</code>, so the return value has no <code>AudioFileInfo</code>. During normal continuous reception the SDK sends no extra commands. Recovery queries file metadata, verifies the index, and bounds the result by <code>data_size</code>. Keep BLE connected and do not simultaneously call <code>download_audio_file()</code> or <code>read_audio_frame()</code> on the same <code>0x0505</code> queue. If you connected too late, query the file count and download by index.</p>
+<p>Automatic transfers from <code>V2.001.0002.0000</code> do not begin with <code>0x0504</code>, so the return value has no <code>AudioFileInfo</code>. During normal continuous reception the SDK sends no extra commands. Recovery queries file metadata, verifies the index, and bounds the result by <code>data_size</code>. Keep BLE connected and do not simultaneously call <code>download_audio_file()</code> or <code>read_audio_frame()</code> on the same connection. If you connected too late, query the file count and download by index.</p>
 <h2 id="recording-transfer-sequences">Recording transfer sequences<a class="headerlink" href="#recording-transfer-sequences" title="Permanent link">&para;</a></h2>
 <p>The SDK supports normal and fast downloads, plus automatic reception and live streaming:</p>
 <table>
@@ -1995,17 +1995,17 @@
 <ul>
 <li>The first frame selects the file index; frames belonging to other files are excluded.</li>
 <li>Duplicate and overlapping bytes are removed by offset.</li>
-<li>For gaps, post-first-frame timeouts or damaged frames, the SDK queries and validates file index and exact <code>data_size</code>, then requests the expected offset with <code>0x0506</code>, up to three retries.</li>
+<li>For gaps, post-first-frame timeouts or damaged frames, the SDK queries and validates file index and exact <code>data_size</code>, then requests the expected offset with <code>0x0506</code>.</li>
 <li>Normal reception returns at <code>is_end=True</code>. Recovered data is truncated to <code>data_size</code> without extra bytes.</li>
 </ul>
 <p>Exceptions:</p>
 <ul>
 <li>No initial frame before timeout: <code>TimeoutError</code>.</li>
-<li>A gap unrecovered after three retries, mismatched metadata index, or invalid frame fields: <code>ProtocolError</code>.</li>
+<li>An unrecoverable gap, mismatched metadata index, or invalid frame fields: <code>ProtocolError</code>.</li>
 <li>Nonzero device error: <code>DeviceError</code>.</li>
 <li>Disconnected before the call or during the wait: <code>TransportError</code>.</li>
 </ul>
-<p>Do not run concurrently with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or other direct <code>0x0505</code> waiters. They share a receive queue and can take each other's packets. If connection began too late for the push, use <code>get_audio_file_count()</code> and <code>download_audio_file()</code>.</p>
+<p>Do not run concurrently with <code>download_audio_file()</code>, <code>read_audio_frame()</code> or other direct <code>0x0505</code> waiters. Run recording reception sequentially on a connection. If connection began too late for the push, use <code>get_audio_file_count()</code> and <code>download_audio_file()</code>.</p>
 <p>Saving example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">file_index</span><span class="p">,</span> <span class="n">raw_audio</span> <span class="o">=</span> <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">receive_auto_audio_file</span><span class="p">(</span><span class="n">ring</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
 <span class="n">bundle</span> <span class="o">=</span> <span class="n">sdk</span><span class="o">.</span><span class="n">save_audio_bundle</span><span class="p">(</span>

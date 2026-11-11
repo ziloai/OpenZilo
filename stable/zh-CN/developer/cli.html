@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.2/zh-CN/developer/cli.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/zh-CN/developer/cli.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>命令行指南 - OpenZilo SDK v0.6.2</title>
+        <title>命令行指南 - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1445,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-  OpenZilo SDK 架构与数据流
+  OpenZilo SDK 数据流
 
     
   </span>
@@ -1883,7 +1883,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.2)</summary><ul><li><a href="cli.html" aria-current="page">stable (v0.6.2)</a></li><li><a href="../../../v0.6.2/zh-CN/developer/cli.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/cli.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/cli.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.3)</summary><ul><li><a href="cli.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/zh-CN/developer/cli.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/developer/cli.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/cli.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/cli.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1923,6 +1923,9 @@ openzilo<span class="w"> </span>device<span class="w"> </span>use
 
 <span class="c1"># 查看设备信息、电量、固件版本</span>
 openzilo<span class="w"> </span>info
+
+<span class="c1"># 查看连接信号强度（需要 connection_rssi 能力）</span>
+openzilo<span class="w"> </span>rssi
 
 <span class="c1"># 进入交互终端</span>
 openzilo<span class="w"> </span>shell
@@ -1969,7 +1972,7 @@ openzilo<span class="w"> </span>audio-stop<span class="w"> </span><span class="m
 openzilo<span class="w"> </span>audio-stop<span class="w"> </span><span class="m">123</span><span class="w"> </span>--cancel
 </code></pre></div>
 <p><code>123</code> 是示例，请使用状态查询返回的实际会话编号。停止请求的确认不等于文件已经保存，命令会继续等待终态。START 超时后先查询 <code>audio-status</code>，避免重复启动。</p>
-<p>配置在重连后保留，重启后恢复默认值。<code>audio-record</code> 默认使用 Flash 输出和断连停止策略，其他未指定字段沿用设备配置；<code>--max-duration-ms</code> 是设备侧时长上限（20–60000 毫秒，20 毫秒步进），<code>--seconds</code> 是 CLI 请求停止前等待的时间（0.02–60 秒）。设备上限更短时可能提前结束。</p>
+<p>配置在重连后保留，重启后恢复默认值。<code>audio-record</code> 默认使用 Flash 输出和断连停止策略，其他未指定字段沿用设备配置；<code>--max-duration-ms</code> 是设备侧时长上限（0 表示不限时，或 20–60000 毫秒，20 毫秒步进），<code>--seconds</code> 是 CLI 请求停止前等待的时间（0.02–60 秒）。设备上限更短时可能提前结束。</p>
 <p>转换 Speex/Opus 为 WAV 需要可执行的 <code>ffmpeg</code>，可以通过 <code>--ffmpeg /path/to/ffmpeg</code> 指定。接收、下载和解码已保存录音：</p>
 <div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>audio-receive<span class="w"> </span>recordings/button.wav
 openzilo<span class="w"> </span>audio-download<span class="w"> </span><span class="m">0</span><span class="w"> </span>recordings/saved.wav
@@ -2002,7 +2005,7 @@ openzilo<span class="w"> </span>ota-update<span class="w"> </span>--help
 <h2 id="本机-imu-软件校准">本机 IMU 软件校准<a class="headerlink" href="#本机-imu-软件校准" title="Permanent link">&para;</a></h2>
 <p>使用 <code>openzilo imu-calibrate accel</code> 在充电盒中完成加速度计六面校准，使用 <code>quick</code> 在盒外静置校准陀螺仪，或用 <code>full</code> 顺序完成两阶段。独立验证通过后才原子保存本机配置。<code>show</code> 读取本机文件，<code>reset</code> 删除本机文件。<code>sensor-stream --calibrated --seconds 10</code> 显式应用匹配的配置，以 g 和度/秒输出数据，并标明已校正组件。默认原始数据流保持不变，不向戒指下发校准参数。详见<a href="../sdk/imu.html#本机软件校准">本机软件校准</a>。</p>
 <h2 id="兼容诊断">兼容诊断<a class="headerlink" href="#兼容诊断" title="Permanent link">&para;</a></h2>
-<p><code>openzilo --version</code> 查看 SDK 版本；<code>openzilo device capabilities</code> 输出支持的功能、录音参数范围和信息来源；<code>openzilo doctor</code> 额外输出 SDK 版本、源码校验值和音频解码依赖。远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见<a href="compatibility.html">兼容说明</a>。</p>
+<p><code>openzilo --version</code> 查看 SDK 版本；<code>openzilo device capabilities</code> 输出支持的功能、录音参数范围和信息来源；<code>openzilo doctor</code> 额外输出 SDK 版本、运行环境标识和音频解码依赖。RSSI、远程录音、实时音频、IMU、OTA 在执行前查询能力，SDK 根据查询结果检查功能，不按固件版本号大小推断。详见<a href="compatibility.html">兼容说明</a>。</p>
 <p>离线验签并查看签名 OTA ZIP 的完整元数据：</p>
 <div class="highlight"><pre><span></span><code>openzilo<span class="w"> </span>ota-inspect<span class="w"> </span>firmware.ota.zip<span class="w"> </span>--public-key<span class="w"> </span>trusted-signing-public.pem<span class="w"> </span>--json
 </code></pre></div>
