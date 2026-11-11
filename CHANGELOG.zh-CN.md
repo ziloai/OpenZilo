@@ -2,6 +2,30 @@
 
 # 更新日志
 
+## 0.6.3 - 2026-11-11
+
+<a id="connection-signal-strength"></a>
+
+### 连接信号强度
+
+- 新增 `get_connection_rssi()` 和 `openzilo rssi`，在受支持的固件上查询当前连接信号强度，单位为 dBm。
+- 查询前检查设备能力，串行处理 RSSI 请求；超时、取消或响应格式异常导致结果不明确时，要求重新连接后再查询。
+
+<a id="unlimited-recording"></a>
+
+### 不限时录音
+
+- 支持 `AudioRecordingConfig(max_duration_ms=0)`，在固件 `V2.001.0002.0002` 及以上版本启用不限时录音。
+- SDK 默认录音上限仍为 60000 毫秒；有限时长仍为 20–60000 毫秒，须为 20 的整数倍。
+
+<a id="documentation"></a>
+
+### 文档
+
+- 同步中英文功能要求、示例与适配说明。
+- 公开文档聚焦受支持的接口、协议约定及可观察行为。
+
+
 ## 0.6.2 - 2026-10-22
 
 <a id="signed-firmware-bundles"></a>

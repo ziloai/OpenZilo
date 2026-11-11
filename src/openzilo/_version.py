@@ -1,2 +1,2 @@
 # SPDX-License-Identifier: MPL-2.0
-__version__ = "0.6.2"
+__version__ = "0.6.3"

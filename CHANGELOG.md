@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.3 - 2026-11-11
+
+### Connection signal strength
+
+- Add `get_connection_rssi()` and `openzilo rssi` to query connection signal strength in dBm on supported firmware.
+- Check the device capability before querying; serialize RSSI requests and require reconnection after an ambiguous timeout, cancellation or malformed response.
+
+### Unlimited recording
+
+- Accept `AudioRecordingConfig(max_duration_ms=0)` for unlimited recording on firmware `V2.001.0002.0002` or later.
+- Keep the SDK default recording limit at 60000 ms. Finite limits remain 20–60000 ms in 20 ms increments.
+
+### Documentation
+
+- Synchronize Chinese and English feature requirements, examples and compatibility guidance.
+- Keep public documentation focused on supported APIs, protocol contracts and observable behavior.
+
+
 ## 0.6.2 - 2026-10-22
 
 ### Signed firmware bundles
