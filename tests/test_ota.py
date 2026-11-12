@@ -378,14 +378,29 @@ class FirmwareUpdateTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(transport._client)
         self.assertFalse(transport._notify_started)
 
-    async def test_bad_packet_crc_fails(self):
+    async def test_bad_packet_crc_without_retransmission_times_out(self):
         def corrupt(peer):
             packet = bytearray(sdk.encode_packet(2001, struct.pack(">HHII", 0, 2, 0, 1024)))
             packet[-1] ^= 1
             peer.rx(packet)
         self.peer.begin = corrupt
-        with self.assertRaises(sdk.ProtocolError):
-            await self.update()
+        with self.assertLogs("openzilo._protocol", level="WARNING"):
+            with self.assertRaises(sdk.TimeoutError):
+                await self.update(timeout_s=0.01)
+        self.assertEqual(self.peer.responses, [])
+        self.assert_clean()
+
+    async def test_bad_packet_crc_followed_by_valid_request_recovers(self):
+        def retransmit(peer):
+            bad = bytearray(sdk.encode_packet(2001, struct.pack(">HHII", 0, 2, 0, 1024)))
+            bad[-1] ^= 1
+            peer.rx(bad)
+            peer.request(0, kind=2)
+        self.peer.begin = retransmit
+        with self.assertLogs("openzilo._protocol", level="WARNING"):
+            info = await self.update()
+        self.assertEqual(info.firmware_version, TARGET)
+        self.assertEqual(b"".join(data for _, data in self.peer.responses), PACKAGE)
         self.assert_clean()
 
     async def test_concurrent_update_rejected_and_cancellation_cleans_up(self):
