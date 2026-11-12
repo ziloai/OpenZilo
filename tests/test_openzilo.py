@@ -42,6 +42,28 @@ class ProtocolTests(unittest.TestCase):
         with self.assertRaises(sdk.ProtocolError):
             sdk.decode_packet(encoded)
 
+    def test_stream_discards_crc_failure_and_preserves_neighbors(self):
+        bad = bytearray(sdk.encode_packet(0x1234, b"bad?payload"))
+        bad[-1] ^= 1
+        first = sdk.encode_packet(0x1234, b"first")
+        last = sdk.encode_packet(0x1234, b"last")
+        wire = first + bad + last
+        # Include every possible split, including partial headers and bodies.
+        for split in range(len(wire) + 1):
+            with self.subTest(split=split):
+                stream = sdk.PacketStream()
+                with self.assertLogs("openzilo._protocol", level="WARNING") as logs:
+                    packets = stream.feed(wire[:split]) + stream.feed(wire[split:])
+                self.assertEqual([p.body for p in packets], [b"first", b"last"])
+                self.assertEqual(len(logs.output), 1)
+                self.assertEqual(len(stream), 0)
+
+    def test_stream_still_rejects_unsupported_version(self):
+        raw = bytearray(sdk.encode_packet(0x1234, b"payload"))
+        raw[1:3] = struct.pack(">H", 5)
+        with self.assertRaisesRegex(sdk.ProtocolError, "version"):
+            sdk.PacketStream().feed(raw)
+
 
 class AudioTests(unittest.TestCase):
     def test_wav_header_and_pcm_output(self) -> None:
@@ -61,6 +83,25 @@ class CliSafetyTests(unittest.TestCase):
 
 
 class CompatibilityTests(unittest.IsolatedAsyncioTestCase):
+    async def test_crc_failure_does_not_interrupt_request_or_callbacks(self):
+        bad = bytearray(sdk.encode_packet(0x0605, b"corrupt"))
+        bad[-1] ^= 1
+        received = []
+
+        async def write(_data):
+            client._on_rx(sdk.encode_packet(0x0605, b"before") + bad
+                          + sdk.encode_packet(0x0605, b"after")
+                          + sdk.encode_packet(0x0102, b"response"))
+
+        client = sdk.OpenZiloClient(transport=SimpleNamespace(is_connected=True, write=write))
+        client._disconnected.clear()
+        client.add_packet_handler(0x0605, received.append)
+        with self.assertLogs("openzilo._protocol", level="WARNING"):
+            response = await client.request(0x0101, 0x0102, timeout_s=0.1)
+        self.assertEqual(response.body, b"response")
+        self.assertEqual([p.body for p in received], [b"before", b"after"])
+        self.assertTrue(client._protocol_errors.empty())
+
     def test_single_and_batch_imu_have_the_same_sample_values(self):
         sample = struct.pack(">I6h", 1000, -32768, -2, 3, 4, 5, 32767)
         single = sdk.parse_sensor_data_batch(struct.pack(">HI", 0, 42) + sample)
