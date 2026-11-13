@@ -4,7 +4,7 @@ import dataclasses
 import sys
 import unittest
 from types import SimpleNamespace as NS
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, PropertyMock, patch
 
 import openzilo as sdk
 from openzilo import _transport as transport
@@ -105,6 +105,108 @@ class DiscoveryTests(unittest.IsolatedAsyncioTestCase):
         self.bleak = patch.dict(sys.modules, {"bleak": NS(BleakScanner=Scanner, BleakClient=Link)})
         self.bleak.start()
         self.addCleanup(self.bleak.stop)
+
+    async def _connect_for_write(self, platform):
+        native = device()
+        Scanner.events = [(0, native, adv(uuids=(UUID,)))]
+        with patch.object(transport, "DEFAULT_CONNECTION_STABILIZATION_S", 0):
+            client = sdk.OpenZiloClient(address=ADDRESS)
+            await client.connect()
+        self.addAsyncCleanup(client.disconnect)
+        platform_patch = patch("openzilo._transport.sys", NS(platform=platform))
+        platform_patch.start()
+        self.addCleanup(platform_patch.stop)
+        link = Link.instances[-1]
+        link.write_gatt_char = AsyncMock()
+        return client, link
+
+    async def test_macos_ota_uses_acknowledged_mtu_sized_fragments(self):
+        client, link = await self._connect_for_write("darwin")
+        body = bytes(4106)
+        packet = sdk.encode_packet(2101, body)
+        for mtu, expected_size in (
+            (23, 20), (100, 97), (247, 244), (498, 244), (517, 244),
+            (None, 20), (3, 20), (518, 20), (True, 20), (247.0, 20),
+        ):
+            with self.subTest(mtu=mtu):
+                link.mtu_size = mtu
+                link.write_gatt_char.reset_mock()
+                await client.send_command(2101, body)
+                writes = link.write_gatt_char.await_args_list
+                self.assertEqual(
+                    [call.args[1] for call in writes],
+                    [packet[offset:offset + expected_size] for offset in range(0, len(packet), expected_size)],
+                )
+                self.assertTrue(all(call.kwargs["response"] is True for call in writes))
+
+        link.write_gatt_char.reset_mock()
+        await client.send_command(1005, bytes(30))
+        self.assertEqual([len(call.args[1]) for call in link.write_gatt_char.await_args_list], [20, 20, 1])
+        self.assertTrue(all(not call.kwargs["response"] for call in link.write_gatt_char.await_args_list))
+
+    async def test_macos_ota_requires_write_property_before_sending(self):
+        client, link = await self._connect_for_write("darwin")
+        rx = link.services.get_service(UUID).get_characteristic(transport.NUS_RX_UUID)
+        rx.properties = ["write-without-response"]
+        with self.assertRaisesRegex(sdk.TransportError, "NUS RX.*write with response"):
+            await client.send_command(2101, bytes(250))
+        link.write_gatt_char.assert_not_awaited()
+
+    async def test_macos_partial_ota_write_requires_reconnect(self):
+        client, link = await self._connect_for_write("darwin")
+        link.mtu_size = 247
+        for error in (OSError("link write failed"), asyncio.CancelledError()):
+            with self.subTest(error=type(error).__name__):
+                link.write_gatt_char = AsyncMock(side_effect=[None, error])
+                with self.assertRaises(type(error)):
+                    await client.send_command(2101, bytes(250))
+                self.assertEqual(link.write_gatt_char.await_count, 2)
+                with self.assertRaisesRegex(sdk.TransportError, "reconnect before sending"):
+                    await client.send_command(1005)
+                self.assertEqual(link.write_gatt_char.await_count, 2)
+                await client.disconnect()
+                with patch.object(transport, "DEFAULT_CONNECTION_STABILIZATION_S", 0):
+                    await client.connect()
+                link = Link.instances[-1]
+                link.mtu_size = 247
+                await client.send_command(1005)
+
+    async def test_non_macos_ota_preserves_write_mode(self):
+        for platform in ("win32", "linux"):
+            with self.subTest(platform=platform):
+                client, link = await self._connect_for_write(platform)
+                link.mtu_size = 247
+                for response in (False, True):
+                    client.transport.write_with_response = response
+                    link.write_gatt_char.reset_mock()
+                    await client.send_command(2101, bytes(30))
+                    writes = link.write_gatt_char.await_args_list
+                    self.assertEqual([len(call.args[1]) for call in writes], [20, 20, 1])
+                    self.assertTrue(all(call.kwargs["response"] is response for call in writes))
+
+    async def test_macos_ota_without_mtu_uses_twenty_byte_fragments(self):
+        client, link = await self._connect_for_write("darwin")
+        for error in (AttributeError, NotImplementedError):
+            with self.subTest(error=error.__name__):
+                link.write_gatt_char.reset_mock()
+                with patch.object(Link, "mtu_size", new_callable=PropertyMock, create=True) as mtu:
+                    mtu.side_effect = error
+                    await client.send_command(2101, bytes(30))
+                writes = link.write_gatt_char.await_args_list
+                self.assertEqual([len(call.args[1]) for call in writes], [20, 20, 1])
+                self.assertTrue(all(call.kwargs["response"] for call in writes))
+
+    async def test_macos_ota_uses_custom_transport_write(self):
+        class CustomNusClient(transport.NusClient):
+            pass
+
+        for custom_transport in (NS(), CustomNusClient()):
+            with self.subTest(transport=type(custom_transport).__name__):
+                custom_transport.write = AsyncMock()
+                client = sdk.OpenZiloClient(transport=custom_transport)
+                with patch("openzilo._transport.sys", NS(platform="darwin")):
+                    await client.send_command(2101, b"data")
+                custom_transport.write.assert_awaited_once_with(sdk.encode_packet(2101, b"data"))
 
     async def test_nameless_service_immediate_merge_name_rssi_and_service_data(self):
         native = device()

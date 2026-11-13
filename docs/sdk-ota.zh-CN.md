@@ -8,6 +8,8 @@
 
 ## 固件升级
 
+使用 SDK 内置 BLE 传输时，macOS 会对 OTA 数据帧使用带响应的 GATT 写入，要求 NUS RX 支持该写入方式。单次写入取当前 ATT MTU 减 3 字节，最多 244 字节。无法取得有效 MTU 时，每片使用 20 字节。
+
 --8<-- "docs/_includes/features.zh-CN.md:ota"
 
 `update_firmware()` 和 `ota-update` 提供应用固件升级；可通过 `openzilo ota-update --help` 检查当前安装的命令。它们只处理应用固件升级，不升级 bootloader。升级包需来自官方发布说明，并明确兼容设备型号和起始版本。升级前备份重要录音，停止录音、下载与 IMU 上报，保持电量和连接稳定；调用期间该连接由升级操作独占。
