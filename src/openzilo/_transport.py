@@ -8,6 +8,7 @@ import inspect
 import logging
 import math
 import re
+import sys
 import weakref
 from collections.abc import Awaitable, Callable
 from dataclasses import InitVar, dataclass
@@ -35,6 +36,7 @@ def _compatible_name(name: str | None) -> bool:
     name = (name or "").strip().casefold()
     return name in {"ring", "open zilo"} or bool(re.search(r"open zilo-\S+", name))
 _NUS_WRITE_CHUNK_SIZE = 20
+_OTA_WRITE_CHUNK_LIMIT = 244
 
 
 @dataclass(frozen=True)
@@ -328,17 +330,42 @@ class NusClient:
             self._client = None
 
     async def write(self, data: bytes | bytearray | memoryview) -> None:
-        if not self._ready or self._client is None or not self._client.is_connected:
+        client = self._client
+        if not self._ready or client is None or not client.is_connected:
             raise TransportError("BLE client is not ready")
+        await self._write_fragments(
+            client, bytes(data), _NUS_WRITE_CHUNK_SIZE, response=self.write_with_response,
+        )
 
-        payload = bytes(data)
-        for offset in range(0, len(payload), _NUS_WRITE_CHUNK_SIZE):
-            chunk = payload[offset : offset + _NUS_WRITE_CHUNK_SIZE]
-            await self._client.write_gatt_char(
-                self.rx_uuid,
-                chunk,
-                response=self.write_with_response,
-            )
+    async def _write_ota_frame(self, payload: bytes) -> None:
+        if sys.platform != "darwin":
+            await self.write(payload)
+            return
+        client = self._client
+        if not self._ready or client is None or not client.is_connected:
+            raise TransportError("BLE client is not ready")
+        service = client.services.get_service(self.service_uuid)
+        rx = service.get_characteristic(self.rx_uuid) if service is not None else None
+        if rx is None or "write" not in rx.properties:
+            raise TransportError("macOS OTA requires NUS RX to support write with response")
+
+        chunk_size = _NUS_WRITE_CHUNK_SIZE
+        try:
+            mtu = client.mtu_size
+        except (AttributeError, NotImplementedError):
+            mtu = None
+        if type(mtu) is int and 23 <= mtu <= 517:
+            # Fit one ATT Write Request, including its three-byte header.
+            chunk_size = min(mtu - 3, _OTA_WRITE_CHUNK_LIMIT)
+        _logger.debug("macOS OTA frame: %d bytes, GATT chunk size %d", len(payload), chunk_size)
+        await self._write_fragments(client, payload, chunk_size, response=True)
+
+    async def _write_fragments(
+        self, client: Any, payload: bytes, chunk_size: int, *, response: bool,
+    ) -> None:
+        for offset in range(0, len(payload), chunk_size):
+            chunk = payload[offset : offset + chunk_size]
+            await client.write_gatt_char(self.rx_uuid, chunk, response=response)
             await asyncio.sleep(0)
 
     async def __aenter__(self) -> "NusClient":
