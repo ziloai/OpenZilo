@@ -14,7 +14,9 @@ from typing import Any, DefaultDict
 
 from ._errors import CompatibilityError, DeviceError, ProtocolError, TimeoutError, TransportError
 from ._tasks import acquire_before, await_before, start_background_task
-from ._protocol import BinaryReader, encode_packet, Packet, PacketStream, SystemCommand, TimeCommand
+from ._protocol import (
+    BinaryReader, encode_packet, Packet, PacketStream, SystemCommand, TimeCommand, _OtaCommand,
+)
 from ._compatibility import COMMAND_FEATURES, DeviceCapabilities
 from ._transport import BleDeviceInfo, DEFAULT_SCAN_TIMEOUT_S, NusClient
 
@@ -160,12 +162,19 @@ class OpenZiloClient:
             if self._write_interrupted:
                 raise TransportError("A previous BLE write was interrupted; reconnect before sending")
             write_connection = self._connection_token
+            ota_frame = command == _OtaCommand.PACKET_RESP
+            # Build time-sensitive bodies only after acquiring the write lock.
+            packet = encode_packet(int(command), body())
             try:
-                # Build time-sensitive bodies only after acquiring the write lock.
-                await self.transport.write(encode_packet(int(command), body()))
-            except asyncio.CancelledError:
+                if ota_frame and type(self.transport) is NusClient:
+                    await self.transport._write_ota_frame(packet)
+                else:
+                    await self.transport.write(packet)
+            except (Exception, asyncio.CancelledError) as exc:
                 # A fragmented packet may be half-sent; another packet would desynchronize the device.
-                if write_connection is self._connection_token:
+                if (ota_frame or isinstance(exc, asyncio.CancelledError)) and (
+                    write_connection is self._connection_token
+                ):
                     self._write_interrupted = True
                 raise
 

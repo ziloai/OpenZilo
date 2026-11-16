@@ -8,6 +8,8 @@ Code snippets use `import openzilo as sdk`; `ring` is a connected client. See th
 
 ## Firmware updates
 
+On macOS, the SDK's built-in BLE transport sends OTA data frames using GATT writes with response. The NUS RX characteristic must support this write mode. Each write uses the current ATT MTU minus three bytes, up to 244 bytes. If the MTU is unavailable or invalid, each write uses up to 20 bytes.
+
 --8<-- "docs/_includes/features.en.md:ota"
 
 `update_firmware()` and `ota-update` update application firmware; inspect the installed command with `openzilo ota-update --help`. They do not update the bootloader. Use an official package listing your model and starting version. Back up recordings, stop recording, downloads and IMU reporting, and maintain power and connection. The update exclusively owns this connection until it finishes.
