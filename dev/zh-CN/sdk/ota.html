@@ -30,7 +30,7 @@
     
     
       
-        <title>通过 SDK 升级固件 - OpenZilo SDK v0.6.2</title>
+        <title>通过 SDK 升级固件 - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -1746,6 +1746,7 @@
 <p>使用 Python SDK 发送官方应用固件包，并在设备重启后核对版本。先查询设备功能；固件下载和设备操作见<a href="../guide/firmware.html">固件升级指南</a>。</p>
 <p>以下代码片段使用 <code>import openzilo as sdk</code>；<code>ring</code> 表示已连接的客户端，完整连接示例见<a href="quickstart.html">快速开始</a>。</p>
 <h2 id="固件升级">固件升级<a class="headerlink" href="#固件升级" title="Permanent link">&para;</a></h2>
+<p>使用 SDK 内置 BLE 传输时，macOS 会对 OTA 数据帧使用带响应的 GATT 写入，要求 NUS RX 支持该写入方式。单次写入取当前 ATT MTU 减 3 字节，最多 244 字节。无法取得有效 MTU 时，每片使用 20 字节。</p>
 <div class="admonition note">
 <p class="admonition-title">升级要求</p>
 <p>使用官方发行说明指定的 OTA 升级包，并核对设备型号、硬件版本和当前固件版本。SDK 只升级应用固件，不升级引导程序（bootloader）。</p>
