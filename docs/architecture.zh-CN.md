@@ -10,7 +10,7 @@
 
 使用 `connect_ring()` 连接并查询功能；使用 `OpenZiloClient` 时按[兼容说明](compatibility.zh-CN.md)显式查询。设备按地址连接，macOS 使用 UUID。
 
-BLE 通知边界不等于协议包边界。使用 SDK 接口可直接取得完整响应或事件；自行处理传输时用 `PacketStream` 重组完整包。包头、CRC 或字段不合法会报告 `ProtocolError`，等待期间断线会报告 `TransportError`。
+BLE 通知边界不等于协议包边界。使用 SDK 接口可直接取得完整响应或事件；自行处理传输时用 `PacketStream` 重组完整包。CRC 校验失败的包会被丢弃并记录警告，接收继续，同一通知中的正常包仍会交付。直接调用 `decode_packet()` 时，CRC 失败仍会抛出 `ProtocolError`。包头或字段不合法仍会报告 `ProtocolError`，等待期间断线会报告 `TransportError`。丢弃的包不算有效响应或完整数据：请求可能超时，下载仍执行缺口恢复和完整性检查，实时音频仍执行序号与完整性检查。OTA 仍要求有效请求、固件包完整性校验和安装确认；缺少有效响应时会超时。
 
 ## 实时音频
 

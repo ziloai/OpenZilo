@@ -10,7 +10,7 @@ This page explains receiving device data, saving recordings and converting audio
 
 Use `connect_ring()` to connect and discover features. With `OpenZiloClient`, explicitly query features as described in [compatibility](compatibility.en.md). Connections use device addresses, or UUIDs on macOS.
 
-BLE notification boundaries are not protocol packet boundaries. SDK APIs return complete responses or events; custom transports can use `PacketStream` to reconstruct packets. Invalid headers, CRC or fields raise `ProtocolError`; disconnection during a wait raises `TransportError`.
+BLE notification boundaries are not protocol packet boundaries. SDK APIs return complete responses or events; custom transports can use `PacketStream` to reconstruct packets. CRC-invalid packets are discarded with a warning; reception continues and valid packets in the same notification are preserved. `decode_packet()` still raises `ProtocolError` on CRC failure. Invalid headers or fields still report `ProtocolError`; disconnection during a wait raises `TransportError`. Dropped packets do not count as successful responses or complete data: requests can time out, downloads retain their gap recovery and completeness checks, and live audio retains its sequence and completeness checks. OTA still requires valid requests, package integrity checks and installation confirmation; a missing valid response times out.
 
 ## Live audio
 

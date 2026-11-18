@@ -42,6 +42,8 @@ Header and body integers are network byte order (big-endian). Strings and raw by
 
 A packet can span notifications and a notification can contain multiple packets. Reconstruct using the fixed header and `body_length` before parsing. `OpenZiloClient` and `PacketStream` do this already.
 
+On a body CRC mismatch, `PacketStream` discards the complete framed packet, logs a warning and continues parsing subsequent packets, preserving valid packets and trailing fragments. It does not deliver the corrupt payload. Direct `decode_packet()` calls remain strict and raise `ProtocolError`. This recovery handles body CRC failures; it does not guarantee recovery from a corrupted header or length.
+
 ## 4. Commands
 
 | Function | Request/event | Response | SDK API |

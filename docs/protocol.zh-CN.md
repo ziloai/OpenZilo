@@ -42,6 +42,8 @@ BLE 分片长度不属于协议包边界。调用方应使用 `OpenZiloClient` �
 
 BLE 通知可能拆分一个协议包，也可能连续携带多个包。调用方必须先根据固定包头和 `body_length` 重组完整数据，再解析包体；`OpenZiloClient` 和 `PacketStream` 已负责此过程。
 
+包体 CRC 不匹配时，`PacketStream` 会丢弃该完整组包、记录警告并继续解析后续包，保留正常包和末尾尚未收齐的分片，不会交付损坏的包体。直接调用 `decode_packet()` 仍会严格抛出 `ProtocolError`。此恢复机制针对包体 CRC 失败，不保证能从损坏的包头或长度字段中恢复。
+
 ## 4. 命令列表
 
 | 功能 | 请求/上报 | 响应 | SDK 接口 |

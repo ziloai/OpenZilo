@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import logging
 import struct
 from dataclasses import dataclass
 from enum import IntEnum
@@ -16,6 +17,11 @@ SUPPORTED_PROTOCOL_VERSIONS = frozenset({4})
 HEADER_SIZE = 11
 MAX_BODY_LENGTH = 5120
 _HEADER_STRUCT = struct.Struct(">BHHIH")
+_logger = logging.getLogger(__name__)
+
+
+class _BodyCrcError(ProtocolError):
+    """A complete packet has a corrupt body and must not be delivered."""
 
 
 class SystemCommand(IntEnum):
@@ -231,7 +237,7 @@ def decode_packet(data: bytes | bytearray | memoryview) -> Packet:
     if body_length:
         actual_crc = crc16_compute(body)
         if actual_crc != body_crc:
-            raise ProtocolError(
+            raise _BodyCrcError(
                 f"Body CRC mismatch: expected 0x{body_crc:04X}, got 0x{actual_crc:04X}"
             )
 
@@ -246,7 +252,7 @@ def peek_body_length(data: bytes | bytearray | memoryview) -> int:
 
 
 class PacketStream:
-    """Accumulates BLE chunks and emits complete protocol packets."""
+    """Reassemble packets, discarding CRC failures with a warning."""
 
     def __init__(self) -> None:
         self._buffer = bytearray()
@@ -283,7 +289,14 @@ class PacketStream:
 
             packet_bytes = bytes(self._buffer[:packet_length])
             del self._buffer[:packet_length]
-            packets.append(decode_packet(packet_bytes))
+            try:
+                packet = decode_packet(packet_bytes)
+            except _BodyCrcError as exc:
+                # Consume the entire framed packet, including any magic bytes in
+                # its payload. Keep valid packets and trailing partial data.
+                _logger.warning("Discarding packet: %s", exc)
+                continue
+            packets.append(packet)
 
     def __len__(self) -> int:
         return len(self._buffer)
