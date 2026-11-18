@@ -30,7 +30,7 @@
     
     
       
-        <title>OpenZilo BLE protocol reference - OpenZilo SDK v0.6.2</title>
+        <title>OpenZilo BLE protocol reference - OpenZilo SDK v0.6.3</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.2
+            OpenZilo SDK v0.6.3
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.2" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.2" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.2
+    OpenZilo SDK v0.6.3
   </label>
   
     <div class="md-nav__source">
@@ -3113,6 +3113,7 @@
 </table>
 <p>Header and body integers are network byte order (big-endian). Strings and raw bytes are not reordered. CRC covers only the body, using SDK <code>crc16_compute()</code> with initial value <code>0xFFFF</code>.</p>
 <p>A packet can span notifications and a notification can contain multiple packets. Reconstruct using the fixed header and <code>body_length</code> before parsing. <code>OpenZiloClient</code> and <code>PacketStream</code> do this already.</p>
+<p>On a body CRC mismatch, <code>PacketStream</code> discards the complete framed packet, logs a warning and continues parsing subsequent packets, preserving valid packets and trailing fragments. It does not deliver the corrupt payload. Direct <code>decode_packet()</code> calls remain strict and raise <code>ProtocolError</code>. This recovery handles body CRC failures; it does not guarantee recovery from a corrupted header or length.</p>
 <h2 id="4-commands">4. Commands<a class="headerlink" href="#4-commands" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
