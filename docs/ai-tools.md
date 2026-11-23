@@ -43,4 +43,4 @@ Run `opencode`. It reads [`AGENTS.md`](../AGENTS.md). [OpenCode setup](https://o
 
 ## Use from another project
 
-Provide your coding tool with a local copy of `llms.txt` or its [raw URL](https://raw.githubusercontent.com/ziloai/openzilo/main/llms.txt), and point it to the relevant feature guide. Add the SDK through its Git URL as described in [installation](sdk-install.en.md).
+Provide your coding tool with a local copy of `llms.txt` or its [raw URL](https://raw.githubusercontent.com/ziloai/openzilo/main/llms.txt), and point it to the relevant feature guide. Add the SDK from PyPI as described in [installation](sdk-install.en.md).

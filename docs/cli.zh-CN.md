@@ -2,14 +2,14 @@
 
 --8<-- "docs/_includes/devices.zh-CN.md"
 
-从 GitHub 安装和运行设备命令。扫描和操作设备需要系统蓝牙开启，设备在附近并处于可连接状态。
+从 PyPI 安装和运行设备命令。扫描和操作设备需要系统蓝牙开启，设备在附近并处于可连接状态。
 
 ## 用 uvx 直接启动
 
-从 GitHub 获取 CLI 并进入交互终端，无需手动配置项目环境：
+直接进入交互终端，无需手动配置项目环境：
 
 ```sh
-uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell
+uvx openzilo shell
 ```
 
 `uvx` 会自动管理隔离环境。设备操作需要系统蓝牙开启，并具备蓝牙访问权限。进入后选择戒指，再执行命令：
@@ -21,22 +21,18 @@ openzilo> doctor
 openzilo> exit
 ```
 
-经常使用时，可以从 GitHub 安装命令，之后直接运行 `openzilo`：
+经常使用时，可以安装 CLI，之后直接运行 `openzilo`：
 
 ```sh
-uv tool install git+https://github.com/ziloai/OpenZilo.git
+uv tool install openzilo
 openzilo shell
 ```
 
 下文示例使用安装后的 `openzilo` 命令。也可直接在 `shell` 中输入子命令。默认设备配置保存在用户配置目录，不随工具环境切换。
 
-要固定分支、标签或提交，在 GitHub 地址后追加 `@REF`：
+要运行指定的 PyPI 版本，可用 `uvx openzilo@VERSION shell`，把 `VERSION` 换成实际版本号。运行最新版可用 `uvx openzilo@latest shell`。详见 [uv 官方工具指南](https://docs.astral.sh/uv/guides/tools/)。
 
-```sh
-uvx --from git+https://github.com/ziloai/OpenZilo.git@REF openzilo shell
-```
-
-将 `REF` 替换为所需版本。需要刷新 GitHub 工具环境时使用 `uvx --refresh --from git+https://github.com/ziloai/OpenZilo.git openzilo shell`。分发机制见 [uv 官方工具指南](https://docs.astral.sh/uv/guides/tools/)。
+想用 GitHub 上的最新开发版，可运行 `uv tool install git+https://github.com/ziloai/OpenZilo.git`。
 
 ## 第一次使用
 

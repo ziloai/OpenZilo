@@ -35,10 +35,10 @@ OpusDecoderUnavailable
 
 ## `TransportError: Install bleak to use BLE transport`
 
-当前 Python 环境没有安装 SDK 的依赖。请在运行脚本的项目中从 GitHub 安装 SDK，并使用 `uv run` 执行脚本：
+当前 Python 环境没有安装 SDK 的依赖。请在运行脚本的项目中从 PyPI 安装 SDK，并使用 `uv run` 执行脚本：
 
 ```powershell
-uv add git+https://github.com/ziloai/OpenZilo.git
+uv add openzilo
 uv run python your_script.py
 ```
 

@@ -48,4 +48,4 @@ uv sync --locked
 
 ## 在其他项目中使用
 
-将 `llms.txt` 的本地副本或[原始文件链接](https://raw.githubusercontent.com/ziloai/openzilo/main/llms.txt)提供给编程工具，并指向相关手册。SDK 本身可以通过 Git URL 添加到自己的 uv 项目，安装方式见 [安装说明](sdk-install.zh-CN.md#安装依赖)。
+将 `llms.txt` 的本地副本或[原始文件链接](https://raw.githubusercontent.com/ziloai/openzilo/main/llms.txt)提供给编程工具，并指向相关手册。可从 PyPI 将 SDK 添加到自己的 uv 项目，安装方式见 [安装说明](sdk-install.zh-CN.md#安装依赖)。

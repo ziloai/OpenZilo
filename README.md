@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://github.com/ziloai/openzilo/actions/workflows/ci.yml"><img src="https://github.com/ziloai/openzilo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
+  <a href="https://pypi.org/project/openzilo/"><img src="https://img.shields.io/pypi/v/openzilo" alt="PyPI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/software-MPL--2.0-555555" alt="MPL-2.0"></a>
   <a href="LICENSES/CERN-OHL-W-2.0.txt"><img src="https://img.shields.io/badge/hardware-CERN--OHL--W--2.0-555555" alt="CERN-OHL-W-2.0"></a>
 </p>
@@ -30,7 +31,7 @@ This repository contains the Python SDK and CLI for scanning and connecting to a
 
 Run `openzilo device use` to scan and save a default ring, then `openzilo shell` for an interactive terminal. Device commands also accept `OPENZILO_ADDRESS` or `--address`. Use `sensor-stream --seconds 10 --output imu.jsonl` for timed IMU capture. See the [Chinese CLI guide](docs/cli.zh-CN.md); remote recording requires matching extended firmware.
 
-Run `uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell` to start the interactive terminal directly from GitHub. See the [CLI guide](docs/cli.en.md#run-directly-with-uvx).
+Run `uvx openzilo shell` to start the interactive terminal. See the [CLI guide](docs/cli.en.md#run-directly-with-uvx).
 
 It documents protocol v4 on firmware `V2.001.0002.0000`. Check device behavior on your own hardware.
 
@@ -113,15 +114,15 @@ See the [setup guide](docs/ai-tools.md) for installation links and using these d
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+ (uv can install it), and a BLE adapter. On Linux, you also need BlueZ and Bluetooth access.
 
-Install the device CLI from GitHub:
+Install the device CLI from PyPI:
 
 ```bash
-uv tool install git+https://github.com/ziloai/OpenZilo.git
+uv tool install openzilo
 openzilo scan --timeout 10
 openzilo info --address AA:BB:CC:DD:EE:FF
 ```
 
-Replace the example address with one returned by `scan`. To use the SDK in your uv project, run `uv add git+https://github.com/ziloai/OpenZilo.git`. Without uv, use `python -m pip install git+https://github.com/ziloai/OpenZilo.git`.
+Replace the example address with one returned by `scan`. To use the SDK in your uv project, run `uv add openzilo`. Without uv, use `python -m pip install openzilo`.
 
 In Python:
 
@@ -141,7 +142,7 @@ asyncio.run(main())
 
 See the [examples](examples/) for audio download and IMU streaming.
 
-For live mono/stereo PCM, install `uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"` and consume
+For live mono/stereo PCM, run `uv add "openzilo[pcm]"` and consume
 `sdk.open_live_audio_stream(ring)` with `async with` / `async for`. It yields
 `LiveAudioStart`, 20 ms `LivePcmFrame` blocks (16 kHz s16le, with the configured channel count),
 then a verified `LiveAudioEnd`. Slow consumers fail explicitly; leaving the
