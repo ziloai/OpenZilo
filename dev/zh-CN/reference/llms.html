@@ -1763,11 +1763,11 @@
 </ul>
 <h2 id="agent-integration-notes">Agent integration notes<a class="headerlink" href="#agent-integration-notes" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Install the SDK in your uv project with <code>uv add git+https://github.com/ziloai/OpenZilo.git</code>. Start the device terminal with <code>uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell</code>.</li>
+<li>Install the SDK in your uv project with <code>uv add openzilo</code>. Start the device terminal with <code>uvx openzilo shell</code>.</li>
 <li>Import with <code>import openzilo as sdk</code> or use <code>uv run openzilo --help</code>.</li>
 <li><code>sdk.OpenZiloClient</code> is the connected BLE session; pass it to high-level functions such as <code>sdk.get_system_info(client)</code>.</li>
 <li><code>ffmpeg</code> is only required when converting Speex or Opus recordings to WAV.</li>
-<li>For live PCM use <code>uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"</code> and <code>open_live_audio_stream(client)</code>; it needs no ffmpeg executable. <code>output="opus"</code> uses only base dependencies. Frames are provisional until verified END; context exit aborts unfinished capture.</li>
+<li>For live PCM use <code>uv add "openzilo[pcm]"</code> and <code>open_live_audio_stream(client)</code>; it needs no ffmpeg executable. <code>output="opus"</code> uses only base dependencies. Frames are provisional until verified END; context exit aborts unfinished capture.</li>
 <li><code>audio-clear</code> permanently erases device recordings and requires <code>--yes</code>.</li>
 <li>
 <p>Codex, Cursor, and OpenCode use <code>AGENTS.md</code>. Claude Code uses <code>CLAUDE.md</code> and Gemini CLI uses <code>GEMINI.md</code>, both importing <code>AGENTS.md</code>. GitHub Copilot uses <code>.github/copilot-instructions.md</code> for repository guidance. This <code>llms.txt</code> remains a documentation index and is not automatically consumed as a plugin or MCP server.</p>

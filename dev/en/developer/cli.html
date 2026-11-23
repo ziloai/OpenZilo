@@ -1897,10 +1897,10 @@
 <p class="admonition-title">Device applicability</p>
 <p>This document applies to <strong>OpenZilo Q</strong>.</p>
 </div>
-<p>Install and run device commands from GitHub. Enable Bluetooth and keep the ring nearby and connectable.</p>
+<p>Install and run device commands from PyPI. Enable Bluetooth and keep the ring nearby and connectable.</p>
 <h2 id="run-directly-with-uvx">Run directly with uvx<a class="headerlink" href="#run-directly-with-uvx" title="Permanent link">&para;</a></h2>
-<p>Fetch the CLI from GitHub and enter the interactive shell without setting up a project environment:</p>
-<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git<span class="w"> </span>openzilo<span class="w"> </span>shell
+<p>Start the interactive shell without setting up a project environment:</p>
+<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>openzilo<span class="w"> </span>shell
 </code></pre></div>
 <p><code>uvx</code> manages an isolated environment automatically. Device operations require Bluetooth and OS access permissions. Inside the shell, select a ring and run commands:</p>
 <div class="highlight"><pre><span></span><code>openzilo&gt; device use
@@ -1908,15 +1908,13 @@ openzilo&gt; info
 openzilo&gt; doctor
 openzilo&gt; exit
 </code></pre></div>
-<p>For frequent use, install the command from GitHub, then invoke <code>openzilo</code> directly:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git
+<p>For frequent use, install the CLI, then invoke <code>openzilo</code> directly:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>openzilo
 openzilo<span class="w"> </span>shell
 </code></pre></div>
 <p>The examples below use the installed <code>openzilo</code> command. You can also enter subcommands inside the shell. Device selection is stored in the user configuration directory and survives tool environment changes.</p>
-<p>To pin a branch, tag or commit, append <code>@REF</code> to the GitHub URL:</p>
-<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git@REF<span class="w"> </span>openzilo<span class="w"> </span>shell
-</code></pre></div>
-<p>Replace <code>REF</code> with the required revision. Refresh the GitHub tool environment with <code>uvx --refresh --from git+https://github.com/ziloai/OpenZilo.git openzilo shell</code>. See the <a href="https://docs.astral.sh/uv/guides/tools/">official uv tools guide</a>.</p>
+<p>To run a specific PyPI release, use <code>uvx openzilo@VERSION shell</code> and replace <code>VERSION</code> with the release version. Use <code>uvx openzilo@latest shell</code> for the latest release. See the <a href="https://docs.astral.sh/uv/guides/tools/">official uv tools guide</a>.</p>
+<p>To try the latest development version from GitHub, run <code>uv tool install git+https://github.com/ziloai/OpenZilo.git</code>.</p>
 <h2 id="first-use">First use<a class="headerlink" href="#first-use" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Scan and select the default device by number</span>
 openzilo<span class="w"> </span>device<span class="w"> </span>use

@@ -1997,7 +1997,7 @@
 <p>Starting with smart rings, OpenZilo provides developers with hardware, firmware, SDKs, and reference applications for connecting <strong>voice, gestures, physiological signals, AI agents, computers, robots, and the physical world</strong>.</p>
 <p>This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex or mono/stereo Opus to WAV, and receiving IMU and gesture events.</p>
 <p>Run <code>openzilo device use</code> to scan and save a default ring, then <code>openzilo shell</code> for an interactive terminal. Device commands also accept <code>OPENZILO_ADDRESS</code> or <code>--address</code>. Use <code>sensor-stream --seconds 10 --output imu.jsonl</code> for timed IMU capture. See the <a href="developer/cli.html">Chinese CLI guide</a>; remote recording requires matching extended firmware.</p>
-<p>Run <code>uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell</code> to start the interactive terminal directly from GitHub. See the <a href="developer/cli.html#run-directly-with-uvx">CLI guide</a>.</p>
+<p>Run <code>uvx openzilo shell</code> to start the interactive terminal. See the <a href="developer/cli.html#run-directly-with-uvx">CLI guide</a>.</p>
 <p>It documents protocol v4 on firmware <code>V2.001.0002.0000</code>. Check device behavior on your own hardware.</p>
 <h2 id="news">News<a class="headerlink" href="#news" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2116,12 +2116,12 @@ Choose <strong>X</strong> when your prototype also needs physiological sensing.<
 <p>See the <a href="developer/ai-tools.html">setup guide</a> for installation links and using these docs from another repository.</p>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>You need <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>, Python 3.10+ (uv can install it), and a BLE adapter. On Linux, you also need BlueZ and Bluetooth access.</p>
-<p>Install the device CLI from GitHub:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git
+<p>Install the device CLI from PyPI:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>openzilo
 openzilo<span class="w"> </span>scan<span class="w"> </span>--timeout<span class="w"> </span><span class="m">10</span>
 openzilo<span class="w"> </span>info<span class="w"> </span>--address<span class="w"> </span>AA:BB:CC:DD:EE:FF
 </code></pre></div>
-<p>Replace the example address with one returned by <code>scan</code>. To use the SDK in your uv project, run <code>uv add git+https://github.com/ziloai/OpenZilo.git</code>. Without uv, use <code>python -m pip install git+https://github.com/ziloai/OpenZilo.git</code>.</p>
+<p>Replace the example address with one returned by <code>scan</code>. To use the SDK in your uv project, run <code>uv add openzilo</code>. Without uv, use <code>python -m pip install openzilo</code>.</p>
 <p>In Python:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">openzilo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sdk</span>
@@ -2136,7 +2136,7 @@ openzilo<span class="w"> </span>info<span class="w"> </span>--address<span class
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </code></pre></div>
 <p>See the <a href="https://github.com/ziloai/OpenZilo/tree/main/examples">examples</a> for audio download and IMU streaming.</p>
-<p>For live mono/stereo PCM, install <code>uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"</code> and consume
+<p>For live mono/stereo PCM, run <code>uv add "openzilo[pcm]"</code> and consume
 <code>sdk.open_live_audio_stream(ring)</code> with <code>async with</code> / <code>async for</code>. It yields
 <code>LiveAudioStart</code>, 20 ms <code>LivePcmFrame</code> blocks (16 kHz s16le, with the configured channel count),
 then a verified <code>LiveAudioEnd</code>. Slow consumers fail explicitly; leaving the

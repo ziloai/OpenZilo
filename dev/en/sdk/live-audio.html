@@ -1816,7 +1816,7 @@
 <p class="admonition-title">Firmware version</p>
 <p>This usage requires firmware <strong>V2.001.0002.0001 or later</strong>. V2.001.0002.0000 transfers files after recording has been saved and does not provide live audio. Live PCM also requires the <code>pcm</code> extra.</p>
 </div>
-<p>Install PCM decoding dependencies with <code>uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"</code>. PyAV decodes in-process, without an <code>ffmpeg</code> executable. <code>output="opus"</code> needs only the base SDK.</p>
+<p>Install PCM decoding dependencies with <code>uv add "openzilo[pcm]"</code>. PyAV decodes in-process, without an <code>ffmpeg</code> executable. <code>output="opus"</code> needs only the base SDK.</p>
 <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">with</span> <span class="n">sdk</span><span class="o">.</span><span class="n">open_live_audio_stream</span><span class="p">(</span>
     <span class="n">ring</span><span class="p">,</span>
     <span class="n">output</span><span class="o">=</span><span class="s2">"pcm"</span><span class="p">,</span>             <span class="c1"># Default; "opus" is also available</span>

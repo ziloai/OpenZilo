@@ -1997,7 +1997,7 @@
 <p>从智能戒指出发，OpenZilo 为开发者提供硬件、固件、SDK 和参考应用，连接<strong>语音、手势、生理信号、AI 智能体、计算机、机器人与物理世界</strong>。</p>
 <p>这个仓库提供 Python SDK 和命令行工具，用于扫描和连接 OpenZilo 戒指、读取设备信息、下载录音、将 Speex 或单声道、双声道 Opus 转成 WAV，以及接收 IMU 和手势事件。</p>
 <p>通过 <code>openzilo device use</code> 扫描并保存默认设备，再用 <code>openzilo shell</code> 进入交互终端，即可查询状态、录音和采集 IMU。详见<a href="developer/cli.html">中文 CLI 操作指南</a>；远程录音需要配套扩展固件。</p>
-<p>运行 <code>uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell</code>，即可从 GitHub 获取工具并进入交互终端。详见<a href="developer/cli.html#用-uvx-直接启动">CLI 操作指南</a>。</p>
+<p>运行 <code>uvx openzilo shell</code> 即可进入交互终端。详见<a href="developer/cli.html#用-uvx-直接启动">CLI 操作指南</a>。</p>
 <p>设备按键与灯光说明适用于固件 <code>V2.001.0002.0000</code>。其他功能请查看<a href="developer/features.html">版本要求</a>；SDK 会查询设备支持的接口。</p>
 <h2 id="最新动态">最新动态<a class="headerlink" href="#最新动态" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2116,12 +2116,12 @@
 <p>安装链接及跨仓库使用方法见 <a href="developer/ai-tools.html">接入指南</a>。</p>
 <h2 id="快速开始">快速开始<a class="headerlink" href="#快速开始" title="Permanent link">&para;</a></h2>
 <p>需要 <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>、Python 3.10+（可由 uv 自动安装）和 BLE 适配器；Linux 还需要 BlueZ 和蓝牙访问权限。</p>
-<p>从 GitHub 安装设备 CLI：</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git
+<p>从 PyPI 安装设备 CLI：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>openzilo
 openzilo<span class="w"> </span>scan<span class="w"> </span>--timeout<span class="w"> </span><span class="m">10</span>
 openzilo<span class="w"> </span>info<span class="w"> </span>--address<span class="w"> </span>AA:BB:CC:DD:EE:FF
 </code></pre></div>
-<p>把示例地址换成 <code>scan</code> 返回的地址。在自己的 uv 项目中使用 SDK，运行 <code>uv add git+https://github.com/ziloai/OpenZilo.git</code>。不用 uv 时，可运行 <code>python -m pip install git+https://github.com/ziloai/OpenZilo.git</code>。</p>
+<p>把示例地址换成 <code>scan</code> 返回的地址。在自己的 uv 项目中使用 SDK，运行 <code>uv add openzilo</code>。不用 uv 时，可运行 <code>python -m pip install openzilo</code>。</p>
 <p>Python 调用示例：</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">openzilo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sdk</span>
@@ -2136,7 +2136,7 @@ openzilo<span class="w"> </span>info<span class="w"> </span>--address<span class
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </code></pre></div>
 <p><a href="https://github.com/ziloai/OpenZilo/tree/main/examples">examples</a> 中还有下载录音和读取 IMU 数据流的例子。</p>
-<p>实时 PCM 音频需先运行 <code>uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"</code> 安装 PyAV，然后用
+<p>实时 PCM 音频需先运行 <code>uv add "openzilo[pcm]"</code> 安装 PyAV，然后用
 <code>async with sdk.open_live_audio_stream(ring)</code> 和 <code>async for</code> 接收录音开始、
 音频帧和结束事件。音频为 16 kHz、16 位小端 PCM，声道数与设备设置一致，
 每帧 20 ms。只有收到并检查录音结束事件后，才能确认整段音频完整。

@@ -47,11 +47,11 @@ The [OpenZilo website](https://openzilo.com) describes a broader platform. Do no
 
 ## Agent integration notes
 
-- Install the SDK in your uv project with `uv add git+https://github.com/ziloai/OpenZilo.git`. Start the device terminal with `uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell`.
+- Install the SDK in your uv project with `uv add openzilo`. Start the device terminal with `uvx openzilo shell`.
 - Import with `import openzilo as sdk` or use `uv run openzilo --help`.
 - `sdk.OpenZiloClient` is the connected BLE session; pass it to high-level functions such as `sdk.get_system_info(client)`.
 - `ffmpeg` is only required when converting Speex or Opus recordings to WAV.
-- For live PCM use `uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"` and `open_live_audio_stream(client)`; it needs no ffmpeg executable. `output="opus"` uses only base dependencies. Frames are provisional until verified END; context exit aborts unfinished capture.
+- For live PCM use `uv add "openzilo[pcm]"` and `open_live_audio_stream(client)`; it needs no ffmpeg executable. `output="opus"` uses only base dependencies. Frames are provisional until verified END; context exit aborts unfinished capture.
 - `audio-clear` permanently erases device recordings and requires `--yes`.
 - Codex, Cursor, and OpenCode use `AGENTS.md`. Claude Code uses `CLAUDE.md` and Gemini CLI uses `GEMINI.md`, both importing `AGENTS.md`. GitHub Copilot uses `.github/copilot-instructions.md` for repository guidance. This `llms.txt` remains a documentation index and is not automatically consumed as a plugin or MCP server.
 
