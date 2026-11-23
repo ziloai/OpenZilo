@@ -18,22 +18,22 @@ import openzilo as sdk
 
 ## 安装依赖
 
-推荐用 [uv](https://docs.astral.sh/uv/) 在自己的项目中从 GitHub 安装 SDK：
+推荐用 [uv](https://docs.astral.sh/uv/) 在自己的项目中从 PyPI 安装 SDK：
 
 ```bash
-uv add git+https://github.com/ziloai/OpenZilo.git
+uv add openzilo
 ```
 
-之后用 `uv run python your_script.py` 执行脚本。不用 uv 时，也可以直接从 GitHub 安装：
+之后用 `uv run python your_script.py` 执行脚本。不用 uv 时，可以用 pip 安装：
 
 ```bash
-python -m pip install git+https://github.com/ziloai/OpenZilo.git
+python -m pip install openzilo
 ```
 
 直接操作设备可用[命令行工具](cli.zh-CN.md)：
 
 ```bash
-uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell
+uvx openzilo shell
 ```
 
 如果需要把戒指录音解码成 WAV，还需要安装 `ffmpeg`，并确保命令行可以执行：

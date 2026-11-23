@@ -36,7 +36,7 @@ async with sdk.OpenZiloClient(address=ADDRESS) as ring:
 
 --8<-- "docs/_includes/features.zh-CN.md:live-audio"
 
-安装 PCM 解码依赖：`uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"`。PyAV 提供进程内解码，PCM 流不需要 `ffmpeg` 可执行文件；`output="opus"` 只需要基础 SDK。
+安装 PCM 解码依赖：`uv add "openzilo[pcm]"`。PyAV 提供进程内解码，PCM 流不需要 `ffmpeg` 可执行文件；`output="opus"` 只需要基础 SDK。
 
 ```python
 async with sdk.open_live_audio_stream(

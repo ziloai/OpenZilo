@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://github.com/ziloai/openzilo/actions/workflows/ci.yml"><img src="https://github.com/ziloai/openzilo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
+  <a href="https://pypi.org/project/openzilo/"><img src="https://img.shields.io/pypi/v/openzilo" alt="PyPI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/software-MPL--2.0-555555" alt="MPL-2.0"></a>
   <a href="LICENSES/CERN-OHL-W-2.0.txt"><img src="https://img.shields.io/badge/hardware-CERN--OHL--W--2.0-555555" alt="CERN-OHL-W-2.0"></a>
 </p>
@@ -30,7 +31,7 @@ OpenZilo 是一个开放开发平台，让开发者通过可穿戴硬件构建�
 
 通过 `openzilo device use` 扫描并保存默认设备，再用 `openzilo shell` 进入交互终端，即可查询状态、录音和采集 IMU。详见[中文 CLI 操作指南](docs/cli.zh-CN.md)；远程录音需要配套扩展固件。
 
-运行 `uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell`，即可从 GitHub 获取工具并进入交互终端。详见[CLI 操作指南](docs/cli.zh-CN.md#用-uvx-直接启动)。
+运行 `uvx openzilo shell` 即可进入交互终端。详见[CLI 操作指南](docs/cli.zh-CN.md#用-uvx-直接启动)。
 
 设备按键与灯光说明适用于固件 `V2.001.0002.0000`。其他功能请查看[版本要求](docs/features.zh-CN.md)；SDK 会查询设备支持的接口。
 
@@ -114,15 +115,15 @@ OpenZilo 的定位是开放的交互层，而非封闭的消费设备。
 
 需要 [uv](https://docs.astral.sh/uv/getting-started/installation/)、Python 3.10+（可由 uv 自动安装）和 BLE 适配器；Linux 还需要 BlueZ 和蓝牙访问权限。
 
-从 GitHub 安装设备 CLI：
+从 PyPI 安装设备 CLI：
 
 ```bash
-uv tool install git+https://github.com/ziloai/OpenZilo.git
+uv tool install openzilo
 openzilo scan --timeout 10
 openzilo info --address AA:BB:CC:DD:EE:FF
 ```
 
-把示例地址换成 `scan` 返回的地址。在自己的 uv 项目中使用 SDK，运行 `uv add git+https://github.com/ziloai/OpenZilo.git`。不用 uv 时，可运行 `python -m pip install git+https://github.com/ziloai/OpenZilo.git`。
+把示例地址换成 `scan` 返回的地址。在自己的 uv 项目中使用 SDK，运行 `uv add openzilo`。不用 uv 时，可运行 `python -m pip install openzilo`。
 
 Python 调用示例：
 
@@ -142,7 +143,7 @@ asyncio.run(main())
 
 [examples](examples/) 中还有下载录音和读取 IMU 数据流的例子。
 
-实时 PCM 音频需先运行 `uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"` 安装 PyAV，然后用
+实时 PCM 音频需先运行 `uv add "openzilo[pcm]"` 安装 PyAV，然后用
 `async with sdk.open_live_audio_stream(ring)` 和 `async for` 接收录音开始、
 音频帧和结束事件。音频为 16 kHz、16 位小端 PCM，声道数与设备设置一致，
 每帧 20 ms。只有收到并检查录音结束事件后，才能确认整段音频完整。

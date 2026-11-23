@@ -18,22 +18,22 @@ This guide uses `sdk` as an alias for `openzilo`.
 
 ## Dependencies
 
-Use [uv](https://docs.astral.sh/uv/) to install the SDK from GitHub into your project:
+Use [uv](https://docs.astral.sh/uv/) to install the SDK from PyPI into your project:
 
 ```bash
-uv add git+https://github.com/ziloai/OpenZilo.git
+uv add openzilo
 ```
 
-Run Python scripts with `uv run python your_script.py`. Without uv, install directly from GitHub:
+Run Python scripts with `uv run python your_script.py`. Without uv, use pip:
 
 ```bash
-python -m pip install git+https://github.com/ziloai/OpenZilo.git
+python -m pip install openzilo
 ```
 
 For device commands, see the [CLI guide](cli.en.md):
 
 ```bash
-uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell
+uvx openzilo shell
 ```
 
 To decode recordings to WAV, install `ffmpeg` and make it available from the command line:

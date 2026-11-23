@@ -2,14 +2,14 @@
 
 --8<-- "docs/_includes/devices.en.md"
 
-Install and run device commands from GitHub. Enable Bluetooth and keep the ring nearby and connectable.
+Install and run device commands from PyPI. Enable Bluetooth and keep the ring nearby and connectable.
 
 ## Run directly with uvx
 
-Fetch the CLI from GitHub and enter the interactive shell without setting up a project environment:
+Start the interactive shell without setting up a project environment:
 
 ```sh
-uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell
+uvx openzilo shell
 ```
 
 `uvx` manages an isolated environment automatically. Device operations require Bluetooth and OS access permissions. Inside the shell, select a ring and run commands:
@@ -21,22 +21,18 @@ openzilo> doctor
 openzilo> exit
 ```
 
-For frequent use, install the command from GitHub, then invoke `openzilo` directly:
+For frequent use, install the CLI, then invoke `openzilo` directly:
 
 ```sh
-uv tool install git+https://github.com/ziloai/OpenZilo.git
+uv tool install openzilo
 openzilo shell
 ```
 
 The examples below use the installed `openzilo` command. You can also enter subcommands inside the shell. Device selection is stored in the user configuration directory and survives tool environment changes.
 
-To pin a branch, tag or commit, append `@REF` to the GitHub URL:
+To run a specific PyPI release, use `uvx openzilo@VERSION shell` and replace `VERSION` with the release version. Use `uvx openzilo@latest shell` for the latest release. See the [official uv tools guide](https://docs.astral.sh/uv/guides/tools/).
 
-```sh
-uvx --from git+https://github.com/ziloai/OpenZilo.git@REF openzilo shell
-```
-
-Replace `REF` with the required revision. Refresh the GitHub tool environment with `uvx --refresh --from git+https://github.com/ziloai/OpenZilo.git openzilo shell`. See the [official uv tools guide](https://docs.astral.sh/uv/guides/tools/).
+To try the latest development version from GitHub, run `uv tool install git+https://github.com/ziloai/OpenZilo.git`.
 
 ## First use
 

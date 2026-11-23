@@ -36,7 +36,7 @@ Live recording requires firmware **V2.001.0002.0001 or later**. Live-only record
 
 --8<-- "docs/_includes/features.en.md:live-audio"
 
-Install PCM decoding dependencies with `uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"`. PyAV decodes in-process, without an `ffmpeg` executable. `output="opus"` needs only the base SDK.
+Install PCM decoding dependencies with `uv add "openzilo[pcm]"`. PyAV decodes in-process, without an `ffmpeg` executable. `output="opus"` needs only the base SDK.
 
 ```python
 async with sdk.open_live_audio_stream(
