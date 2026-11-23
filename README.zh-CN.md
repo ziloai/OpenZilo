@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://openzilo.com"><img src="docs/assets/openzilo-hero.png" alt="OpenZilo 戒指" width="960"></a>
+  <a href="https://openzilo.com"><img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/openzilo-hero.png" alt="OpenZilo 戒指" width="960"></a>
 </p>
 
 <h1 align="center">OpenZilo Python SDK</h1>
@@ -97,12 +97,12 @@ OpenZilo 的定位是开放的交互层，而非封闭的消费设备。
 
 | 工具 | 在仓库根目录启动 | 项目说明 |
 | --- | --- | --- |
-| <img src="docs/assets/ai-tools/openai-codex.png" alt="" width="24"> [Codex](docs/ai-tools.md#codex) | `codex` | [`AGENTS.md`](AGENTS.md) |
-| <img src="docs/assets/ai-tools/claude-code.png" alt="" width="24"> [Claude Code](docs/ai-tools.md#claude-code) | `claude` | [`CLAUDE.md`](CLAUDE.md) |
-| <img src="docs/assets/ai-tools/cursor.png" alt="" width="24"> [Cursor](docs/ai-tools.md#cursor) | 用 Cursor 打开仓库 | [`AGENTS.md`](AGENTS.md) |
-| <img src="docs/assets/ai-tools/github-copilot.svg" alt="" width="24"> [GitHub Copilot](docs/ai-tools.md#github-copilot) | 在 IDE 中打开仓库 | [Copilot 项目说明](.github/copilot-instructions.md) |
-| <img src="docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](GEMINI.md) |
-| <img src="docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/openai-codex.png" alt="" width="24"> [Codex](docs/ai-tools.md#codex) | `codex` | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/claude-code.png" alt="" width="24"> [Claude Code](docs/ai-tools.md#claude-code) | `claude` | [`CLAUDE.md`](CLAUDE.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/cursor.png" alt="" width="24"> [Cursor](docs/ai-tools.md#cursor) | 用 Cursor 打开仓库 | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/github-copilot.svg" alt="" width="24"> [GitHub Copilot](docs/ai-tools.md#github-copilot) | 在 IDE 中打开仓库 | [Copilot 项目说明](.github/copilot-instructions.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](GEMINI.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](AGENTS.md) |
 
 可以直接提问：
 
@@ -158,7 +158,7 @@ asyncio.run(main())
 
 [PDF](https://arxiv.org/pdf/2608.10915) · [Hugging Face Papers](https://huggingface.co/papers/2608.10915)
 
-<p align="center"><a href="https://openzilo.com"><img src="docs/assets/partners-panel.png" alt="OpenZilo 研究与产业伙伴" width="1000"></a></p>
+<p align="center"><a href="https://openzilo.com"><img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/partners-panel.png" alt="OpenZilo 研究与产业伙伴" width="1000"></a></p>
 
 ## 引用
 

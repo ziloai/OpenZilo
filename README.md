@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://openzilo.com"><img src="docs/assets/openzilo-hero.png" alt="OpenZilo ring" width="960"></a>
+  <a href="https://openzilo.com"><img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/openzilo-hero.png" alt="OpenZilo ring" width="960"></a>
 </p>
 
 <h1 align="center">OpenZilo Python SDK</h1>
@@ -96,12 +96,12 @@ Open the cloned repository in your tool. The project instructions point to the S
 
 | Tool | Start in repository root | Project instructions |
 | --- | --- | --- |
-| <img src="docs/assets/ai-tools/openai-codex.png" alt="" width="24"> [Codex](docs/ai-tools.md#codex) | `codex` | [`AGENTS.md`](AGENTS.md) |
-| <img src="docs/assets/ai-tools/claude-code.png" alt="" width="24"> [Claude Code](docs/ai-tools.md#claude-code) | `claude` | [`CLAUDE.md`](CLAUDE.md) |
-| <img src="docs/assets/ai-tools/cursor.png" alt="" width="24"> [Cursor](docs/ai-tools.md#cursor) | Open the repository | [`AGENTS.md`](AGENTS.md) |
-| <img src="docs/assets/ai-tools/github-copilot.svg" alt="" width="24"> [GitHub Copilot](docs/ai-tools.md#github-copilot) | Open the repository | [Copilot instructions](.github/copilot-instructions.md) |
-| <img src="docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](GEMINI.md) |
-| <img src="docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/openai-codex.png" alt="" width="24"> [Codex](docs/ai-tools.md#codex) | `codex` | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/claude-code.png" alt="" width="24"> [Claude Code](docs/ai-tools.md#claude-code) | `claude` | [`CLAUDE.md`](CLAUDE.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/cursor.png" alt="" width="24"> [Cursor](docs/ai-tools.md#cursor) | Open the repository | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/github-copilot.svg" alt="" width="24"> [GitHub Copilot](docs/ai-tools.md#github-copilot) | Open the repository | [Copilot instructions](.github/copilot-instructions.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](GEMINI.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](AGENTS.md) |
 
 Try:
 
@@ -158,7 +158,7 @@ Install `ffmpeg` if you need Speex/Opus-to-WAV conversion. `audio-clear` deletes
 
 [PDF](https://arxiv.org/pdf/2608.10915) · [Hugging Face Papers](https://huggingface.co/papers/2608.10915)
 
-<p align="center"><a href="https://openzilo.com"><img src="docs/assets/partners-panel.png" alt="OpenZilo research and industry partners" width="1000"></a></p>
+<p align="center"><a href="https://openzilo.com"><img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/partners-panel.png" alt="OpenZilo research and industry partners" width="1000"></a></p>
 
 ## Citation
 
