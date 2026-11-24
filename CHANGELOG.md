@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.4 - 2026-11-24
+
+- Recover from a packet body CRC failure by dropping the corrupt packet and continuing to process valid packets from the same BLE receive batch.
+- Use acknowledged GATT writes for macOS firmware updates and split OTA frames into chunks that fit the negotiated ATT MTU.
+- Document how to install releases from PyPI and development builds from Git, and update the OpenZilo-Gesture links.
+
 ## 0.6.3 - 2026-11-11
 
 ### Connection signal strength

@@ -2,6 +2,12 @@
 
 # 更新日志
 
+## 0.6.4 - 2026-11-24
+
+- BLE 数据包的包体 CRC 校验失败时，仅丢弃损坏的包，继续处理同一批接收数据中的有效包。
+- macOS 固件升级使用带响应的 GATT 写入，并根据协商的 ATT MTU 对 OTA 数据分包。
+- 更新 PyPI 正式版和 Git 开发版安装说明，以及 OpenZilo-Gesture 链接。
+
 ## 0.6.3 - 2026-11-11
 
 <a id="connection-signal-strength"></a>
