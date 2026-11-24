@@ -1897,7 +1897,7 @@
 <p class="admonition-title">Device applicability</p>
 <p>This document applies to <strong>OpenZilo Q</strong>.</p>
 </div>
-<p>Install and run device commands from PyPI. Enable Bluetooth and keep the ring nearby and connectable.</p>
+<p>The device CLI is available on <a href="https://pypi.org/project/openzilo/">PyPI</a>. Enable Bluetooth and keep the ring nearby and connectable.</p>
 <h2 id="run-directly-with-uvx">Run directly with uvx<a class="headerlink" href="#run-directly-with-uvx" title="Permanent link">&para;</a></h2>
 <p>Start the interactive shell without setting up a project environment:</p>
 <div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>openzilo<span class="w"> </span>shell
@@ -1914,7 +1914,7 @@ openzilo<span class="w"> </span>shell
 </code></pre></div>
 <p>The examples below use the installed <code>openzilo</code> command. You can also enter subcommands inside the shell. Device selection is stored in the user configuration directory and survives tool environment changes.</p>
 <p>To run a specific PyPI release, use <code>uvx openzilo@VERSION shell</code> and replace <code>VERSION</code> with the release version. Use <code>uvx openzilo@latest shell</code> for the latest release. See the <a href="https://docs.astral.sh/uv/guides/tools/">official uv tools guide</a>.</p>
-<p>To try the latest development version from GitHub, run <code>uv tool install git+https://github.com/ziloai/OpenZilo.git</code>.</p>
+<p>To install the development CLI from Git, run <code>uv tool install git+https://github.com/ziloai/OpenZilo.git@main</code>.</p>
 <h2 id="first-use">First use<a class="headerlink" href="#first-use" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Scan and select the default device by number</span>
 openzilo<span class="w"> </span>device<span class="w"> </span>use

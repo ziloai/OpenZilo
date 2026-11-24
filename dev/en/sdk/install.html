@@ -1839,12 +1839,13 @@
 </code></pre></div>
 <p>This guide uses <code>sdk</code> as an alias for <code>openzilo</code>.</p>
 <h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
-<p>Use <a href="https://docs.astral.sh/uv/">uv</a> to install the SDK from PyPI into your project:</p>
+<p>Add the SDK from <a href="https://pypi.org/project/openzilo/">PyPI</a> to your <a href="https://docs.astral.sh/uv/">uv</a> project.</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>openzilo
 </code></pre></div>
 <p>Run Python scripts with <code>uv run python your_script.py</code>. Without uv, use pip:</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>openzilo
 </code></pre></div>
+<p>To install the development version from Git, run <code>uv add git+https://github.com/ziloai/OpenZilo.git --branch main</code>.</p>
 <p>For device commands, see the <a href="../developer/cli.html">CLI guide</a>:</p>
 <div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>openzilo<span class="w"> </span>shell
 </code></pre></div>
