@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/zh-CN/developer/cli.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.4/zh-CN/developer/cli.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>命令行指南 - OpenZilo SDK v0.6.3</title>
+        <title>命令行指南 - OpenZilo SDK v0.6.4</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.3
+            OpenZilo SDK v0.6.4
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.3
+    OpenZilo SDK v0.6.4
   </label>
   
     <div class="md-nav__source">
@@ -1883,7 +1883,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.3)</summary><ul><li><a href="cli.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/zh-CN/developer/cli.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/developer/cli.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/cli.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/cli.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>文档版本: stable (v0.6.4)</summary><ul><li><a href="cli.html" aria-current="page">stable (v0.6.4)</a></li><li><a href="../../../v0.6.4/zh-CN/developer/cli.html">v0.6.4</a></li><li><a href="../../../v0.6.3/zh-CN/developer/cli.html">v0.6.3</a></li><li><a href="../../../v0.6.2/zh-CN/developer/cli.html">v0.6.2</a></li><li><a href="../../../v0.6.1/zh-CN/developer/cli.html">v0.6.1</a></li><li><a href="../../../dev/zh-CN/developer/cli.html">开发版</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1897,10 +1897,10 @@
 <p class="admonition-title">适用设备</p>
 <p>本文档适用于 <strong>OpenZilo Q</strong>。</p>
 </div>
-<p>从 GitHub 安装和运行设备命令。扫描和操作设备需要系统蓝牙开启，设备在附近并处于可连接状态。</p>
+<p>设备 CLI 可从 <a href="https://pypi.org/project/openzilo/">PyPI</a> 安装。扫描和操作设备时，请开启系统蓝牙，并让设备保持在附近且可连接。</p>
 <h2 id="用-uvx-直接启动">用 uvx 直接启动<a class="headerlink" href="#用-uvx-直接启动" title="Permanent link">&para;</a></h2>
-<p>从 GitHub 获取 CLI 并进入交互终端，无需手动配置项目环境：</p>
-<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git<span class="w"> </span>openzilo<span class="w"> </span>shell
+<p>直接进入交互终端，无需手动配置项目环境：</p>
+<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>openzilo<span class="w"> </span>shell
 </code></pre></div>
 <p><code>uvx</code> 会自动管理隔离环境。设备操作需要系统蓝牙开启，并具备蓝牙访问权限。进入后选择戒指，再执行命令：</p>
 <div class="highlight"><pre><span></span><code>openzilo&gt; device use
@@ -1908,15 +1908,13 @@ openzilo&gt; info
 openzilo&gt; doctor
 openzilo&gt; exit
 </code></pre></div>
-<p>经常使用时，可以从 GitHub 安装命令，之后直接运行 <code>openzilo</code>：</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git
+<p>经常使用时，可以安装 CLI，之后直接运行 <code>openzilo</code>：</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>openzilo
 openzilo<span class="w"> </span>shell
 </code></pre></div>
 <p>下文示例使用安装后的 <code>openzilo</code> 命令。也可直接在 <code>shell</code> 中输入子命令。默认设备配置保存在用户配置目录，不随工具环境切换。</p>
-<p>要固定分支、标签或提交，在 GitHub 地址后追加 <code>@REF</code>：</p>
-<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git@REF<span class="w"> </span>openzilo<span class="w"> </span>shell
-</code></pre></div>
-<p>将 <code>REF</code> 替换为所需版本。需要刷新 GitHub 工具环境时使用 <code>uvx --refresh --from git+https://github.com/ziloai/OpenZilo.git openzilo shell</code>。分发机制见 <a href="https://docs.astral.sh/uv/guides/tools/">uv 官方工具指南</a>。</p>
+<p>要运行指定的 PyPI 版本，可用 <code>uvx openzilo@VERSION shell</code>，把 <code>VERSION</code> 换成实际版本号。运行最新版可用 <code>uvx openzilo@latest shell</code>。详见 <a href="https://docs.astral.sh/uv/guides/tools/">uv 官方工具指南</a>。</p>
+<p>如需从 Git 安装开发版 CLI，可运行 <code>uv tool install git+https://github.com/ziloai/OpenZilo.git@main</code>。</p>
 <h2 id="第一次使用">第一次使用<a class="headerlink" href="#第一次使用" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># 扫描并按编号选择默认设备</span>
 openzilo<span class="w"> </span>device<span class="w"> </span>use

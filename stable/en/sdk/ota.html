@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/sdk/ota.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.4/en/sdk/ota.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>Update firmware with the SDK - OpenZilo SDK v0.6.3</title>
+        <title>Update firmware with the SDK - OpenZilo SDK v0.6.4</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.3
+            OpenZilo SDK v0.6.4
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.3
+    OpenZilo SDK v0.6.4
   </label>
   
     <div class="md-nav__source">
@@ -1729,7 +1729,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="ota.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/sdk/ota.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/ota.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/ota.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/ota.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.4)</summary><ul><li><a href="ota.html" aria-current="page">stable (v0.6.4)</a></li><li><a href="../../../v0.6.4/en/sdk/ota.html">v0.6.4</a></li><li><a href="../../../v0.6.3/en/sdk/ota.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/ota.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/ota.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/ota.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1746,6 +1746,7 @@
 <p>Transfer an official application firmware package through Python and verify the version after reboot. Discover features first; see the <a href="../guide/firmware.html">firmware guide</a> for downloads and device instructions.</p>
 <p>Code snippets use <code>import openzilo as sdk</code>; <code>ring</code> is a connected client. See the <a href="quickstart.html">quick start</a> for a complete connection example.</p>
 <h2 id="firmware-updates">Firmware updates<a class="headerlink" href="#firmware-updates" title="Permanent link">&para;</a></h2>
+<p>On macOS, the SDK's built-in BLE transport sends OTA data frames using GATT writes with response. The NUS RX characteristic must support this write mode. Each write uses the current ATT MTU minus three bytes, up to 244 bytes. If the MTU is unavailable or invalid, each write uses up to 20 bytes.</p>
 <div class="admonition note">
 <p class="admonition-title">Update requirements</p>
 <p>Use the official OTA package specified in the release notes. Match the device model, hardware revision and starting firmware version. The SDK updates application firmware only, not the bootloader.</p>

@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/reference/llms.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.4/en/reference/llms.html">
       
       
       
@@ -26,7 +26,7 @@
     
     
       
-        <title>Documentation index for agents - OpenZilo SDK v0.6.3</title>
+        <title>Documentation index for agents - OpenZilo SDK v0.6.4</title>
       
     
     
@@ -93,7 +93,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -107,7 +107,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.3
+            OpenZilo SDK v0.6.4
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -202,13 +202,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.3
+    OpenZilo SDK v0.6.4
   </label>
   
     <div class="md-nav__source">
@@ -1698,7 +1698,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="llms.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/reference/llms.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/reference/llms.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/reference/llms.html">v0.6.1</a></li><li><a href="../../../dev/en/reference/llms.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.4)</summary><ul><li><a href="llms.html" aria-current="page">stable (v0.6.4)</a></li><li><a href="../../../v0.6.4/en/reference/llms.html">v0.6.4</a></li><li><a href="../../../v0.6.3/en/reference/llms.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/reference/llms.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/reference/llms.html">v0.6.1</a></li><li><a href="../../../dev/en/reference/llms.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1763,11 +1763,11 @@
 </ul>
 <h2 id="agent-integration-notes">Agent integration notes<a class="headerlink" href="#agent-integration-notes" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Install the SDK in your uv project with <code>uv add git+https://github.com/ziloai/OpenZilo.git</code>. Start the device terminal with <code>uvx --from git+https://github.com/ziloai/OpenZilo.git openzilo shell</code>.</li>
+<li>Install the SDK in your uv project with <code>uv add openzilo</code>. Start the device terminal with <code>uvx openzilo shell</code>.</li>
 <li>Import with <code>import openzilo as sdk</code> or use <code>uv run openzilo --help</code>.</li>
 <li><code>sdk.OpenZiloClient</code> is the connected BLE session; pass it to high-level functions such as <code>sdk.get_system_info(client)</code>.</li>
 <li><code>ffmpeg</code> is only required when converting Speex or Opus recordings to WAV.</li>
-<li>For live PCM use <code>uv add "openzilo[pcm] @ git+https://github.com/ziloai/OpenZilo.git"</code> and <code>open_live_audio_stream(client)</code>; it needs no ffmpeg executable. <code>output="opus"</code> uses only base dependencies. Frames are provisional until verified END; context exit aborts unfinished capture.</li>
+<li>For live PCM use <code>uv add "openzilo[pcm]"</code> and <code>open_live_audio_stream(client)</code>; it needs no ffmpeg executable. <code>output="opus"</code> uses only base dependencies. Frames are provisional until verified END; context exit aborts unfinished capture.</li>
 <li><code>audio-clear</code> permanently erases device recordings and requires <code>--yes</code>.</li>
 <li>
 <p>Codex, Cursor, and OpenCode use <code>AGENTS.md</code>. Claude Code uses <code>CLAUDE.md</code> and Gemini CLI uses <code>GEMINI.md</code>, both importing <code>AGENTS.md</code>. GitHub Copilot uses <code>.github/copilot-instructions.md</code> for repository guidance. This <code>llms.txt</code> remains a documentation index and is not automatically consumed as a plugin or MCP server.</p>

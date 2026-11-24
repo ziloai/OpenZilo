@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.3/en/sdk/install.html">
+        <link rel="canonical" href="https://ziloai.github.io/OpenZilo/v0.6.4/en/sdk/install.html">
       
       
       
@@ -30,7 +30,7 @@
     
     
       
-        <title>Installation and requirements - OpenZilo SDK v0.6.3</title>
+        <title>Installation and requirements - OpenZilo SDK v0.6.4</title>
       
     
     
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-header__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            OpenZilo SDK v0.6.3
+            OpenZilo SDK v0.6.4
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -206,13 +206,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="OpenZilo SDK v0.6.3" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.3" data-md-component="logo">
+    <a href="../index.html" title="OpenZilo SDK v0.6.4" class="md-nav__button md-logo" aria-label="OpenZilo SDK v0.6.4" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
 
     </a>
-    OpenZilo SDK v0.6.3
+    OpenZilo SDK v0.6.4
   </label>
   
     <div class="md-nav__source">
@@ -1817,7 +1817,7 @@
           
             <div class="md-content" data-md-component="content">
               
-              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.3)</summary><ul><li><a href="install.html" aria-current="page">stable (v0.6.3)</a></li><li><a href="../../../v0.6.3/en/sdk/install.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/install.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/install.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/install.html">Development</a></li></ul></details><!-- /openzilo-versions -->
+              <article class="md-content__inner md-typeset"><!-- openzilo-versions --><details><summary>Documentation version: stable (v0.6.4)</summary><ul><li><a href="install.html" aria-current="page">stable (v0.6.4)</a></li><li><a href="../../../v0.6.4/en/sdk/install.html">v0.6.4</a></li><li><a href="../../../v0.6.3/en/sdk/install.html">v0.6.3</a></li><li><a href="../../../v0.6.2/en/sdk/install.html">v0.6.2</a></li><li><a href="../../../v0.6.1/en/sdk/install.html">v0.6.1</a></li><li><a href="../../../dev/en/sdk/install.html">Development</a></li></ul></details><!-- /openzilo-versions -->
                 <a id="__skip" tabindex="-1"></a>
                 
                   
@@ -1839,14 +1839,15 @@
 </code></pre></div>
 <p>This guide uses <code>sdk</code> as an alias for <code>openzilo</code>.</p>
 <h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
-<p>Use <a href="https://docs.astral.sh/uv/">uv</a> to install the SDK from GitHub into your project:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git
+<p>Add the SDK from <a href="https://pypi.org/project/openzilo/">PyPI</a> to your <a href="https://docs.astral.sh/uv/">uv</a> project.</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>openzilo
 </code></pre></div>
-<p>Run Python scripts with <code>uv run python your_script.py</code>. Without uv, install directly from GitHub:</p>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git
+<p>Run Python scripts with <code>uv run python your_script.py</code>. Without uv, use pip:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>openzilo
 </code></pre></div>
+<p>To install the development version from Git, run <code>uv add git+https://github.com/ziloai/OpenZilo.git --branch main</code>.</p>
 <p>For device commands, see the <a href="../developer/cli.html">CLI guide</a>:</p>
-<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>git+https://github.com/ziloai/OpenZilo.git<span class="w"> </span>openzilo<span class="w"> </span>shell
+<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>openzilo<span class="w"> </span>shell
 </code></pre></div>
 <p>To decode recordings to WAV, install <code>ffmpeg</code> and make it available from the command line:</p>
 <div class="highlight"><pre><span></span><code><span class="n">ffmpeg</span> <span class="n">-version</span>
