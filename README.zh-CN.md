@@ -37,7 +37,7 @@ OpenZilo 是一个开放开发平台，让开发者通过可穿戴硬件构建�
 
 ## 最新动态
 
-- 我们发布了 [OpenZilo-HMM](https://github.com/ziloai/OpenZilo-HMM)，一个基于 OpenZilo 戒指的 AI 自定义手势训练框架。
+- 我们发布了 [OpenZilo-Gesture](https://github.com/ziloai/OpenZilo-Gesture)，一个基于 OpenZilo 戒指的 AI 自定义手势训练框架。
 - 我们发布了 AI 戒指选码工具，在微信搜索 **“Zilo”** 小程序即可体验。
 
 ## 开发套件
