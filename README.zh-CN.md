@@ -12,6 +12,8 @@
   <a href="https://pypi.org/project/openzilo/"><img src="https://img.shields.io/pypi/v/openzilo" alt="PyPI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/software-MPL--2.0-555555" alt="MPL-2.0"></a>
   <a href="LICENSES/CERN-OHL-W-2.0.txt"><img src="https://img.shields.io/badge/hardware-CERN--OHL--W--2.0-555555" alt="CERN-OHL-W-2.0"></a>
+  <a href="https://discord.gg/pTJZ3RMHA5"><img src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&amp;logoColor=white" alt="Discord"></a>
+  <a href="#社区"><img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1%E7%BE%A4-%E6%89%AB%E7%A0%81%E5%8A%A0%E5%85%A5-07C160?logo=wechat&amp;logoColor=white" alt="微信开发者群"></a>
 </p>
 
 <p align="center">
@@ -193,6 +195,15 @@ OpenZilo 会自动发现并展示围绕 **ComBodied AI** 生态构建的 GitHub 
 - [BLE 协议参考](docs/protocol.zh-CN.md)：封包格式和已实现命令
 - [架构与数据流](docs/architecture.zh-CN.md)：录音传输、音频解码及事件处理
 - [AI 编程工具接入指南](docs/ai-tools.zh-CN.md)与 [`llms.txt`](llms.txt)
+
+## 社区
+
+- 微信开发者群
+
+  <img src="docs/assets/wechat-group.png" alt="OpenZilo 开发者微信群二维码" width="160">
+
+- [Discord](https://discord.gg/pTJZ3RMHA5)
+- [GitHub Discussions](https://github.com/ziloai/OpenZilo/discussions)
 
 ## 许可证与贡献
 

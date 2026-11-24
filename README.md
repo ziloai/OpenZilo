@@ -12,6 +12,7 @@
   <a href="https://pypi.org/project/openzilo/"><img src="https://img.shields.io/pypi/v/openzilo" alt="PyPI"></a>
   <a href="https://github.com/ziloai/OpenZilo/blob/main/LICENSE"><img src="https://img.shields.io/badge/software-MPL--2.0-555555" alt="MPL-2.0"></a>
   <a href="https://github.com/ziloai/OpenZilo/blob/main/LICENSES/CERN-OHL-W-2.0.txt"><img src="https://img.shields.io/badge/hardware-CERN--OHL--W--2.0-555555" alt="CERN-OHL-W-2.0"></a>
+  <a href="https://discord.gg/pTJZ3RMHA5"><img src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&amp;logoColor=white" alt="Discord"></a>
 </p>
 
 <p align="center">
@@ -193,6 +194,15 @@ OpenZilo automatically discovers and surfaces GitHub projects building around th
 - [BLE protocol reference](https://github.com/ziloai/OpenZilo/blob/main/docs/protocol.zh-CN.md): packet format and implemented commands
 - [Architecture and data flow](https://github.com/ziloai/OpenZilo/blob/main/docs/architecture.zh-CN.md): recording transfer, audio decoding, and events
 - [Coding agent setup](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md) and [`llms.txt`](https://github.com/ziloai/OpenZilo/blob/main/llms.txt)
+
+## Community
+
+- WeChat developer group
+
+  <img src="docs/assets/wechat-group.png" alt="OpenZilo WeChat developer group QR code" width="160">
+
+- [Discord](https://discord.gg/pTJZ3RMHA5)
+- [GitHub Discussions](https://github.com/ziloai/OpenZilo/discussions)
 
 ## License and contributions
 
