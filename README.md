@@ -10,8 +10,8 @@
   <a href="https://github.com/ziloai/openzilo/actions/workflows/ci.yml"><img src="https://github.com/ziloai/openzilo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <a href="https://pypi.org/project/openzilo/"><img src="https://img.shields.io/pypi/v/openzilo" alt="PyPI"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/software-MPL--2.0-555555" alt="MPL-2.0"></a>
-  <a href="LICENSES/CERN-OHL-W-2.0.txt"><img src="https://img.shields.io/badge/hardware-CERN--OHL--W--2.0-555555" alt="CERN-OHL-W-2.0"></a>
+  <a href="https://github.com/ziloai/OpenZilo/blob/main/LICENSE"><img src="https://img.shields.io/badge/software-MPL--2.0-555555" alt="MPL-2.0"></a>
+  <a href="https://github.com/ziloai/OpenZilo/blob/main/LICENSES/CERN-OHL-W-2.0.txt"><img src="https://img.shields.io/badge/hardware-CERN--OHL--W--2.0-555555" alt="CERN-OHL-W-2.0"></a>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
   <a href="#development-kits">Development kits</a> ·
   <a href="#coding-agents">Coding agents</a> ·
   <a href="#quick-start">Quick start</a> ·
-  <a href="README.zh-CN.md">简体中文</a>
+  <a href="https://github.com/ziloai/OpenZilo/blob/main/README.zh-CN.md">简体中文</a>
 </p>
 
 OpenZilo is an open development platform for building always-available AI experiences with wearable hardware.
@@ -29,9 +29,9 @@ Starting with smart rings, OpenZilo provides developers with hardware, firmware,
 
 This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex or mono/stereo Opus to WAV, and receiving IMU and gesture events.
 
-Run `openzilo device use` to scan and save a default ring, then `openzilo shell` for an interactive terminal. Device commands also accept `OPENZILO_ADDRESS` or `--address`. Use `sensor-stream --seconds 10 --output imu.jsonl` for timed IMU capture. See the [Chinese CLI guide](docs/cli.zh-CN.md); remote recording requires matching extended firmware.
+Run `openzilo device use` to scan and save a default ring, then `openzilo shell` for an interactive terminal. Device commands also accept `OPENZILO_ADDRESS` or `--address`. Use `sensor-stream --seconds 10 --output imu.jsonl` for timed IMU capture. See the [Chinese CLI guide](https://github.com/ziloai/OpenZilo/blob/main/docs/cli.zh-CN.md); remote recording requires matching extended firmware.
 
-Run `uvx openzilo shell` to start the interactive terminal. See the [CLI guide](docs/cli.en.md#run-directly-with-uvx).
+Run `uvx openzilo shell` to start the interactive terminal. See the [CLI guide](https://github.com/ziloai/OpenZilo/blob/main/docs/cli.en.md#run-directly-with-uvx).
 
 It documents protocol v4 on firmware `V2.001.0002.0000`. Check device behavior on your own hardware.
 
@@ -93,22 +93,22 @@ Use it to build:
 
 ## Coding agents
 
-Open the cloned repository in your tool. The project instructions point to the SDK's public API and the [`llms.txt`](llms.txt) documentation index.
+Open the cloned repository in your tool. The project instructions point to the SDK's public API and the [`llms.txt`](https://github.com/ziloai/OpenZilo/blob/main/llms.txt) documentation index.
 
 | Tool | Start in repository root | Project instructions |
 | --- | --- | --- |
-| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/openai-codex.png" alt="" width="24"> [Codex](docs/ai-tools.md#codex) | `codex` | [`AGENTS.md`](AGENTS.md) |
-| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/claude-code.png" alt="" width="24"> [Claude Code](docs/ai-tools.md#claude-code) | `claude` | [`CLAUDE.md`](CLAUDE.md) |
-| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/cursor.png" alt="" width="24"> [Cursor](docs/ai-tools.md#cursor) | Open the repository | [`AGENTS.md`](AGENTS.md) |
-| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/github-copilot.svg" alt="" width="24"> [GitHub Copilot](docs/ai-tools.md#github-copilot) | Open the repository | [Copilot instructions](.github/copilot-instructions.md) |
-| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](GEMINI.md) |
-| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/openai-codex.png" alt="" width="24"> [Codex](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md#codex) | `codex` | [`AGENTS.md`](https://github.com/ziloai/OpenZilo/blob/main/AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/claude-code.png" alt="" width="24"> [Claude Code](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md#claude-code) | `claude` | [`CLAUDE.md`](https://github.com/ziloai/OpenZilo/blob/main/CLAUDE.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/cursor.png" alt="" width="24"> [Cursor](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md#cursor) | Open the repository | [`AGENTS.md`](https://github.com/ziloai/OpenZilo/blob/main/AGENTS.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/github-copilot.svg" alt="" width="24"> [GitHub Copilot](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md#github-copilot) | Open the repository | [Copilot instructions](https://github.com/ziloai/OpenZilo/blob/main/.github/copilot-instructions.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/gemini-cli.png" alt="" width="24"> [Gemini CLI](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md#gemini-cli) | `gemini` | [`GEMINI.md`](https://github.com/ziloai/OpenZilo/blob/main/GEMINI.md) |
+| <img src="https://raw.githubusercontent.com/ziloai/OpenZilo/main/docs/assets/ai-tools/opencode.png" alt="" width="24"> [OpenCode](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md#opencode) | `opencode` | [`AGENTS.md`](https://github.com/ziloai/OpenZilo/blob/main/AGENTS.md) |
 
 Try:
 
 > “Read `llms.txt` and the Python SDK guide. Write a script using exported `openzilo` APIs that scans for a ring and prints its model, firmware version, and battery level.”
 
-See the [setup guide](docs/ai-tools.md) for installation links and using these docs from another repository.
+See the [setup guide](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md) for installation links and using these docs from another repository.
 
 ## Quick start
 
@@ -140,15 +140,15 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-See the [examples](examples/) for audio download and IMU streaming.
+See the [examples](https://github.com/ziloai/OpenZilo/tree/main/examples) for audio download and IMU streaming.
 
 For live mono/stereo PCM, run `uv add "openzilo[pcm]"` and consume
 `sdk.open_live_audio_stream(ring)` with `async with` / `async for`. It yields
 `LiveAudioStart`, 20 ms `LivePcmFrame` blocks (16 kHz s16le, with the configured channel count),
 then a verified `LiveAudioEnd`. Slow consumers fail explicitly; leaving the
 context stops an unfinished capture and attempts unsubscribe. This path uses
-PyAV and does not need an ffmpeg executable. See [the live PCM example](examples/live_pcm.py)
-and [live audio guide](docs/sdk-live-audio.en.md#open_live_audio_stream-pcm--opus-events).
+PyAV and does not need an ffmpeg executable. See [the live PCM example](https://github.com/ziloai/OpenZilo/blob/main/examples/live_pcm.py)
+and [live audio guide](https://github.com/ziloai/OpenZilo/blob/main/docs/sdk-live-audio.en.md#open_live_audio_stream-pcm--opus-events).
 Use `output="opus"` to consume original packets with only the base SDK.
 
 Install `ffmpeg` if you need Speex/Opus-to-WAV conversion. `audio-clear` deletes recordings from the device and requires `--yes`.
@@ -184,18 +184,18 @@ OpenZilo automatically discovers and surfaces GitHub projects building around th
 
 ## Documentation
 
-- [Documentation home](docs/index.en.md): user and developer guides
-- [Feature requirements](docs/features.en.md): firmware and SDK requirements
-- [SDK and firmware compatibility](docs/compatibility.zh-CN.md): supported features and interface versions
+- [Documentation home](https://github.com/ziloai/OpenZilo/blob/main/docs/index.en.md): user and developer guides
+- [Feature requirements](https://github.com/ziloai/OpenZilo/blob/main/docs/features.en.md): firmware and SDK requirements
+- [SDK and firmware compatibility](https://github.com/ziloai/OpenZilo/blob/main/docs/compatibility.zh-CN.md): supported features and interface versions
 
-- [Recording control](docs/recording-control.md): experimental session control and audio configuration for matching extended firmware
-- [Python SDK documentation](docs/index.en.md): quick start, feature guides and API reference
-- [BLE protocol reference](docs/protocol.zh-CN.md): packet format and implemented commands
-- [Architecture and data flow](docs/architecture.zh-CN.md): recording transfer, audio decoding, and events
-- [Coding agent setup](docs/ai-tools.md) and [`llms.txt`](llms.txt)
+- [Recording control](https://github.com/ziloai/OpenZilo/blob/main/docs/recording-control.md): experimental session control and audio configuration for matching extended firmware
+- [Python SDK documentation](https://github.com/ziloai/OpenZilo/blob/main/docs/index.en.md): quick start, feature guides and API reference
+- [BLE protocol reference](https://github.com/ziloai/OpenZilo/blob/main/docs/protocol.zh-CN.md): packet format and implemented commands
+- [Architecture and data flow](https://github.com/ziloai/OpenZilo/blob/main/docs/architecture.zh-CN.md): recording transfer, audio decoding, and events
+- [Coding agent setup](https://github.com/ziloai/OpenZilo/blob/main/docs/ai-tools.md) and [`llms.txt`](https://github.com/ziloai/OpenZilo/blob/main/llms.txt)
 
 ## License and contributions
 
-Software and documentation use [MPL-2.0](LICENSE). Hardware designs use [CERN-OHL-W-2.0](LICENSES/CERN-OHL-W-2.0.txt). Brand and third-party marks belong to their respective owners.
+Software and documentation use [MPL-2.0](https://github.com/ziloai/OpenZilo/blob/main/LICENSE). Hardware designs use [CERN-OHL-W-2.0](https://github.com/ziloai/OpenZilo/blob/main/LICENSES/CERN-OHL-W-2.0.txt). Brand and third-party marks belong to their respective owners.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contributions and [SECURITY.md](SECURITY.md) for private security reports.
+See [CONTRIBUTING.md](https://github.com/ziloai/OpenZilo/blob/main/CONTRIBUTING.md) for contributions and [SECURITY.md](https://github.com/ziloai/OpenZilo/blob/main/SECURITY.md) for private security reports.
