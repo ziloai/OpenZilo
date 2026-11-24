@@ -2,7 +2,7 @@
 
 --8<-- "docs/_includes/devices.en.md"
 
-Install and run device commands from PyPI. Enable Bluetooth and keep the ring nearby and connectable.
+The device CLI is available on [PyPI](https://pypi.org/project/openzilo/). Enable Bluetooth and keep the ring nearby and connectable.
 
 ## Run directly with uvx
 
@@ -32,7 +32,7 @@ The examples below use the installed `openzilo` command. You can also enter subc
 
 To run a specific PyPI release, use `uvx openzilo@VERSION shell` and replace `VERSION` with the release version. Use `uvx openzilo@latest shell` for the latest release. See the [official uv tools guide](https://docs.astral.sh/uv/guides/tools/).
 
-To try the latest development version from GitHub, run `uv tool install git+https://github.com/ziloai/OpenZilo.git`.
+To install the development CLI from Git, run `uv tool install git+https://github.com/ziloai/OpenZilo.git@main`.
 
 ## First use
 

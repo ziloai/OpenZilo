@@ -2,7 +2,7 @@
 
 --8<-- "docs/_includes/devices.zh-CN.md"
 
-从 PyPI 安装和运行设备命令。扫描和操作设备需要系统蓝牙开启，设备在附近并处于可连接状态。
+设备 CLI 可从 [PyPI](https://pypi.org/project/openzilo/) 安装。扫描和操作设备时，请开启系统蓝牙，并让设备保持在附近且可连接。
 
 ## 用 uvx 直接启动
 
@@ -32,7 +32,7 @@ openzilo shell
 
 要运行指定的 PyPI 版本，可用 `uvx openzilo@VERSION shell`，把 `VERSION` 换成实际版本号。运行最新版可用 `uvx openzilo@latest shell`。详见 [uv 官方工具指南](https://docs.astral.sh/uv/guides/tools/)。
 
-想用 GitHub 上的最新开发版，可运行 `uv tool install git+https://github.com/ziloai/OpenZilo.git`。
+如需从 Git 安装开发版 CLI，可运行 `uv tool install git+https://github.com/ziloai/OpenZilo.git@main`。
 
 ## 第一次使用
 

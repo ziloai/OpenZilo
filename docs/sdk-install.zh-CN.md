@@ -18,7 +18,7 @@ import openzilo as sdk
 
 ## 安装依赖
 
-推荐用 [uv](https://docs.astral.sh/uv/) 在自己的项目中从 PyPI 安装 SDK：
+在 [uv](https://docs.astral.sh/uv/) 项目中，从 [PyPI](https://pypi.org/project/openzilo/) 添加 SDK。
 
 ```bash
 uv add openzilo
@@ -29,6 +29,8 @@ uv add openzilo
 ```bash
 python -m pip install openzilo
 ```
+
+如需从 Git 安装开发版，可运行 `uv add git+https://github.com/ziloai/OpenZilo.git --branch main`。
 
 直接操作设备可用[命令行工具](cli.zh-CN.md)：
 

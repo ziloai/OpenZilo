@@ -115,7 +115,7 @@ OpenZilo 的定位是开放的交互层，而非封闭的消费设备。
 
 需要 [uv](https://docs.astral.sh/uv/getting-started/installation/)、Python 3.10+（可由 uv 自动安装）和 BLE 适配器；Linux 还需要 BlueZ 和蓝牙访问权限。
 
-从 PyPI 安装设备 CLI：
+从 [PyPI](https://pypi.org/project/openzilo/) 安装设备 CLI。
 
 ```bash
 uv tool install openzilo

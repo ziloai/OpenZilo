@@ -114,7 +114,7 @@ See the [setup guide](docs/ai-tools.md) for installation links and using these d
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+ (uv can install it), and a BLE adapter. On Linux, you also need BlueZ and Bluetooth access.
 
-Install the device CLI from PyPI:
+Install the device CLI from [PyPI](https://pypi.org/project/openzilo/).
 
 ```bash
 uv tool install openzilo
