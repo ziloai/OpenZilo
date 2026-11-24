@@ -18,7 +18,7 @@ This guide uses `sdk` as an alias for `openzilo`.
 
 ## Dependencies
 
-Use [uv](https://docs.astral.sh/uv/) to install the SDK from PyPI into your project:
+Add the SDK from [PyPI](https://pypi.org/project/openzilo/) to your [uv](https://docs.astral.sh/uv/) project.
 
 ```bash
 uv add openzilo
@@ -29,6 +29,8 @@ Run Python scripts with `uv run python your_script.py`. Without uv, use pip:
 ```bash
 python -m pip install openzilo
 ```
+
+To install the development version from Git, run `uv add git+https://github.com/ziloai/OpenZilo.git --branch main`.
 
 For device commands, see the [CLI guide](cli.en.md):
 
