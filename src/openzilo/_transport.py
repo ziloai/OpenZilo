@@ -14,13 +14,16 @@ from collections.abc import Awaitable, Callable
 from dataclasses import InitVar, dataclass
 from typing import Any
 
+import libopenzilo as _native
+
 from ._errors import TransportError
 from ._tasks import start_background_task
 
 
-NUS_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
-NUS_TX_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
-NUS_RX_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
+_SPEC = _native.ble_transport_spec()
+NUS_SERVICE_UUID = _SPEC.service_uuid
+NUS_TX_UUID = _SPEC.tx_uuid
+NUS_RX_UUID = _SPEC.rx_uuid
 DEFAULT_SCAN_TIMEOUT_S = 30.0
 DEFAULT_CONNECTION_STABILIZATION_S = 3.0
 _logger = logging.getLogger(__name__)
@@ -33,10 +36,11 @@ def _positive_timeout(value: float) -> None:
 
 
 def _compatible_name(name: str | None) -> bool:
-    name = (name or "").strip().casefold()
-    return name in {"ring", "open zilo"} or bool(re.search(r"open zilo-\S+", name))
-_NUS_WRITE_CHUNK_SIZE = 20
-_OTA_WRITE_CHUNK_LIMIT = 244
+    return _native.is_compatible_ring_name(name)
+
+
+_NUS_WRITE_CHUNK_SIZE = _SPEC.write_chunk_size
+_OTA_WRITE_CHUNK_LIMIT = _SPEC.ota_write_chunk_limit
 
 
 @dataclass(frozen=True)
@@ -64,14 +68,11 @@ DisconnectCallback = Callable[[], None | Awaitable[None]]
 
 
 def _normalize_ble_address(address: str | None) -> str:
-    return "".join(ch for ch in str(address or "") if ch.isalnum()).lower()
+    return _native.normalize_ble_address(str(address or ""))
 
 
 def _address_matches(candidate: object, expected: str | None) -> bool:
-    expected_norm = _normalize_ble_address(expected)
-    if not expected_norm:
-        return True
-    return _normalize_ble_address(str(candidate or "")) == expected_norm
+    return _native.ble_address_matches(str(candidate or ""), None if expected is None else str(expected))
 
 
 class NusClient:

@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from ._core import native, call_audio
 from ._errors import AudioDecodeError, OpusDecoderUnavailable, SpeexDecoderUnavailable
 
 
@@ -189,23 +190,9 @@ def build_wav_from_pcm(
 ) -> bytes:
     pcm_bytes = _ensure_bytes(input_bytes)
     pcm_config = normalize_pcm_config(config)
-    block_align = (pcm_config.channels * pcm_config.bit_depth) // 8
-    byte_rate = pcm_config.sample_rate * block_align
-    header = bytearray(44)
-    header[0:4] = b"RIFF"
-    struct.pack_into("<I", header, 4, 36 + len(pcm_bytes))
-    header[8:12] = b"WAVE"
-    header[12:16] = b"fmt "
-    struct.pack_into("<I", header, 16, 16)
-    struct.pack_into("<H", header, 20, 1)
-    struct.pack_into("<H", header, 22, pcm_config.channels)
-    struct.pack_into("<I", header, 24, pcm_config.sample_rate)
-    struct.pack_into("<I", header, 28, byte_rate)
-    struct.pack_into("<H", header, 32, block_align)
-    struct.pack_into("<H", header, 34, pcm_config.bit_depth)
-    header[36:40] = b"data"
-    struct.pack_into("<I", header, 40, len(pcm_bytes))
-    return bytes(header) + pcm_bytes
+    return call_audio(native.export_wav_pcm, pcm_bytes, native.PcmFormat(
+        sample_rate_hz=pcm_config.sample_rate, channels=pcm_config.channels,
+        bit_depth=pcm_config.bit_depth))
 
 
 def _read_ascii(data: bytes, start: int, length: int) -> str:
@@ -218,14 +205,11 @@ def _find_ascii(data: bytes, target: str, max_scan_length: int | None = None) ->
 
 
 def is_wav(data: bytes) -> bool:
-    return len(data) >= 12 and data[:4] == b"RIFF" and data[8:12] == b"WAVE"
+    return native.is_wav(bytes(data))
 
 
 def is_ogg_speex(data: bytes) -> bool:
-    return len(data) >= 36 and data[:4] == b"OggS" and (
-        _read_ascii(data, 28, 8) == "Speex   "
-        or _find_ascii(data, "Speex   ", 128) != -1
-    )
+    return native.is_ogg_speex(bytes(data))
 
 
 def pick_speex_mode(sample_rate: int) -> int:
@@ -250,11 +234,12 @@ def pick_bits_size(
 ) -> int:
     if bits_size and bits_size > 0:
         return int(bits_size)
-    return SPEEX_BITS_SIZE_BY_QUALITY.get(int(quality or DEFAULT_SPEEX_QUALITY), 20)
+    return call_audio(native.speex_packet_size, _quality(quality), None)
 
 
-def _is_padding_byte(value: int) -> bool:
-    return value in (0x00, 0xFF)
+def _quality(quality: int) -> int:
+    value = int(quality or DEFAULT_SPEEX_QUALITY)
+    return value if 0 <= value <= 255 else DEFAULT_SPEEX_QUALITY
 
 
 def parse_packetized_speex_stream(
@@ -266,41 +251,9 @@ def parse_packetized_speex_stream(
 ) -> list[bytes] | None:
     source = _ensure_bytes(data)
     max_size = max(1, int(max_packet_size or DEFAULT_SPEEX_MAX_PACKET_SIZE))
-
-    def parse_block(start: int, end: int) -> list[bytes] | None:
-        packets: list[bytes] = []
-        offset = start
-        while offset + 2 <= end:
-            packet_length = struct.unpack_from("<H", source, offset)[0]
-            if not packet_length:
-                break
-            if packet_length > max_size or offset + 2 + packet_length > end:
-                return None
-            packets.append(source[offset + 2 : offset + 2 + packet_length])
-            offset += 2 + packet_length
-        if not packets:
-            return None
-        if any(not _is_padding_byte(item) for item in source[offset:end]):
-            return None
-        return packets
-
-    direct = parse_block(0, len(source))
-    if direct:
-        return direct
-    if not allow_framed_blocks:
-        return None
-
-    block_size = max(1, int(framed_block_size or LEGACY_OUTER_FRAME_SIZE))
-    if len(source) <= block_size:
-        return None
-
-    packets: list[bytes] = []
-    for start in range(0, len(source), block_size):
-        block = parse_block(start, min(len(source), start + block_size))
-        if not block:
-            return None
-        packets.extend(block)
-    return packets
+    block = max(1, int(framed_block_size or LEGACY_OUTER_FRAME_SIZE)) if allow_framed_blocks else None
+    packets = call_audio(native.parse_packetized_speex_stream, source, max_size, block)
+    return None if packets is None else [bytes(p) for p in packets]
 
 
 def split_raw_speex_packets(
@@ -311,60 +264,8 @@ def split_raw_speex_packets(
 ) -> list[bytes] | None:
     source = _ensure_bytes(data)
     size = pick_bits_size(quality=quality, bits_size=bits_size)
-    if len(source) < size or len(source) % size != 0:
-        return None
-    return [source[offset : offset + size] for offset in range(0, len(source), size)]
-
-
-def _ogg_crc(data: bytes) -> int:
-    crc = 0
-    for value in data:
-        crc ^= value << 24
-        for _ in range(8):
-            if crc & 0x80000000:
-                crc = ((crc << 1) ^ 0x04C11DB7) & 0xFFFFFFFF
-            else:
-                crc = (crc << 1) & 0xFFFFFFFF
-    return crc & 0xFFFFFFFF
-
-
-def _packet_lacing(packet: bytes) -> list[int]:
-    length = len(packet)
-    lacing: list[int] = []
-    while length >= 255:
-        lacing.append(255)
-        length -= 255
-    lacing.append(length)
-    return lacing
-
-
-def _build_ogg_page(
-    packet: bytes,
-    *,
-    header_type: int,
-    granule_position: int,
-    serial: int,
-    sequence: int,
-) -> bytes:
-    lacing = _packet_lacing(packet)
-    if len(lacing) > 255:
-        raise ValueError("single Ogg page cannot contain this packet")
-    header = bytearray(
-        struct.pack(
-            "<4sBBQIIIB",
-            b"OggS",
-            0,
-            header_type & 0xFF,
-            max(0, int(granule_position)),
-            serial & 0xFFFFFFFF,
-            sequence & 0xFFFFFFFF,
-            0,
-            len(lacing),
-        )
-    )
-    page = bytes(header) + bytes(lacing) + packet
-    checksum = _ogg_crc(page)
-    return page[:22] + struct.pack("<I", checksum) + page[26:]
+    packets = call_audio(native.split_raw_speex_packets, source, _quality(quality), size)
+    return None if packets is None else [bytes(p) for p in packets]
 
 
 def build_ogg_speex(
@@ -374,61 +275,9 @@ def build_ogg_speex(
     serial: int = 0x564F5247,
 ) -> bytes:
     config = normalize_pcm_config(pcm_config)
-    frame_size = pick_frame_size(config.sample_rate)
-    mode = pick_speex_mode(config.sample_rate)
-    version = b"speex-1.2.1"
-    version = version + b"\x00" * (20 - len(version))
-    speex_header = struct.pack(
-        "<8s20s13i",
-        b"Speex   ",
-        version,
-        1,
-        80,
-        config.sample_rate,
-        mode,
-        4,
-        1,
-        -1,
-        frame_size,
-        0,
-        1,
-        0,
-        0,
-        0,
-    )
-    vendor = b"openzilo-python"
-    comments = struct.pack("<I", len(vendor)) + vendor + struct.pack("<I", 0)
-
-    pages = [
-        _build_ogg_page(
-            speex_header,
-            header_type=2,
-            granule_position=0,
-            serial=serial,
-            sequence=0,
-        ),
-        _build_ogg_page(
-            comments,
-            header_type=0,
-            granule_position=0,
-            serial=serial,
-            sequence=1,
-        ),
-    ]
-
-    granule = 0
-    for index, packet in enumerate(packets):
-        granule += frame_size
-        pages.append(
-            _build_ogg_page(
-                packet,
-                header_type=4 if index == len(packets) - 1 else 0,
-                granule_position=granule,
-                serial=serial,
-                sequence=index + 2,
-            )
-        )
-    return b"".join(pages)
+    rate = 8000 if config.sample_rate <= 8000 else 16000 if config.sample_rate <= 16000 else 32000
+    return bytes(call_audio(native.export_ogg_speex, [bytes(p) for p in packets], rate,
+                            serial & 0xFFFFFFFF))
 
 
 def normalize_decoded_speex_pcm(
@@ -441,6 +290,11 @@ def normalize_decoded_speex_pcm(
     count = max(0, int(packet_count or 0))
     if not pcm_bytes or count <= 0:
         return pcm_bytes
+    if config.sample_rate in (8000, 16000, 32000) and count <= 0xFFFFFFFF:
+        return bytes(call_audio(native.normalize_decoded_speex_pcm, bytes(pcm_bytes), count,
+                                native.PcmFormat(sample_rate_hz=config.sample_rate,
+                                                 channels=config.channels,
+                                                 bit_depth=config.bit_depth)))
 
     bytes_per_sample = max(1, config.bit_depth // 8)
     frame_bytes = pick_frame_size(config.sample_rate) * config.channels * bytes_per_sample
@@ -546,139 +400,57 @@ def decode_speex_to_pcm(
     if speex_decoder:
         return speex_decoder(source, options)
 
-    if is_ogg_speex(source):
-        pcm = decode_ogg_speex_with_ffmpeg(
-            source,
-            pcm_config=config,
-            ffmpeg_path=ffmpeg_path,
-        )
-        return SpeexDecodeResult(
-            pcm_bytes=pcm,
-            pcm_config=config,
-            source_type="ogg-speex",
-            source_extension="spx",
-        )
-
-    packets = parse_packetized_speex_stream(
+    decoded = call_audio(
+        native.decode_speex_pcm,
         source,
-        allow_framed_blocks=allow_framed_blocks,
+        native.PcmFormat(sample_rate_hz=config.sample_rate, channels=config.channels,
+                         bit_depth=config.bit_depth),
+        _quality(quality),
+        int(bits_size) if bits_size and bits_size > 0 else None,
+        DEFAULT_SPEEX_MAX_PACKET_SIZE,
+        LEGACY_OUTER_FRAME_SIZE if allow_framed_blocks else None,
     )
-    source_type = "packet-speex"
-    if not packets:
-        packets = split_raw_speex_packets(
-            source,
-            quality=quality,
-            bits_size=bits_size,
-        )
-        source_type = "raw-speex"
-    if not packets:
-        raise AudioDecodeError("bin data does not look like packetized or raw Speex")
-
-    ogg = build_ogg_speex(packets, pcm_config=config)
-    pcm = decode_ogg_speex_with_ffmpeg(ogg, pcm_config=config, ffmpeg_path=ffmpeg_path)
-    pcm = normalize_decoded_speex_pcm(pcm, packet_count=len(packets), pcm_config=config)
     return SpeexDecodeResult(
-        pcm_bytes=pcm,
+        pcm_bytes=bytes(decoded.pcm_bytes),
         pcm_config=config,
-        source_type=source_type,
+        source_type=decoded.source_type,
         source_extension="spx",
-        packet_count=len(packets),
+        packet_count=decoded.packet_count,
     )
-
-
-_OP2C_HEADER = struct.pack("<4sHHHH", b"OP2C", 1, 2, 16000, 320)
 
 
 def _validate_opus_packet(packet: bytes, *, channels: int = 2) -> None:
-    if not 1 <= len(packet) <= 100:
-        raise AudioDecodeError("Opus packet length must be 1..100 bytes")
-    toc = packet[0]
-    if channels not in (1, 2) or bool(toc & 4) != (channels == 2):
+    if isinstance(channels, bool) or channels not in (1, 2):
         raise AudioDecodeError("Opus packet channels do not match the recording")
-    # Same TOC duration calculation as libopus opus_packet_get_samples_per_frame.
-    if toc & 0x80:
-        samples = (16000 << ((toc >> 3) & 3)) // 400
-    elif toc & 0x60 == 0x60:
-        samples = 320 if toc & 8 else 160
-    else:
-        mode = (toc >> 3) & 3
-        samples = 960 if mode == 3 else (16000 << mode) // 100
-    code = toc & 3
-    if code == 3 and len(packet) < 2:
-        raise AudioDecodeError("Truncated Opus frame count")
-    frames = 1 if code == 0 else (packet[1] & 63 if code == 3 else 2)
-    if samples * frames != 320:
-        raise AudioDecodeError("Opus packet must contain 20 ms per channel")
+    call_audio(native.validate_opus_packet, bytes(packet), channels)
 
 
 def _opus_recording_channels(source: bytes) -> int:
-    if len(source) < 12:
-        raise AudioDecodeError("Unsupported or truncated OP2C header")
-    magic, version, channels, rate, frames = struct.unpack_from("<4sHHHH", source)
-    if magic != b"OP2C" or version != 1 or channels not in (1, 2) or (rate, frames) != (16000, 320):
-        raise AudioDecodeError("Unsupported OP2C header")
-    return channels
+    return call_audio(native.parse_opus_recording, bytes(source)).channels
 
 
 def parse_opus_recording(data: Any) -> list[bytes]:
     """Parse version-1, 16 kHz mono/stereo OP2C; reject truncation and padding."""
-    source = _ensure_bytes(data)
-    channels = _opus_recording_channels(source)
-    packets = []
-    offset = 12
-    while offset < len(source):
-        if len(source) - offset < 2:
-            raise AudioDecodeError("Truncated Opus packet length")
-        length = struct.unpack_from("<H", source, offset)[0]
-        offset += 2
-        if not 1 <= length <= 100 or offset + length > len(source):
-            raise AudioDecodeError("Invalid or truncated Opus packet")
-        packet = source[offset:offset + length]
-        _validate_opus_packet(packet, channels=channels)
-        packets.append(packet)
-        offset += length
-    return packets
+    recording = call_audio(native.parse_opus_recording, _ensure_bytes(data))
+    return [bytes(packet) for packet in recording.packets]
 
 
 def build_opus_recording(packets: list[bytes], *, channels: int = 2) -> bytes:
     """Package consecutive mono/stereo 20 ms Opus packets as an OP2C file."""
     if isinstance(channels, bool) or channels not in (1, 2):
         raise ValueError("channels must be 1 or 2")
-    chunks = [struct.pack("<4sHHHH", b"OP2C", 1, channels, 16000, 320)]
-    for packet in packets:
-        packet = bytes(packet)
-        _validate_opus_packet(packet, channels=channels)
-        chunks.append(struct.pack("<H", len(packet)) + packet)
-    return b"".join(chunks)
+    return bytes(call_audio(native.build_opus_recording, [bytes(p) for p in packets], channels))
 
 
 def decode_opus_to_pcm(data: Any, *, ffmpeg_path: str = "ffmpeg") -> OpusDecodeResult:
-    """Decode OP2C into 16 kHz mono/stereo signed 16-bit PCM."""
-    packets = parse_opus_recording(data)
-    channels = _opus_recording_channels(_ensure_bytes(data))
+    """Decode OP2C into 16 kHz mono/stereo signed 16-bit PCM (no external decoder needed)."""
+    source = _ensure_bytes(data)
+    recording = call_audio(native.parse_opus_recording, source)
+    channels = recording.channels
     config = PcmConfig(sample_rate=16000, channels=channels, bit_depth=16)
-    if not packets:
-        return OpusDecodeResult(b"", config, packet_count=0, source_type="opus-mono" if channels == 1 else "opus-stereo")
-    # Ogg Opus granules always use 48 kHz. OP2C has no pre-skip metadata;
-    # preserve every decoded sample just like the firmware reference decoder.
-    header = struct.pack("<8sBBHIhB", b"OpusHead", 1, channels, 0, 16000, 0, 0)
-    vendor = b"openzilo-python"
-    tags = b"OpusTags" + struct.pack("<I", len(vendor)) + vendor + struct.pack("<I", 0)
-    pages = [
-        _build_ogg_page(header, header_type=2, granule_position=0, serial=0x4F503243, sequence=0),
-        _build_ogg_page(tags, header_type=0, granule_position=0, serial=0x4F503243, sequence=1),
-    ]
-    for index, packet in enumerate(packets):
-        pages.append(_build_ogg_page(
-            packet, header_type=4 if index == len(packets) - 1 else 0,
-            granule_position=(index + 1) * 960, serial=0x4F503243, sequence=index + 2,
-        ))
-    pcm = _decode_ogg_with_ffmpeg(
-        b"".join(pages), pcm_config=config, ffmpeg_path=ffmpeg_path, codec="Opus",
-    )
-    if len(pcm) != len(packets) * 320 * channels * 2:
-        raise AudioDecodeError("Opus decoder returned an unexpected PCM length")
-    return OpusDecodeResult(pcm, config, packet_count=len(packets), source_type="opus-mono" if channels == 1 else "opus-stereo")
+    pcm = bytes(call_audio(native.decode_opus_pcm, source))
+    return OpusDecodeResult(pcm, config, packet_count=len(recording.packets),
+                            source_type="opus-mono" if channels == 1 else "opus-stereo")
 
 
 def build_playable_audio(

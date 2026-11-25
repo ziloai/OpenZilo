@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import struct
 from typing import TYPE_CHECKING
 
+from ._core import native, call
 from ._errors import CompatibilityError, DeviceError, ProtocolError, TimeoutError, TransportError
-from ._protocol import BinaryReader, SystemCommand, ensure_success
+from ._protocol import SystemCommand
 
 if TYPE_CHECKING:
     from ._client import OpenZiloClient
@@ -15,14 +15,7 @@ if TYPE_CHECKING:
 
 # These are contract versions, not firmware versions. IMU v2 starts capture on
 # subscription; v1 required a separate gesture mode and is not interchangeable.
-FEATURE_MAJORS = {"system": 1, "time_sync": 1, "audio_files": 1,
-                  "recording_control": 1, "live_audio": 1, "imu": 2,
-                  "key_events": 1, "double_tap": 1, "ota": 1, "gesture": 1,
-                  "connection_rssi": 1}
-FEATURE_NAMES = {1: "system", 2: "time_sync", 3: "audio_files", 4: "recording_control",
-                 5: "live_audio", 6: "imu", 7: "key_events", 8: "double_tap",
-                 9: "ota", 10: "gesture", 11: "imu_calibration", 12: "connection_rssi"}
-_LIMITS = struct.Struct(">HHBBBBIIHHHHH")
+FEATURE_MAJORS = {f.name: f.major for f in native.feature_contracts()}
 
 
 @dataclass(frozen=True)
@@ -48,19 +41,17 @@ class RecordingLimits:
     duration_step_ms: int
 
     def validate(self, config: AudioRecordingConfig) -> None:
-        c = config
-        if not (c.sample_rate == self.sample_rate_hz and c.frame_duration_ms == self.frame_duration_ms
-                and 0 <= c.channels < 8 and self.channels_mask & (1 << c.channels)
-                and 0 <= int(c.output) < 8 and self.outputs_mask & (1 << int(c.output))
-                and self.bitrate_min <= c.bitrate <= self.bitrate_max
-                and self.gain_min_q8 <= c.gain_left_q8 <= self.gain_max_q8
-                and self.gain_min_q8 <= c.gain_right_q8 <= self.gain_max_q8
-                and (c.max_duration_ms == 0 or
-                     self.duration_min_ms <= c.max_duration_ms <= self.duration_max_ms)
-                and c.max_duration_ms % self.duration_step_ms == 0
-                and (int(c.disconnect_policy) == 0 or
-                     self.continue_outputs_mask & (1 << int(c.output)))):
+        if (config.sample_rate, config.frame_duration_ms) != (self.sample_rate_hz, self.frame_duration_ms):
             raise CompatibilityError("Recording configuration exceeds device capabilities")
+        call(native.validate_recording_config,
+             native.RecordingConfig(**{name: int(getattr(config, name)) for name in (
+                 "output", "disconnect_policy", "channels", "bitrate", "gain_left_q8",
+                 "gain_right_q8", "max_duration_ms")}),
+             native.RecordingLimits(**vars(self)))
+
+
+def _native_features(features) -> list:
+    return [native.FeatureVersion(name=f.name, major=f.major, minor=f.minor) for f in features]
 
 
 @dataclass(frozen=True)
@@ -78,8 +69,9 @@ class DeviceCapabilities:
 
     def supports(self, name: str, *, major: int | None = None, min_minor: int = 0) -> bool:
         expected = FEATURE_MAJORS.get(name) if major is None else major
-        return any(f.name == name and f.major == expected and f.minor >= min_minor
-                   for f in self.features)
+        if expected is None:
+            return False
+        return native.supports_feature(_native_features(self.features), name, expected, min_minor)
 
     def require(self, name: str) -> None:
         if not self.supports(name):
@@ -89,75 +81,27 @@ class DeviceCapabilities:
             )
 
 
+def _from_native(caps, source: str, reason: str | None = None) -> DeviceCapabilities:
+    limits = caps.recording_limits
+    return DeviceCapabilities(
+        source, caps.firmware_version, caps.model, caps.board_target or None, caps.build_id or None,
+        caps.boot_id or None, tuple(caps.protocol_versions),
+        tuple(FeatureVersion(f.name, f.major, f.minor) for f in caps.features),
+        None if limits is None else RecordingLimits(**vars(limits)), reason,
+    )
+
+
 def parse_device_capabilities(body: bytes) -> DeviceCapabilities:
-    reader = BinaryReader(body)
-    ensure_success(reader.u16())
-    if reader.u8() != 1:
-        raise CompatibilityError("Unsupported capability schema; SDK upgrade required")
-    fields: dict[int, bytes] = {}
-    while reader.remaining:
-        tag, size = reader.u16(), reader.u16()
-        value = reader.bytes(size)
-        if tag & 0x8000:
-            raise CompatibilityError(f"Unknown required capability tag 0x{tag:04X}")
-        if tag in fields:
-            raise ProtocolError(f"Duplicate capability tag 0x{tag:04X}")
-        fields[tag] = value
-    for tag in (1, 2, 3, 4, 5, 6):
-        if not fields.get(tag):
-            raise ProtocolError(f"Missing capability tag {tag}")
-    try:
-        firmware, model, board, build = (fields[t].decode("utf-8", errors="strict")
-                                         for t in (1, 2, 3, 5))
-    except UnicodeDecodeError as exc:
-        raise ProtocolError("Invalid UTF-8 capability identity") from exc
-    if len(fields[4]) != 8 or len(fields[6]) % 2:
-        raise ProtocolError("Invalid boot identity or protocol list")
-    protocols = tuple(v[0] for v in struct.iter_unpack(">H", fields[6]))
-    if 4 not in protocols:
-        raise CompatibilityError("Device does not advertise protocol v4")
-    features = []
-    for tag, value in fields.items():
-        if 0x100 < tag <= 0x1FF:
-            if len(value) != 2 or value[0] == 0:
-                raise ProtocolError("Invalid feature contract")
-            name = FEATURE_NAMES.get(tag - 0x100, f"unknown_{tag - 0x100}")
-            features.append(FeatureVersion(name, *value))
-    limits = None
-    if 0x204 in fields:
-        if len(fields[0x204]) != _LIMITS.size:
-            raise ProtocolError("Invalid recording limits length")
-        rate, frame, channels, outputs, continuing, reserved, *ranges = _LIMITS.unpack(fields[0x204])
-        limits = RecordingLimits(rate, frame, channels, outputs, continuing, *ranges)
-        if (reserved or not rate or not frame or not channels or not outputs
-                or continuing & ~outputs or not limits.duration_step_ms
-                or limits.bitrate_min > limits.bitrate_max
-                or limits.gain_min_q8 > limits.gain_max_q8
-                or limits.duration_min_ms > limits.duration_max_ms):
-            raise ProtocolError("Invalid recording limits")
-    if any(f.name == "recording_control" and f.major == 1 for f in features):
-        if limits is None:
-            raise ProtocolError("Recording control v1 requires limits")
-        if limits.sample_rate_hz != 16000 or limits.frame_duration_ms != 20:
-            raise CompatibilityError("Recording contract v1 requires 16 kHz / 20 ms")
-    return DeviceCapabilities("device", firmware, model, board, build, fields[4].hex(),
-                              protocols, tuple(features), limits)
+    return _from_native(call(native.parse_capabilities, bytes(body)), "device")
 
 
 def _legacy_capabilities(firmware: str, model: str, reason: str) -> DeviceCapabilities:
-    # Exact released product build, validated in the 0001 hardware test report.
-    # No prefix/range matching: customer IDs are not semantic patch versions.
-    if firmware == "V2.001.0002.0001-prod-7fd1dfc9" and model == "Open Zilo":
-        return DeviceCapabilities(
-            "legacy_profile", firmware, model, board_target="ring_dvt2/nrf54l15/cpuapp",
-            build_id="7fd1dfc9e9c698c47b91e100580deddde66f210e",
-            protocol_versions=(4,),
-            features=tuple(FeatureVersion(n, m, 0) for n, m in (
-                ("system", 1), ("time_sync", 1), ("audio_files", 1), ("recording_control", 1),
-                ("live_audio", 1), ("imu", 2), ("key_events", 1), ("double_tap", 1), ("ota", 1))),
-            recording_limits=RecordingLimits(16000, 20, 6, 15, 10, 8000, 32000, 0, 1024, 20, 60000, 20),
-            reason=reason,
-        )
+    # Exact verified released builds only; customer IDs are not semantic patch versions.
+    profile = native.legacy_capability_profile(native.DeviceInfo(
+        firmware_version=firmware, system_time=0, audio_storage_total=0, audio_storage_available=0,
+        battery_percent=0, battery_charging=False, sn="", cpuid="", model=model), reason)
+    if profile.source == native.CapabilitySource.VERIFIED_LEGACY_PROFILE and profile.capabilities:
+        return _from_native(profile.capabilities, "legacy_profile", reason)
     return DeviceCapabilities("unknown", firmware, model, reason=reason)
 
 
@@ -192,7 +136,8 @@ async def get_device_capabilities(
                                           "Device explicitly rejected capability discovery")
         else:
             result = parse_device_capabilities(packet.body)
-            if result.firmware_version != info.firmware_version or result.model != info.model:
+            if (result.firmware_version != info.firmware_version or result.model != info.model
+                    or 4 not in result.protocol_versions):
                 raise ProtocolError("Capability identity differs from system information")
         if connection is None or connection is not client._connection_token:
             raise TransportError("Connection changed during capability discovery")
@@ -202,8 +147,9 @@ async def get_device_capabilities(
 
 # Only enhanced commands are guarded. Basic info, logs, file retrieval and time
 # replies retain their existing baseline behaviour on unrecognized old devices.
-COMMAND_FEATURES = {0x0107: "connection_rssi",
-                   **{c: "recording_control" for c in (0x0512, 0x0514, 0x0516, 0x0518, 0x051A)},
-                    0x050D: "live_audio", 0x0601: "imu", 0x0603: "imu", 0x0605: "imu",
-                    0x0701: "double_tap", 0x0702: "gesture",
-                    0x0703: "key_events", 0x0704: "key_events", 1005: "ota"}
+COMMAND_FEATURES = {
+    command: contract.feature
+    for command in (0x0107, 0x0512, 0x0514, 0x0516, 0x0518, 0x051A, 0x050D, 0x0601, 0x0603, 0x0605,
+                    0x0701, 0x0702, 0x0703, 0x0704, 1005)
+    if (contract := native.command_contract(command)) is not None and contract.enhanced
+}

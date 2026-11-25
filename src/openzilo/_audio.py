@@ -10,8 +10,11 @@ from enum import IntEnum
 from functools import wraps
 from typing import Any
 
-from ._errors import ProtocolError, TimeoutError, TransportError
-from ._protocol import AudioCommand, BinaryReader, BinaryWriter, ensure_success, Packet, read_error
+import struct
+
+from ._core import native, call, native_packet
+from ._errors import DeviceError, ProtocolError, TimeoutError, TransportError
+from ._protocol import AudioCommand, Packet, SystemCommand
 from ._client import OpenZiloClient
 
 
@@ -111,6 +114,8 @@ class _PacketInbox:
             packet = self.queue.get_nowait()
             if not self.client.is_connected:
                 continue
+            if packet.command == SystemCommand.ERROR_RESP:
+                continue
             target = self.client._queues[packet.command]
             if target.full():
                 self.client._report_protocol_error(ProtocolError("Audio receive queue overflow"))
@@ -146,13 +151,30 @@ class _PacketInbox:
             await asyncio.gather(*tasks, return_exceptions=True)
 
 
+_MAX_AUDIO_BYTES = 64 * 1024 * 1024
+_EXTRACT_COMMANDS = (0x0503, 0x0506, 0x0507, 0x0509)
+
+
 def parse_audio_record_result(body: bytes) -> AudioRecordResult:
-    reader = BinaryReader(body)
-    ensure_success(reader.u16())  # Firmware error replies can contain only two bytes.
-    result = AudioRecordResult(reader.u32())
-    if reader.remaining:
-        raise ProtocolError("Unexpected recording result bytes")
-    return result
+    return AudioRecordResult(call(native.parse_audio_record_result, bytes(body)))
+
+
+def parse_audio_file_info(body: bytes) -> AudioFileInfo:
+    return AudioFileInfo(**vars(call(native.parse_audio_info, bytes(body))))
+
+
+def parse_audio_data_frame(body: bytes) -> AudioDataFrame:
+    frame = call(native.parse_audio_frame, bytes(body))
+    return AudioDataFrame(frame.file_index, frame.frame_offset, frame.frame_size, frame.is_end,
+                          bytes(frame.data))
+
+
+async def _send_spec(client: OpenZiloClient, spec: Any) -> None:
+    await client.send_command(spec.command, bytes(spec.body))
+
+
+def _prepare(request: Any) -> Any:
+    return call(native.prepare_request, request)
 
 
 @_audio_operation
@@ -174,9 +196,7 @@ async def get_audio_file_count(
         AudioCommand.LIST_RESP,
         timeout_s=timeout_s,
     )
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
-    return reader.u32()
+    return call(native.parse_audio_count, bytes(packet.body))
 
 
 @_audio_operation
@@ -187,11 +207,11 @@ async def get_audio_file_info(
     timeout_s: float | None = None,
 ) -> AudioFileInfo:
     """Start the normal 0x0503 extraction flow and return recording metadata."""
-    body = BinaryWriter().u16(0).u32(file_index).build()
+    spec = _prepare(native.DeviceRequest.AUDIO_INFO(file_index=file_index))
     packet = await client.request(
         AudioCommand.START_EXTRACT,
         AudioCommand.FILE_INFO_RESP,
-        body,
+        bytes(spec.body),
         timeout_s=timeout_s,
     )
     return parse_audio_file_info(packet.body)
@@ -205,11 +225,11 @@ async def read_audio_frame(
     *,
     timeout_s: float | None = None,
 ) -> AudioDataFrame:
-    body = _audio_frame_request_body(file_index, frame_offset)
+    spec = _prepare(native.DeviceRequest.AUDIO_READ(file_index=file_index, offset=frame_offset))
     packet = await client.request(
         AudioCommand.NEXT_FRAME,
         AudioCommand.DATA_FRAME,
-        body,
+        bytes(spec.body),
         timeout_s=timeout_s,
     )
     return parse_audio_data_frame(packet.body)
@@ -223,59 +243,90 @@ async def end_audio_extract(
     timeout_s: float | None = None,
     ignore_timeout: bool = True,
 ) -> None:
-    body = BinaryWriter().u16(0).u32(file_index).build()
+    spec = _prepare(native.DeviceRequest.AUDIO_END(file_index=file_index))
     try:
         packet = await client.request(
             AudioCommand.END_EXTRACT,
             AudioCommand.EXTRACT_DONE,
-            body,
+            bytes(spec.body),
             timeout_s=timeout_s,
         )
     except TimeoutError:
         if ignore_timeout:
             return
         raise
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
+    call(native.parse_audio_end, bytes(packet.body))
 
 
-def _audio_frame_request_body(file_index: int, frame_offset: int) -> bytes:
-    # Keep the reserved bytes required by the 12-byte 0x0506 request body.
-    return BinaryWriter().u16(0).u32(file_index).u32(frame_offset).u16(0).build()
-
-
-async def _wait_audio_data_frame(
+@_audio_operation
+async def clear_audio_files(
     client: OpenZiloClient,
-    file_index: int,
     *,
     timeout_s: float | None = None,
-) -> AudioDataFrame:
-    timeout = client.command_timeout_s if timeout_s is None else timeout_s
-    deadline = asyncio.get_running_loop().time() + max(0.001, timeout)
-    while True:
-        remaining = deadline - asyncio.get_running_loop().time()
-        if remaining <= 0:
-            raise TimeoutError(
-                f"Timed out waiting for audio frame for file_index={file_index}"
-            )
-        packet = await client.wait_for_command(
-            AudioCommand.DATA_FRAME,
-            timeout_s=remaining,
-        )
-        frame = parse_audio_data_frame(packet.body)
-        if frame.file_index == file_index:
-            return frame
-
-
-async def _request_audio_retry(
-    client: OpenZiloClient,
-    file_index: int,
-    frame_offset: int,
 ) -> None:
-    await client.send_command(
-        AudioCommand.NEXT_FRAME,
-        _audio_frame_request_body(file_index, frame_offset),
+    spec = _prepare(native.DeviceRequest.CLEAR_AUDIO(confirmed=True))
+    packet = await client.request(
+        AudioCommand.CLEAR_ALL,
+        AudioCommand.CLEAR_ALL_RESP,
+        bytes(spec.body),
+        timeout_s=timeout_s,
     )
+    call(native.parse_success, bytes(packet.body))
+
+
+def _now_ms() -> int:
+    return int(asyncio.get_running_loop().time() * 1000)
+
+
+def _relevant(packet: Packet) -> bool:
+    """Standard error replies for other commands are not ours to interpret."""
+    if packet.command != SystemCommand.ERROR_RESP:
+        return True
+    return len(packet.body) >= 2 and struct.unpack_from(">H", packet.body)[0] in _EXTRACT_COMMANDS
+
+
+async def _drive(client: OpenZiloClient, transfer: Any, step: Any, inbox: _PacketInbox,
+                 timeout: float, progress: AudioProgressCallback | None = None,
+                 on_packet: Callable[[Packet], None] | None = None) -> Any:
+    """Run a core transfer state machine until it reports COMPLETE."""
+    last = -1
+    while True:
+        if progress is not None and step.received != last:
+            last = step.received
+            progress(step.received, step.total or 0)
+        if step.phase == native.DownloadPhase.COMPLETE:
+            return step
+        if step.request is not None:
+            await _send_spec(client, step.request)
+        deadline = transfer.next_deadline()
+        remaining = timeout if deadline is None else max(0.0, (deadline - _now_ms()) / 1000)
+        try:
+            packet = await inbox.wait(remaining)
+        except TimeoutError:
+            step = call(transfer.tick, _now_ms())
+            continue
+        if not _relevant(packet):
+            continue
+        if on_packet is not None:
+            on_packet(packet)
+        step = call(transfer.accept, native_packet(packet), _now_ms())
+
+
+async def _best_effort_end(client: OpenZiloClient, file_index: int) -> None:
+    if not client.is_connected:
+        return
+    spec = _prepare(native.DeviceRequest.AUDIO_END(file_index=file_index))
+    try:
+        await asyncio.wait_for(client.request(
+            AudioCommand.END_EXTRACT, AudioCommand.EXTRACT_DONE, bytes(spec.body), timeout_s=2.0,
+        ), timeout=2.0)
+    except (Exception, asyncio.CancelledError):
+        pass
+
+
+def _timeouts(client: OpenZiloClient, timeout_s: float | None) -> tuple[float, int, int]:
+    timeout = client.command_timeout_s if timeout_s is None else timeout_s
+    return timeout, max(1, int(timeout * 1000)), max(1, int(max(600.0, timeout) * 1000))
 
 
 @_audio_operation
@@ -293,152 +344,26 @@ async def receive_auto_audio_file(
     """
     if not client.is_connected:
         raise TransportError("BLE client is not connected")
+    timeout, idle_ms, total_ms = _timeouts(client, timeout_s)
+    transfer = call(native.AutoAudioTransfer, _MAX_AUDIO_BYTES, idle_ms, total_ms)
+    commands = (AudioCommand.RECORD_RESULT, AudioCommand.FILE_INFO_RESP, AudioCommand.DATA_FRAME,
+                AudioCommand.EXTRACT_DONE, SystemCommand.ERROR_RESP)
+    delegated = {"index": None}
 
-    with _PacketInbox(client, (AudioCommand.RECORD_RESULT, AudioCommand.DATA_FRAME)) as inbox:
-        packet = await inbox.wait(timeout_s)
-    if packet.command == AudioCommand.RECORD_RESULT:
-        result = parse_audio_record_result(packet.body)
-        info, data = await download_audio_file(client, result.file_index, quick=False, timeout_s=timeout_s)
-        return info.file_index, data
-    frame = parse_audio_data_frame(packet.body)
-    file_index = frame.file_index
-    received = bytearray()
-    pending: dict[int, AudioDataFrame] = {}
-    end_offset: int | None = None
-    expected_size: int | None = None
-    recovery_attempts = 0
+    def remember(packet: Packet) -> None:
+        if packet.command == AudioCommand.RECORD_RESULT and delegated["index"] is None:
+            delegated["index"] = parse_audio_record_result(packet.body).file_index
 
-    def add_frame(current: AudioDataFrame) -> bool:
-        nonlocal end_offset
-
-        if current.file_index != file_index:
-            raise ProtocolError(
-                f"Audio file index mismatch: expected {file_index}, "
-                f"got {current.file_index}"
-            )
-
-        if expected_size is not None and current.frame_offset > expected_size:
-            raise ProtocolError(
-                f"Audio frame offset {current.frame_offset} exceeds "
-                f"file size {expected_size}"
-            )
-
-        frame_data = current.data
-        if expected_size is not None:
-            remaining = max(0, expected_size - current.frame_offset)
-            frame_data = frame_data[:remaining]
-
-        frame_end = current.frame_offset + len(frame_data)
-        if current.is_end and expected_size is None:
-            if end_offset is not None and end_offset != frame_end:
-                raise ProtocolError(
-                    "Conflicting audio end offsets: "
-                    f"{end_offset} and {frame_end}"
-                )
-            end_offset = frame_end
-
-        previous_size = len(received)
-        if frame_end <= previous_size:
-            overlap_size = len(frame_data)
-            if received[current.frame_offset:frame_end] != frame_data[:overlap_size]:
-                raise ProtocolError(
-                    f"Conflicting audio data at offset {current.frame_offset}"
-                )
-            return False
-        if current.frame_offset <= previous_size:
-            overlap = previous_size - current.frame_offset
-            if received[current.frame_offset:previous_size] != frame_data[:overlap]:
-                raise ProtocolError(
-                    f"Conflicting audio overlap at offset {current.frame_offset}"
-                )
-            received.extend(frame_data[overlap:])
-            return len(received) > previous_size
-
-        existing = pending.get(current.frame_offset)
-        if existing is None or len(existing.data) < len(current.data):
-            pending[current.frame_offset] = current
-        return False
-
-    async def ensure_recovery_metadata() -> None:
-        nonlocal end_offset, expected_size
-
-        if expected_size is not None:
-            return
-        info = await get_audio_file_info(
-            client,
-            file_index,
-            timeout_s=timeout_s,
-        )
-        if info.file_index != file_index:
-            raise ProtocolError(
-                f"Audio metadata index mismatch: expected {file_index}, "
-                f"got {info.file_index}"
-            )
-        if info.data_size <= 0:
-            raise ProtocolError(
-                f"Audio metadata has invalid data_size={info.data_size}"
-            )
-        expected_size = info.data_size
-        end_offset = expected_size
-        if len(received) > expected_size:
-            del received[expected_size:]
-        for offset in list(pending):
-            if offset >= expected_size:
-                pending.pop(offset)
-
-    def append_pending() -> bool:
-        grew = False
-        while pending:
-            offset = min(pending)
-            if offset > len(received):
-                break
-            current = pending.pop(offset)
-            if add_frame(current):
-                grew = True
-        return grew
-
-    while True:
-        grew = add_frame(frame)
-        if append_pending():
-            grew = True
-        if grew:
-            recovery_attempts = 0
-
-        if end_offset is not None and len(received) >= end_offset:
-            return file_index, bytes(received[:end_offset])
-
-        has_gap = bool(pending) and min(pending) > len(received)
-        if has_gap:
-            recovery_attempts += 1
-            if recovery_attempts > 3:
-                raise ProtocolError(
-                    "Audio frame gap: "
-                    f"unable to recover offset {len(received)}"
-                )
-            await ensure_recovery_metadata()
-            if expected_size is not None and len(received) >= expected_size:
-                return file_index, bytes(received[:expected_size])
-            await _request_audio_retry(client, file_index, len(received))
-
-        while True:
-            try:
-                frame = await _wait_audio_data_frame(
-                    client,
-                    file_index,
-                    timeout_s=timeout_s,
-                )
-                break
-            except (TimeoutError, ProtocolError) as exc:
-                recovery_attempts += 1
-                if recovery_attempts > 3:
-                    raise ProtocolError(
-                        "Audio stream stalled: "
-                        f"unable to recover offset {len(received)}"
-                    ) from exc
-                await ensure_recovery_metadata()
-                if expected_size is not None and len(received) >= expected_size:
-                    return file_index, bytes(received[:expected_size])
-                await _request_audio_retry(client, file_index, len(received))
+    try:
+        with _PacketInbox(client, commands) as inbox:
+            step = call(transfer.begin, _now_ms())
+            step = await _drive(client, transfer, step, inbox, timeout, on_packet=remember)
+        return step.file_index, bytes(call(transfer.finish))
+    except (Exception, asyncio.CancelledError):
+        transfer.cancel()
+        if delegated["index"] is not None:
+            await _best_effort_end(client, delegated["index"])
+        raise
 
 
 async def _download_audio_file_quick(
@@ -448,107 +373,73 @@ async def _download_audio_file_quick(
     progress: AudioProgressCallback | None = None,
     timeout_s: float | None = None,
 ) -> tuple[AudioFileInfo, bytes]:
-    client._drain_queue(int(AudioCommand.FILE_INFO_RESP))
-    client._drain_queue(int(AudioCommand.DATA_FRAME))
-    await client.send_command(
-        AudioCommand.START_EXTRACT_QUICK,
-        BinaryWriter().u16(0).u32(file_index).build(),
-    )
+    """Fast extraction: the device pushes frames and sends no END acknowledgement."""
+    timeout, _, _ = _timeouts(client, timeout_s)
+    commands = (AudioCommand.FILE_INFO_RESP, AudioCommand.DATA_FRAME, SystemCommand.ERROR_RESP)
 
-    info_packet = await client.wait_for_command(
-        AudioCommand.FILE_INFO_RESP,
-        timeout_s=timeout_s,
-    )
-    info = parse_audio_file_info(info_packet.body)
-    if info.file_index != file_index:
-        raise ProtocolError(
-            f"Audio metadata index mismatch: expected {file_index}, got {info.file_index}"
-        )
-    received = bytearray()
-    gap_retries = 0
+    def check_error(packet: Packet) -> None:
+        if packet.command == SystemCommand.ERROR_RESP:
+            command, code = struct.unpack_from(">HH", packet.body)
+            raise DeviceError(code, native.device_error_message(code))
 
-    while True:
-        try:
-            frame = await _wait_audio_data_frame(
-                client,
-                file_index,
-                timeout_s=timeout_s,
-            )
-        except TimeoutError as exc:
-            gap_retries += 1
-            if gap_retries > 3:
-                raise ProtocolError(
-                    f"Audio stream stalled at offset {len(received)}"
-                ) from exc
-            await _request_audio_retry(client, file_index, len(received))
-            frame = await _wait_audio_data_frame(
-                client,
-                file_index,
-                timeout_s=timeout_s,
-            )
+    async def next_packet(wanted: int | None = None) -> Packet:
+        while True:
+            packet = await inbox.wait(timeout)
+            if not _relevant(packet):
+                continue
+            check_error(packet)
+            if wanted is None or packet.command == wanted:
+                return packet
 
-        if frame.frame_offset > len(received):
-            gap_retries += 1
-            if gap_retries > 3:
-                raise ProtocolError(
-                    "Audio frame gap: "
-                    f"expected offset {len(received)}, got {frame.frame_offset}"
-                )
-            await _request_audio_retry(client, file_index, len(received))
-            continue
-
-        overlap = len(received) - frame.frame_offset
-        overlap_size = min(overlap, len(frame.data))
-        if overlap_size > 0:
-            existing = received[
-                frame.frame_offset : frame.frame_offset + overlap_size
-            ]
-            if existing != frame.data[:overlap_size]:
-                raise ProtocolError(
-                    f"Conflicting audio overlap at offset {frame.frame_offset}"
-                )
-        if overlap < len(frame.data):
-            new_data = frame.data[overlap:]
-            if info.data_size > 0:
-                new_data = new_data[: max(0, info.data_size - len(received))]
-            received.extend(new_data)
-
-        if overlap < len(frame.data):
-            gap_retries = 0
-
-        if progress:
-            progress(len(received), info.data_size)
-        if info.data_size > 0 and len(received) >= info.data_size:
-            break
-        if frame.is_end:
-            gap_retries += 1
-            if gap_retries > 3:
-                raise ProtocolError(
-                    f"Audio stream ended at {len(received)} of {info.data_size} bytes"
-                )
-            await _request_audio_retry(client, file_index, len(received))
-        elif not frame.data:
+    with _PacketInbox(client, commands) as inbox:
+        await _send_spec(client, _prepare(native.DeviceRequest.AUDIO_QUICK(file_index=file_index)))
+        info = parse_audio_file_info((await next_packet(AudioCommand.FILE_INFO_RESP)).body)
+        if info.file_index != file_index:
             raise ProtocolError(
-                f"Empty audio frame at offset {frame.frame_offset} before end"
+                f"Audio metadata index mismatch: expected {file_index}, got {info.file_index}"
             )
+        assembler = call(native.AudioAssembler, file_index, info.data_size, _MAX_AUDIO_BYTES)
+        retries = 0
+        received = 0
 
-    data = bytes(received[: info.data_size] if info.data_size > 0 else received)
-    return info, data
+        async def retry(reason: str) -> None:
+            nonlocal retries
+            retries += 1
+            if retries > 3:
+                raise ProtocolError(reason)
+            offset = assembler.missing_offset() or 0
+            await _send_spec(client, _prepare(
+                native.DeviceRequest.AUDIO_READ(file_index=file_index, offset=offset)))
 
-
-@_audio_operation
-async def clear_audio_files(
-    client: OpenZiloClient,
-    *,
-    timeout_s: float | None = None,
-) -> None:
-    packet = await client.request(
-        AudioCommand.CLEAR_ALL,
-        AudioCommand.CLEAR_ALL_RESP,
-        timeout_s=timeout_s,
-    )
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
+        while assembler.missing_offset() is not None:
+            try:
+                packet = await next_packet(AudioCommand.DATA_FRAME)
+            except TimeoutError:
+                await retry(f"Audio stream stalled at offset {received}")
+                continue
+            frame = parse_audio_data_frame(packet.body)
+            if frame.file_index != file_index:
+                continue
+            missing = assembler.missing_offset()
+            if frame.frame_offset > missing:
+                await retry(f"Audio frame gap: expected offset {missing}, got {frame.frame_offset}")
+                continue
+            data = frame.data[:max(0, info.data_size - frame.frame_offset)]
+            previous = received
+            received = call(assembler.push, native.AudioFrame(
+                file_index=frame.file_index, frame_offset=frame.frame_offset,
+                frame_size=len(data), is_end=frame.is_end, data=data))
+            if received > previous:
+                retries = 0
+            if progress:
+                progress(received, info.data_size)
+            if assembler.missing_offset() is None:
+                break
+            if frame.is_end:
+                await retry(f"Audio stream ended at {received} of {info.data_size} bytes")
+            elif not frame.data:
+                raise ProtocolError(f"Empty audio frame at offset {frame.frame_offset} before end")
+    return info, bytes(call(assembler.finish))
 
 
 @_audio_operation
@@ -562,109 +453,22 @@ async def download_audio_file(
 ) -> tuple[AudioFileInfo, bytes]:
     if quick:
         return await _download_audio_file_quick(
-            client,
-            file_index,
-            progress=progress,
-            timeout_s=timeout_s,
+            client, file_index, progress=progress, timeout_s=timeout_s,
         )
-
+    timeout, idle_ms, total_ms = _timeouts(client, timeout_s)
+    transfer = call(native.DownloadTransfer, file_index, _MAX_AUDIO_BYTES, False, idle_ms, total_ms)
+    commands = (AudioCommand.FILE_INFO_RESP, AudioCommand.DATA_FRAME, AudioCommand.EXTRACT_DONE,
+                SystemCommand.ERROR_RESP)
+    started = False
     try:
-        info = await get_audio_file_info(
-            client,
-            file_index,
-            timeout_s=timeout_s,
-        )
-        if info.file_index != file_index:
-            raise ProtocolError(
-                f"Audio metadata index mismatch: expected {file_index}, got {info.file_index}"
-            )
-        received = bytearray()
-
-        while True:
-            frame = await read_audio_frame(
-                client,
-                file_index,
-                len(received),
-                timeout_s=timeout_s,
-            )
-            if frame.frame_offset > len(received):
-                raise ProtocolError(
-                    f"Audio frame gap: expected offset {len(received)}, "
-                    f"got {frame.frame_offset}"
-                )
-            overlap = len(received) - frame.frame_offset
-            overlap_size = min(overlap, len(frame.data))
-            if overlap_size > 0:
-                existing = received[
-                    frame.frame_offset : frame.frame_offset + overlap_size
-                ]
-                if existing != frame.data[:overlap_size]:
-                    raise ProtocolError(
-                        f"Conflicting audio overlap at offset {frame.frame_offset}"
-                    )
-            new_data = frame.data[overlap:]
-            if info.data_size > 0:
-                new_data = new_data[: max(0, info.data_size - len(received))]
-            received.extend(new_data)
-            if progress:
-                progress(len(received), info.data_size)
-            if info.data_size > 0 and len(received) >= info.data_size:
-                break
-            if frame.is_end:
-                raise ProtocolError(
-                    f"Audio stream ended at {len(received)} of {info.data_size} bytes"
-                )
-            if not new_data:
-                raise ProtocolError(
-                    f"Audio transfer made no progress at offset {len(received)}"
-                )
+        with _PacketInbox(client, commands) as inbox:
+            step = call(transfer.begin, _now_ms())
+            started = True
+            await _drive(client, transfer, step, inbox, timeout, progress)
+        info = transfer.info()
+        return AudioFileInfo(**vars(info)), bytes(call(transfer.finish))
     except (Exception, asyncio.CancelledError):
-        if client.is_connected:
-            try:
-                await asyncio.wait_for(client.request(
-                    AudioCommand.END_EXTRACT, AudioCommand.EXTRACT_DONE,
-                    BinaryWriter().u16(0).u32(file_index).build(), timeout_s=2.0,
-                ), timeout=2.0)
-            except (Exception, asyncio.CancelledError):
-                pass
+        transfer.cancel()
+        if started:
+            await _best_effort_end(client, file_index)
         raise
-    await end_audio_extract(client, file_index, timeout_s=timeout_s, ignore_timeout=False)
-    data = bytes(received[: info.data_size] if info.data_size > 0 else received)
-    return info, data
-
-
-def parse_audio_file_info(body: bytes) -> AudioFileInfo:
-    reader = BinaryReader(body)
-    ensure_success(read_error(reader))
-    info = AudioFileInfo(
-        file_index=reader.u32(),
-        record_time=reader.u32(),
-        data_size=reader.u32(),
-    )
-    if reader.remaining:
-        raise ProtocolError(
-            f"Unexpected trailing audio file info bytes: {reader.remaining}"
-        )
-    return info
-
-
-def parse_audio_data_frame(body: bytes) -> AudioDataFrame:
-    reader = BinaryReader(body)
-    ensure_success(read_error(reader))
-    file_index = reader.u32()
-    frame_offset = reader.u32()
-    frame_size = reader.u32()
-    is_end = bool(reader.u8())
-    if reader.remaining != frame_size:
-        raise ProtocolError(
-            f"Audio frame size mismatch: declared {frame_size}, "
-            f"got {reader.remaining}"
-        )
-    data = reader.bytes(frame_size)
-    return AudioDataFrame(
-        file_index=file_index,
-        frame_offset=frame_offset,
-        frame_size=frame_size,
-        is_end=is_end,
-        data=data,
-    )

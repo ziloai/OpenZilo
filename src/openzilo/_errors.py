@@ -59,15 +59,9 @@ class ErrorCode(IntEnum):
     UNSUPPORTED_SCHEMA = 9
 
 
-ERROR_MESSAGES = {
-    ErrorCode.SUCCESS: "success",
-    ErrorCode.UNKNOWN: "unknown error",
-    ErrorCode.DEVICE_BUSY: "device busy",
-    ErrorCode.FILE_NOT_EXIST: "file not exist",
-    ErrorCode.CMD_GROUP_NOT_EXIST: "command group not exist",
-    ErrorCode.CMD_NOT_EXIST: "command not exist",
-    ErrorCode.TIMEOUT: "operation timeout",
-    ErrorCode.PARAM_INVALID: "invalid parameter",
-    ErrorCode.COMMUNICATION: "communication error",
-    ErrorCode.UNSUPPORTED_SCHEMA: "unsupported schema",
-}
+def _messages() -> dict[ErrorCode, str]:
+    import libopenzilo
+    return {code: libopenzilo.device_error_message(int(code)) for code in ErrorCode}
+
+
+ERROR_MESSAGES = _messages()

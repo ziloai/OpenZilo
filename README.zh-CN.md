@@ -29,7 +29,7 @@ OpenZilo 是一个开放开发平台，让开发者通过可穿戴硬件构建�
 
 从智能戒指出发，OpenZilo 为开发者提供硬件、固件、SDK 和参考应用，连接**语音、手势、生理信号、AI 智能体、计算机、机器人与物理世界**。
 
-这个仓库提供 Python SDK 和命令行工具，用于扫描和连接 OpenZilo 戒指、读取设备信息、下载录音、将 Speex 或单声道、双声道 Opus 转成 WAV，以及接收 IMU 和手势事件。
+这个仓库提供 Python SDK 和命令行工具，用于扫描和连接 OpenZilo 戒指、读取设备信息、下载录音、将 Speex 或单声道、双声道 Opus 转成 WAV，以及接收 IMU 和手势事件。协议解析、音频编解码（Opus 与 Speex，纯 Rust）、IMU 校准和 OTA 语义由 [libopenzilo](https://github.com/ziloai/libopenzilo) 提供，它是与 Android SDK 共用的统一高性能 OpenZilo 交互库。
 
 通过 `openzilo device use` 扫描并保存默认设备，再用 `openzilo shell` 进入交互终端，即可查询状态、录音和采集 IMU。详见[中文 CLI 操作指南](docs/cli.zh-CN.md)；远程录音需要配套扩展固件。
 
@@ -145,15 +145,14 @@ asyncio.run(main())
 
 [examples](examples/) 中还有下载录音和读取 IMU 数据流的例子。
 
-实时 PCM 音频需先运行 `uv add "openzilo[pcm]"` 安装 PyAV，然后用
-`async with sdk.open_live_audio_stream(ring)` 和 `async for` 接收录音开始、
+实时 PCM 音频使用 `async with sdk.open_live_audio_stream(ring)` 和 `async for` 接收录音开始、
 音频帧和结束事件。音频为 16 kHz、16 位小端 PCM，声道数与设备设置一致，
 每帧 20 ms。只有收到并检查录音结束事件后，才能确认整段音频完整。
-退出上下文会结束接收并尝试取消订阅。该方式不需要 `ffmpeg` 可执行文件；
+退出上下文会结束接收并尝试取消订阅。解码由 libopenzilo 原生完成，不需要 PyAV，也不需要 `ffmpeg` 可执行文件（`openzilo[pcm]` 仅为兼容保留）；
 只接收压缩音频时使用 `output="opus"`。见[实时音频示例](examples/live_pcm.py)
 和 [实时音频指南](docs/sdk-live-audio.zh-CN.md#open_live_audio_stream实时-pcm--opus-事件流)。
 
-如果需要将 Speex 或单声道、双声道 Opus 转成 WAV，请安装 `ffmpeg`。`audio-clear` 会删除设备上的录音，调用时必须显式提供 `--yes`。
+Speex 与单声道、双声道 Opus 转 WAV 同样由原生库完成，无需安装 `ffmpeg`。`audio-clear` 会删除设备上的录音，调用时必须显式提供 `--yes`。
 
 ## 论文与合作机构
 

@@ -8,30 +8,21 @@ import math
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from ._firmware_bundle import inspect_firmware_bundle
+from ._core import native, call
+from ._firmware_bundle import _pem, inspect_firmware_bundle
 from ._errors import ProtocolError, TimeoutError, TransportError
-from ._protocol import (
-    _OtaCommand,
-    BinaryReader,
-    BinaryWriter,
-    crc16_compute,
-    ensure_success,
-    Packet,
-)
+from ._protocol import _OtaCommand, Packet
 from ._client import _ota_context, OpenZiloClient
 from ._device import get_system_info, SystemInfo
 from ._tasks import await_before
 
 
-def _board_identity(board: str | None) -> tuple[str, ...] | None:
-    # Zephyr BOARD_QUALIFIERS may already start with '/'. Preserve signed
-    # metadata verbatim; ignore empty separators only for identity comparison.
-    if not board:
-        return None
-    parts = tuple(part for part in board.split("/") if part)
-    if not parts or any(part in (".", "..") for part in parts):
-        return None
-    return parts
+def _native_info(info: SystemInfo) -> native.DeviceInfo:
+    return native.DeviceInfo(
+        firmware_version=info.firmware_version, system_time=info.system_time,
+        audio_storage_total=info.audio_storage_total,
+        audio_storage_available=info.audio_storage_available, battery_percent=info.battery_percent,
+        battery_charging=info.battery_charging, sn=info.sn, cpuid=info.cpuid, model=info.model)
 
 
 async def _ota_timed(operation: Awaitable[Any], timeout: float, phase: str) -> Any:
@@ -74,8 +65,7 @@ async def _wait_ota_packet(
 
 async def _verify_firmware_restart(
     client: OpenZiloClient,
-    before: SystemInfo,
-    version: str,
+    transfer: Any,
     timeout_s: float,
     reboot_timeout_s: float,
 ) -> SystemInfo:
@@ -96,15 +86,7 @@ async def _verify_firmware_restart(
             last_error = exc
             await asyncio.sleep(min(1.0, max(0.0, deadline - loop.time())))
             continue
-        if after.model != before.model or (before.cpuid and after.cpuid != before.cpuid) or (
-            before.sn and after.sn != before.sn
-        ):
-            raise ProtocolError("Reconnected device identity differs; installation is unconfirmed")
-        if after.firmware_version != version:
-            raise ProtocolError(
-                f"Firmware version verification failed: expected {version}, "
-                f"device reports {after.firmware_version}"
-            )
+        call(transfer.verify_running, _native_info(after))
         return after
     raise TimeoutError("Could not reconnect and verify the new firmware; installation is unconfirmed") from last_error
 
@@ -134,6 +116,7 @@ async def update_firmware(
     if bundle.profile == "test" and not allow_test_firmware:
         raise ValueError("Test firmware requires allow_test_firmware=True")
     version, data = bundle.version, bundle.payload
+    transfer = None
     for name, value in (("timeout_s", timeout_s), ("total_timeout_s", total_timeout_s),
                         ("reboot_timeout_s", reboot_timeout_s)):
         if not math.isfinite(value) or value <= 0:
@@ -185,25 +168,19 @@ async def update_firmware(
     try:
         budget = remaining()
         before = await _ota_timed(get_system_info(client, timeout_s=timeout_s), budget, "device check")
-        if before.model != bundle.model:
-            raise ProtocolError("Device model differs from signed manifest")
         from ._compatibility import get_device_capabilities
         capabilities = await _ota_timed(
             get_device_capabilities(client, timeout_s=timeout_s), remaining(), "board check")
-        if (_board_identity(capabilities.board_target) is None
-                or _board_identity(capabilities.board_target) != _board_identity(bundle.board)):
-            raise ProtocolError("Device board is unknown or differs from signed manifest")
-        if bundle.source_versions and before.firmware_version not in bundle.source_versions:
-            raise ProtocolError("Starting firmware version is not supported by signed manifest")
-        if before.firmware_version == version:
-            raise ProtocolError("Device already reports the target version; no update was started")
-        notify = (BinaryWriter().u32(2).string_u32(version).u32(len(data))
-                  .u16(crc16_compute(data)).build())
+        # The core owns model, board, source-version, test-profile and target checks, framing,
+        # offsets, windows and result ordering.
+        transfer = call(native.OtaTransfer, bytes(firmware), _pem(trusted_public_key),
+                        _native_info(before), capabilities.board_target or "", allow_test_firmware)
+        notify = call(native.decode_packet, call(transfer.begin))
         while not queue.empty():
             queue.get_nowait()
         budget = remaining()
-        await _ota_timed(client.send_command(_OtaCommand.NOTIFY, notify), budget, "update request")
-        sent_end: int | None = None
+        await _ota_timed(client.send_command(notify.command, notify.body), budget, "update request")
+        sent_end = 0
         if progress is not None:
             progress(0, len(data))
         while True:
@@ -212,43 +189,26 @@ async def update_firmware(
             packet = await _wait_ota_packet(client, queue, remaining())
             if queue_error is not None:
                 raise queue_error
-            reader = BinaryReader(packet.body)
-            if packet.command in (_OtaCommand.NOTIFY_RESP, _OtaCommand.UPDATE_RESULT):
-                if len(packet.body) != 2:
-                    raise ProtocolError("Invalid OTA status response length")
-                ensure_success(reader.u16())
-                if packet.command == _OtaCommand.UPDATE_RESULT:
-                    if sent_end != len(data):
-                        raise ProtocolError("OTA success arrived before the package was transferred")
-                    break
-                continue
-            if len(packet.body) != 12:
-                raise ProtocolError("Invalid OTA data request length")
-            ensure_success(reader.u16())
-            upgrade_type, offset, window = reader.u16(), reader.u32(), reader.u32()
-            # Subsequent requests use type 0; type 2 denotes the user application.
-            if upgrade_type not in (0, 2):
-                raise ProtocolError("Unexpected OTA upgrade type")
-            if not 1 <= window <= 4096 or offset >= len(data):
-                raise ProtocolError("Invalid OTA offset or window size")
-            if sent_end is not None and offset > sent_end:
-                raise ProtocolError("OTA request skipped bytes that were never sent")
-            # A nonzero first offset is the device's continuation point. Repeated
-            # requests are answered from the same immutable package bytes.
-            end = min(offset + window, len(data))
-            body = BinaryWriter().u16(0).u32(offset).u32(end - offset).bytes(data[offset:end]).build()
-            budget = remaining()
-            await _ota_timed(client.send_command(_OtaCommand.PACKET_RESP, body), budget, "data transfer")
-            previous = sent_end or 0
-            sent_end = max(previous, end)
-            if progress is not None and sent_end > previous:
-                progress(sent_end, len(data))
-        info = await _verify_firmware_restart(client, before, version, timeout_s, reboot_timeout_s)
+            step = call(transfer.handle, native.Packet(
+                command=packet.command, body=bytes(packet.body), version=packet.version,
+                body_crc=packet.body_crc))
+            if step.frame is not None:
+                outgoing = call(native.decode_packet, step.frame)
+                await _ota_timed(client.send_command(outgoing.command, outgoing.body), remaining(),
+                                 "data transfer")
+            if progress is not None and step.sent > sent_end:
+                progress(step.sent, step.total)
+            sent_end = max(sent_end, step.sent)
+            if step.transfer_complete:
+                break
+        info = await _verify_firmware_restart(client, transfer, timeout_s, reboot_timeout_s)
         if had_capabilities:
             from ._compatibility import get_device_capabilities
             await get_device_capabilities(client, timeout_s=min(timeout_s, 3.0))
         return info
     finally:
+        if transfer is not None and transfer.phase() != native.OtaPhase.VERIFIED:
+            transfer.cancel()
         for command in commands:
             client.remove_packet_handler(command, on_packet)
             client._drain_queue(int(command))

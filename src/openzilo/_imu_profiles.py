@@ -5,8 +5,6 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-import hashlib
-import json
 import os
 from pathlib import Path
 import tempfile
@@ -14,18 +12,22 @@ from typing import AsyncIterator
 
 from ._cli_config import config_path
 from ._client import OpenZiloClient
-from ._compatibility import get_device_capabilities
+from ._compatibility import get_device_capabilities, _native_features
+from ._core import native, call, call_value
 from ._device import get_system_info
 from ._errors import CompatibilityError, ProtocolError, TransportError
-from ._imu_calibration import CalibratedImuBatch, ImuCalibration, apply_imu_calibration
+from ._imu_calibration import (
+    CalibratedImuBatch, ImuCalibration, _from_native_calibration, _to_native_calibration,
+    apply_imu_calibration,
+)
 from ._sensor import SensorStartInfo, start_sensor_report, stop_sensor_report, wait_sensor_data
 
 
 def imu_device_key(device_id: str) -> str:
     """Local binding key; identifiers are hashed rather than embedded in profiles."""
-    if not isinstance(device_id, str) or not device_id.strip():
+    if not isinstance(device_id, str):
         raise ValueError('A device address/identifier is required')
-    return hashlib.sha256(device_id.strip().casefold().encode('utf-8')).hexdigest()
+    return call_value(native.local_device_key, device_id)
 
 
 def imu_calibration_path(device_id: str) -> Path:
@@ -44,8 +46,7 @@ class ImuCalibrationProfile:
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def __post_init__(self) -> None:
-        if (not isinstance(self.device_key, str) or len(self.device_key) != 64 or
-                any(c not in '0123456789abcdef' for c in self.device_key)):
+        if not isinstance(self.device_key, str):
             raise ValueError('Invalid profile device key')
         if not isinstance(self.firmware_version, str) or not self.firmware_version:
             raise ValueError('Missing firmware identity')
@@ -55,20 +56,17 @@ class ImuCalibrationProfile:
             raise ValueError('Invalid calibration parameters')
         if type(self.accel_validated) is not bool or type(self.gyro_validated) is not bool:
             raise ValueError('Invalid component validation flags')
-        if not (self.accel_validated or self.gyro_validated):
-            raise ValueError('A profile must have at least one validated component')
-        c = self.calibration
-        if not self.accel_validated and (any(c.accel_bias_ug) or c.accel_scale_ppm != (1000000,)*3):
-            raise ValueError('Unvalidated accelerometer parameters must be identity')
-        if not self.gyro_validated and any(c.gyro_bias_udps):
-            raise ValueError('Unvalidated gyro parameters must be zero')
-        if self.gyro_validated and not c.gyro_range_dps:
-            raise ValueError('Cannot validate gyro on an accelerometer-only sensor')
-        try:
-            if datetime.fromisoformat(self.created_at).tzinfo is None:
-                raise ValueError('Profile date must include timezone')
-        except (TypeError, ValueError) as exc:
-            raise ValueError('Invalid profile creation date') from exc
+        if not isinstance(self.created_at, str):
+            raise ValueError('Invalid profile creation date')
+        call_value(native.validate_calibration_profile, self._native())
+
+    def _native(self) -> native.CalibrationProfile:
+        return native.CalibrationProfile(
+            binding=native.ProfileBinding.LOCAL_LOCATOR, device_key=self.device_key,
+            firmware_version=self.firmware_version, model=self.model,
+            calibration=_to_native_calibration(self.calibration),
+            accel_validated=self.accel_validated, gyro_validated=self.gyro_validated,
+            created_at=self.created_at)
 
     def check_device(self, device_id: str, firmware_version: str, model: str) -> None:
         if self.device_key != imu_device_key(device_id):
@@ -84,10 +82,7 @@ class ImuCalibrationProfile:
 def save_imu_calibration_profile(profile: ImuCalibrationProfile, path: Path) -> None:
     """Atomically replace a local profile. Call only after independent validation."""
     path = Path(path)
-    payload = {'schema_version': 1, 'application': 'software', 'input_domain': 'board_adc_counts',
-               'bias_accel_unit': 'micro_g', 'bias_gyro_unit': 'micro_deg_per_s',
-               'scale_unit': 'ppm', **asdict(profile)}
-    encoded = json.dumps(payload, indent=2, allow_nan=False) + '\n'
+    encoded = call_value(native.serialize_calibration_profile, profile._native())
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix='.imu-', dir=path.parent)
     try:
@@ -103,21 +98,18 @@ def save_imu_calibration_profile(profile: ImuCalibrationProfile, path: Path) -> 
 def load_imu_calibration_profile(path: Path) -> ImuCalibrationProfile:
     """Strict schema/units checking; malformed profiles never silently disable correction."""
     try:
-        data = json.loads(Path(path).read_text(encoding='utf-8'))
-        metadata = {'schema_version': 1, 'application': 'software', 'input_domain': 'board_adc_counts',
-                    'bias_accel_unit': 'micro_g', 'bias_gyro_unit': 'micro_deg_per_s', 'scale_unit': 'ppm'}
-        if not isinstance(data, dict) or type(data.get('schema_version')) is not int:
-            raise ValueError('Invalid profile object')
-        for key, expected in metadata.items():
-            if data.pop(key, None) != expected:
-                raise ValueError(f'Unsupported IMU profile {key}')
-        c = data.pop('calibration')
-        if not isinstance(c, dict):
-            raise ValueError('Invalid calibration record')
-        for key in ('accel_bias_ug', 'accel_scale_ppm', 'gyro_bias_udps'):
-            c[key] = tuple(c[key])
-        return ImuCalibrationProfile(calibration=ImuCalibration(**c), **data)
-    except (KeyError, TypeError, ValueError) as exc:
+        text = Path(path).read_text(encoding='utf-8')
+    except UnicodeDecodeError as exc:
+        raise ValueError(f'Invalid IMU calibration profile: {exc}') from exc
+    try:
+        parsed = native.parse_calibration_profile(text)
+        if parsed.binding != native.ProfileBinding.LOCAL_LOCATOR:
+            raise ValueError('Portable device-identity profiles are not supported here')
+        return ImuCalibrationProfile(
+            parsed.device_key, parsed.firmware_version, parsed.model,
+            _from_native_calibration(parsed.calibration), parsed.accel_validated,
+            parsed.gyro_validated, parsed.created_at)
+    except (native.CoreError, ValueError) as exc:
         raise ValueError(f'Invalid IMU calibration profile: {exc}') from exc
 
 
@@ -125,9 +117,7 @@ async def require_software_imu_source(client: OpenZiloClient) -> None:
     """Only consume supported raw IMU contracts; refuse firmware calibration layers."""
     caps = await get_device_capabilities(client)
     caps.require('imu')
-    if any(f.name in ('imu_calibration', 'unknown_11') for f in caps.features):
-        raise CompatibilityError('Firmware advertises IMU calibration; software correction is disabled '
-                                 'until an explicit raw-data contract is supported')
+    call(native.require_raw_imu_source, _native_features(caps.features))
 
 
 class CalibratedImuStream:

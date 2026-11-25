@@ -8,7 +8,9 @@ import struct
 from dataclasses import dataclass
 from enum import IntEnum
 
-from ._errors import DeviceError, ERROR_MESSAGES, ErrorCode, ProtocolError
+import libopenzilo as _native
+
+from ._errors import DeviceError, ErrorCode, ProtocolError
 
 
 HEADER_MAGIC = 0x3F
@@ -16,12 +18,7 @@ PROTOCOL_VERSION = 4
 SUPPORTED_PROTOCOL_VERSIONS = frozenset({4})
 HEADER_SIZE = 11
 MAX_BODY_LENGTH = 5120
-_HEADER_STRUCT = struct.Struct(">BHHIH")
 _logger = logging.getLogger(__name__)
-
-
-class _BodyCrcError(ProtocolError):
-    """A complete packet has a corrupt body and must not be delivered."""
 
 
 class SystemCommand(IntEnum):
@@ -187,119 +184,41 @@ class BinaryWriter:
 
 
 def crc16_compute(data: bytes | bytearray | memoryview, initial: int = 0xFFFF) -> int:
-    crc = initial & 0xFFFF
-    for byte in bytes(data):
-        crc = ((crc >> 8) | ((crc << 8) & 0xFFFF)) & 0xFFFF
-        crc ^= byte
-        crc &= 0xFFFF
-        crc ^= (crc & 0xFF) >> 4
-        crc &= 0xFFFF
-        crc ^= (crc << 8) << 4
-        crc &= 0xFFFF
-        crc ^= ((crc & 0xFF) << 4) << 1
-        crc &= 0xFFFF
-    return crc
+    return _native.crc16(bytes(data), initial & 0xFFFF)
 
 
 def encode_packet(command: int, body: bytes | bytearray | memoryview = b"") -> bytes:
-    payload = bytes(body)
-    body_crc = crc16_compute(payload) if payload else 0
-    header = _HEADER_STRUCT.pack(
-        HEADER_MAGIC,
-        PROTOCOL_VERSION,
-        int(command) & 0xFFFF,
-        len(payload),
-        body_crc,
-    )
-    return header + payload
+    from ._core import call
+    return call(_native.encode_packet, int(command) & 0xFFFF, bytes(body))
 
 
 def decode_packet(data: bytes | bytearray | memoryview) -> Packet:
-    raw = bytes(data)
-    if len(raw) < HEADER_SIZE:
-        raise ProtocolError(f"Packet too short: {len(raw)} bytes")
-
-    magic, version, command, body_length, body_crc = _HEADER_STRUCT.unpack(
-        raw[:HEADER_SIZE]
-    )
-    if magic != HEADER_MAGIC:
-        raise ProtocolError(f"Invalid packet magic: 0x{magic:02X}")
-    if version not in SUPPORTED_PROTOCOL_VERSIONS:
-        raise ProtocolError(f"Unsupported protocol version: {version}")
-    if body_length > MAX_BODY_LENGTH:
-        raise ProtocolError(f"Body too large: {body_length} bytes")
-    if len(raw) < HEADER_SIZE + body_length:
-        raise ProtocolError(
-            f"Incomplete packet: need {HEADER_SIZE + body_length}, got {len(raw)}"
-        )
-
-    body = raw[HEADER_SIZE : HEADER_SIZE + body_length]
-    if body_length:
-        actual_crc = crc16_compute(body)
-        if actual_crc != body_crc:
-            raise _BodyCrcError(
-                f"Body CRC mismatch: expected 0x{body_crc:04X}, got 0x{actual_crc:04X}"
-            )
-
-    return Packet(command=command, body=body, version=version, body_crc=body_crc)
-
-
-def peek_body_length(data: bytes | bytearray | memoryview) -> int:
-    if len(data) < HEADER_SIZE:
-        raise ProtocolError("Not enough bytes to read packet header")
-    _, _, _, body_length, _ = _HEADER_STRUCT.unpack(bytes(data[:HEADER_SIZE]))
-    return body_length
+    from ._core import call
+    packet = call(_native.decode_packet, bytes(data))
+    return Packet(command=packet.command, body=bytes(packet.body), version=packet.version,
+                  body_crc=packet.body_crc)
 
 
 class PacketStream:
     """Reassemble packets, discarding CRC failures with a warning."""
 
     def __init__(self) -> None:
-        self._buffer = bytearray()
+        self._decoder = _native.PacketDecoder()
 
     def clear(self) -> None:
-        self._buffer.clear()
+        self._decoder.clear()
 
     def feed(self, data: bytes | bytearray | memoryview) -> list[Packet]:
-        self._buffer.extend(data)
-        packets: list[Packet] = []
-
-        while True:
-            if not self._buffer:
-                return packets
-
-            magic_index = self._buffer.find(bytes([HEADER_MAGIC]))
-            if magic_index < 0:
-                self._buffer.clear()
-                return packets
-            if magic_index:
-                del self._buffer[:magic_index]
-
-            if len(self._buffer) < HEADER_SIZE:
-                return packets
-
-            body_length = peek_body_length(self._buffer)
-            if body_length > MAX_BODY_LENGTH:
-                self._buffer.clear()
-                raise ProtocolError(f"Body too large: {body_length} bytes")
-
-            packet_length = HEADER_SIZE + body_length
-            if len(self._buffer) < packet_length:
-                return packets
-
-            packet_bytes = bytes(self._buffer[:packet_length])
-            del self._buffer[:packet_length]
-            try:
-                packet = decode_packet(packet_bytes)
-            except _BodyCrcError as exc:
-                # Consume the entire framed packet, including any magic bytes in
-                # its payload. Keep valid packets and trailing partial data.
-                _logger.warning("Discarding packet: %s", exc)
-                continue
-            packets.append(packet)
+        batch = self._decoder.feed_batch(bytes(data))
+        for _ in range(batch.dropped_crc_packets):
+            _logger.warning("Discarding packet: body CRC mismatch")
+        if batch.fault is not None:
+            raise ProtocolError(batch.fault)
+        return [Packet(command=p.command, body=bytes(p.body), version=p.version, body_crc=p.body_crc)
+                for p in batch.packets]
 
     def __len__(self) -> int:
-        return len(self._buffer)
+        return int(self._decoder.buffer_len())
 
 
 def read_error(reader: BinaryReader) -> int:
@@ -309,8 +228,4 @@ def read_error(reader: BinaryReader) -> int:
 def ensure_success(error_code: int) -> None:
     if error_code == int(ErrorCode.SUCCESS):
         return
-    try:
-        message = ERROR_MESSAGES[ErrorCode(error_code)]
-    except ValueError:
-        message = f"device error {error_code}"
-    raise DeviceError(error_code, message)
+    raise DeviceError(error_code, _native.device_error_message(error_code))

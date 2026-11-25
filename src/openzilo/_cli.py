@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
-import importlib.util
 import logging
 import math
 import os
@@ -15,6 +14,7 @@ import sys
 from dataclasses import asdict, replace
 from pathlib import Path
 
+from ._core import native
 from ._cli_calibration import cmd_imu_calibration
 from ._imu_profiles import load_imu_calibration_profile, open_calibrated_imu_stream
 from ._identity import get_sdk_identity
@@ -243,7 +243,8 @@ async def cmd_capabilities(args: argparse.Namespace) -> None:
         capabilities = await get_device_capabilities(client, timeout_s=args.timeout)
     result = {"sdk": asdict(get_sdk_identity()), "device": asdict(capabilities)}
     if args.command == "doctor":
-        result["host"] = {"opus_decoder_installed": importlib.util.find_spec("av") is not None}
+        result["host"] = {"opus_decoder_installed": "opus_pcm_decoder" in native.library_info().features,
+                            "speex_decoder_installed": "speex_pcm_decoder" in native.library_info().features}
         result["notes"] = ["Capabilities describe support, not current busy state or BLE readiness."]
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
