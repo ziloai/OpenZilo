@@ -1,0 +1,147 @@
+# Federated documentation manifest for ziloai/openzilo-docs.
+# Each [[pages]] entry pairs an English and Simplified Chinese Markdown source
+# in this repository with its target route under openzilo-docs/content/docs/.
+
+[meta]
+repo = "ziloai/OpenZilo"
+assets_dir = "docs/assets"
+
+# --- Products & Firmware (content/docs/product/) ---
+# product/index(.zh-CN).mdx is maintained directly in openzilo-docs.
+
+[[sections]]
+dir = "overview/hardware"
+title_en = "Hardware & Firmware"
+title_zh = "硬件与固件说明"
+pages = ["index", "first-use", "buttons", "leds", "recording", "firmware"]
+
+[[pages]]
+route = "overview/hardware/first-use"
+en = "wiki/First-Use.md"
+zh = "wiki/First-Use-zh-CN.md"
+
+[[pages]]
+route = "overview/hardware/buttons"
+en = "wiki/Buttons-and-Modes.md"
+zh = "wiki/Buttons-and-Modes-zh-CN.md"
+
+[[pages]]
+route = "overview/hardware/leds"
+en = "wiki/LED-Indicators.md"
+zh = "wiki/LED-Indicators-zh-CN.md"
+
+[[pages]]
+route = "overview/hardware/firmware"
+en = "wiki/Firmware-Updates.md"
+zh = "wiki/Firmware-Updates-zh-CN.md"
+
+[[pages]]
+route = "overview/hardware/recording"
+en = "docs/recording-control.md"
+zh = "docs/recording-control.zh-CN.md"
+
+# --- CLI (content/docs/cli/) ---
+
+[[sections]]
+dir = "guides/cli"
+title_en = "CLI"
+title_zh = "CLI 命令行"
+pages = ["index"]
+
+[[pages]]
+route = "guides/cli/index"
+en = "docs/cli.en.md"
+zh = "docs/cli.zh-CN.md"
+
+# --- Python SDK Guides (content/docs/guides/python/) ---
+# guides/python/index(.zh-CN).mdx is maintained directly in openzilo-docs.
+# Detailed API signatures, data types, and protocol helpers live in Reference.
+
+[[sections]]
+dir = "guides/python"
+title_en = "Python SDK"
+title_zh = "Python SDK"
+pages = [
+  "index",
+  "install",
+  "quickstart",
+  "---Workflows---",
+  "live-audio",
+  "audio-decoding",
+  "imu",
+  "ota",
+  "---Troubleshooting & AI---",
+  "errors",
+  "ai-tools",
+]
+pages_zh = [
+  "index",
+  "install",
+  "quickstart",
+  "---专题实践---",
+  "live-audio",
+  "audio-decoding",
+  "imu",
+  "ota",
+  "---排查与工具---",
+  "errors",
+  "ai-tools",
+]
+
+[[pages]]
+route = "guides/python/install"
+en = "docs/sdk-install.en.md"
+zh = "docs/sdk-install.zh-CN.md"
+
+[[pages]]
+route = "guides/python/quickstart"
+en = "docs/sdk-quickstart.en.md"
+zh = "docs/sdk-quickstart.zh-CN.md"
+
+[[pages]]
+route = "guides/python/live-audio"
+en = "docs/sdk-live-audio.en.md"
+zh = "docs/sdk-live-audio.zh-CN.md"
+
+[[pages]]
+route = "guides/python/audio-decoding"
+en = "docs/sdk-audio-decoding.en.md"
+zh = "docs/sdk-audio-decoding.zh-CN.md"
+
+[[pages]]
+route = "guides/python/imu"
+en = "docs/sdk-imu.en.md"
+zh = "docs/sdk-imu.zh-CN.md"
+
+[[pages]]
+route = "guides/python/ota"
+en = "docs/sdk-ota.en.md"
+zh = "docs/sdk-ota.zh-CN.md"
+
+[[pages]]
+route = "guides/python/errors"
+en = "docs/sdk-errors.en.md"
+zh = "docs/sdk-errors.zh-CN.md"
+
+[[pages]]
+route = "guides/python/ai-tools"
+en = "docs/ai-tools.md"
+zh = "docs/ai-tools.zh-CN.md"
+
+# --- Protocol & Architecture (content/docs/protocol/) ---
+
+[[sections]]
+dir = "guides/protocol"
+title_en = "Protocol & Architecture"
+title_zh = "协议与架构"
+pages = ["index", "architecture"]
+
+[[pages]]
+route = "guides/protocol/index"
+en = "docs/protocol.en.md"
+zh = "docs/protocol.zh-CN.md"
+
+[[pages]]
+route = "guides/protocol/architecture"
+en = "docs/architecture.en.md"
+zh = "docs/architecture.zh-CN.md"
