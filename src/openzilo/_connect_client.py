@@ -69,15 +69,15 @@ class ConnectClient:
             raise RuntimeError("Client is closed")
         if self._connected:
             return self
-        async with asyncio.timeout(timeout_s):
-            if self._socket_path is not None:
-                reader, writer = await asyncio.open_unix_connection(
-                    str(self._socket_path), limit=_MAX_LINE_BYTES
-                )
-            else:
-                reader, writer = await asyncio.open_connection(
-                    self._host, self._port, limit=_MAX_LINE_BYTES
-                )
+        if self._socket_path is not None:
+            open_coro = asyncio.open_unix_connection(
+                str(self._socket_path), limit=_MAX_LINE_BYTES
+            )
+        else:
+            open_coro = asyncio.open_connection(
+                self._host, self._port, limit=_MAX_LINE_BYTES
+            )
+        reader, writer = await asyncio.wait_for(open_coro, timeout=timeout_s)
         self._reader = reader
         self._writer = writer
         self._connected = True
@@ -140,11 +140,13 @@ class ConnectClient:
             body: dict[str, Any] = {"id": req_id, "method": method}
             if fields:
                 body.update(fields)
-            async with asyncio.timeout(timeout_s):
+            async def _send_and_wait() -> dict[str, Any]:
                 await self._send_raw(body)
-                result = await future
-                delivered = True
-                return result
+                return await future
+
+            result = await asyncio.wait_for(_send_and_wait(), timeout=timeout_s)
+            delivered = True
+            return result
         finally:
             self._pending.pop(req_id, None)
             if not future.done():

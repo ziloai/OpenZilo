@@ -576,35 +576,33 @@ class ConnectHost:
     async def _release_control_async(self, resource: str, owner: _ControlOwner) -> None:
         try:
             stopped = False
+            async def _stop_control() -> bool:
+                if resource == "imu":
+                    pkt = await self._send_device_request(native.DeviceRequest.STOP_IMU(), owner.epoch)
+                elif resource == "live":
+                    pkt = await self._send_device_request(native.DeviceRequest.LIVE_SUBSCRIBE(False), owner.epoch)
+                elif resource == "audio":
+                    if owner.file_index is None:
+                        raise RuntimeError("Missing extraction identity")
+                    pkt = await self._send_device_request(
+                        native.DeviceRequest.AUDIO_END(owner.file_index), owner.epoch
+                    )
+                elif resource == "recording":
+                    status_pkt = await self._send_device_request(
+                        native.DeviceRequest.RECORDING_STATUS(), owner.epoch
+                    )
+                    rec = native.parse_recording_status(status_pkt.body)
+                    if rec.session_id == 0 or rec.state not in (1, 2, 3):
+                        return True
+                    pkt = await self._send_device_request(
+                        native.DeviceRequest.STOP_RECORDING(rec.session_id, True), owner.epoch
+                    )
+                else:
+                    raise RuntimeError("Operation outcome requires reconnect")
+                return len(pkt.body) >= 2 and pkt.body[0] == 0 and pkt.body[1] == 0
+
             try:
-                async with asyncio.timeout(3.0):
-                    if resource == "imu":
-                        pkt = await self._send_device_request(native.DeviceRequest.STOP_IMU(), owner.epoch)
-                    elif resource == "live":
-                        pkt = await self._send_device_request(native.DeviceRequest.LIVE_SUBSCRIBE(False), owner.epoch)
-                    elif resource == "audio":
-                        if owner.file_index is None:
-                            raise RuntimeError("Missing extraction identity")
-                        pkt = await self._send_device_request(
-                            native.DeviceRequest.AUDIO_END(owner.file_index), owner.epoch
-                        )
-                    elif resource == "recording":
-                        status_pkt = await self._send_device_request(
-                            native.DeviceRequest.RECORDING_STATUS(), owner.epoch
-                        )
-                        rec = native.parse_recording_status(status_pkt.body)
-                        if rec.session_id == 0 or rec.state not in (1, 2, 3):
-                            stopped = True
-                            pkt = None
-                        else:
-                            pkt = await self._send_device_request(
-                                native.DeviceRequest.STOP_RECORDING(rec.session_id, True), owner.epoch
-                            )
-                    else:
-                        raise RuntimeError("Operation outcome requires reconnect")
-                    if pkt is not None:
-                        if len(pkt.body) >= 2 and pkt.body[0] == 0 and pkt.body[1] == 0:
-                            stopped = True
+                stopped = await asyncio.wait_for(_stop_control(), timeout=3.0)
             except Exception:
                 stopped = False
             if not stopped:
@@ -665,8 +663,10 @@ class ConnectHost:
                     self._active_imu = None
                     if removed.epoch == self._epoch:
                         try:
-                            async with asyncio.timeout(3.0):
-                                await self._send_device_request(native.DeviceRequest.STOP_IMU(), removed.epoch)
+                            await asyncio.wait_for(
+                                self._send_device_request(native.DeviceRequest.STOP_IMU(), removed.epoch),
+                                timeout=3.0,
+                            )
                         except Exception:
                             pass
 
@@ -1219,11 +1219,13 @@ class ConnectHost:
                     else 30.0
                 )
                 try:
-                    async with asyncio.timeout(timeout_s):
-                        self._require_access(session, permission)
-                        payload = await self._perform_operation(session, operation, dict(args), request_id)
-                        payload["ok"] = True
-                        payload["apiVersion"] = API_VERSION
+                    self._require_access(session, permission)
+                    payload = await asyncio.wait_for(
+                        self._perform_operation(session, operation, dict(args), request_id),
+                        timeout=timeout_s,
+                    )
+                    payload["ok"] = True
+                    payload["apiVersion"] = API_VERSION
                 except asyncio.CancelledError:
                     for resource, owner in list(self._controls.items()):
                         if owner.client_id == session.client_id and owner.request_id == request_id:
