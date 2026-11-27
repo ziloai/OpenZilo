@@ -38,6 +38,8 @@ It documents protocol v4 on firmware `V2.001.0002.0000`. Check device behavior o
 
 ## News
 
+- We released [OpenZilo-Connect](https://github.com/ziloai/OpenZilo-Connect), an all-in-one OpenZilo App on Android.
+- We released [OpenZilo-Input](https://github.com/ziloai/OpenZilo-Input), an zero-latency voice input App on Android.
 - We released [OpenZilo-Gesture](https://github.com/ziloai/OpenZilo-Gesture), an AI framework for training custom gestures with the OpenZilo ring.
 - We released an AI-powered ring sizing tool. Try it by searching for the **“Zilo”** mini program in WeChat.
 
