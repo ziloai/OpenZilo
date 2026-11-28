@@ -130,7 +130,8 @@ class StreamTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_missing_pcm_dependency_does_not_subscribe(self):
         peer = AudioPeer()
-        with mock.patch.dict("sys.modules", {"av": None}):
+        with mock.patch("openzilo._pcm._OpusPcmDecoder",
+                        side_effect=sdk.OpusDecoderUnavailable("decoder unavailable")):
             with self.assertRaises(sdk.OpusDecoderUnavailable):
                 async with sdk.open_live_audio_stream(peer.client, timeout_s=1):
                     pass
@@ -169,7 +170,6 @@ class StreamTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(peer.client._live_audio_subscribed)
 
 
-@unittest.skipUnless(HAS_AV, "install the optional pcm extra")
 class PcmTests(unittest.IsolatedAsyncioTestCase):
     async def test_pcm_arrives_before_end_and_flush_preserves_length(self):
         peer = AudioPeer("cancel")
@@ -224,7 +224,7 @@ class PcmTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(peer.client._live_audio_subscribed)
         self.assertIsNone(peer.client._audio_owner)
 
-    @unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg reference decoder is optional")
+    @unittest.skipUnless(HAS_AV and shutil.which("ffmpeg"), "av encodes the synthetic Opus vectors")
     def test_stateful_non_silent_decode_matches_file_decoder_and_resets(self):
         import av
         from openzilo._pcm import _OpusPcmDecoder

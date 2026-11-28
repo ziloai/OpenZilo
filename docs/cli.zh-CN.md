@@ -161,3 +161,24 @@ openzilo ota-update --help
 ```bash
 openzilo ota-inspect firmware.ota.zip --public-key trusted-signing-public.pem --json
 ```
+
+## Connect Host 模式（Connect API v2）
+
+使用 `openzilo host` 在本机启动 OpenZilo Connect 兼容代理：由宿主进程独占蓝牙连接、维护自动重连与主机端 IMU 校准，并向本机多个客户端提供与 Android OpenZilo Connect 对应的 Connect API v2（NDJSON 协议，默认监听 `127.0.0.1:7420`，也支持 `--socket` Unix 域套接字和 `--stdio` 单客户端管道）。
+
+```sh
+# 无需预装，直接用 uvx 启动本机 Connect Host（默认监听 127.0.0.1:7420）
+uvx openzilo host
+
+# 或通过 uv tool install 安装后长期使用
+uv tool install openzilo
+openzilo host
+
+# 使用 Unix 套接字并要求显式授权与令牌校验
+openzilo host --socket /tmp/openzilo-connect.sock --require-authorization --token my-secret
+
+# 限制允许的权限范围，或提供受信公钥以允许 firmware.upgrade
+openzilo host --scopes info,sensors,audio --firmware-public-key trusted-signing-public.pem
+```
+
+支持的方法包括 `requestAuthorization`、`getStatus`、`execute`、`subscribe`、`unsubscribe`、`cancel` 和 `closeClient`，并覆盖 `status`、`imu`、`gesture`、`live`、`audio`、`recording`、`time` 主题以及多客户端 IMU 租约和独占资源自动回收。Python 客户端可直接使用 `openzilo.ConnectClient` 连接本机宿主，参考 `examples/connect_client_demo.py`。

@@ -5,13 +5,13 @@ from __future__ import annotations
 
 import asyncio
 import math
-import struct
 from dataclasses import dataclass
 from enum import IntEnum
 
 from ._client import OpenZiloClient
+from ._core import native, call
 from ._errors import ProtocolError, TimeoutError
-from ._protocol import AudioCommand, ensure_success
+from ._protocol import AudioCommand
 
 
 class AudioOutput(IntEnum):
@@ -100,28 +100,19 @@ class AudioRecordingStatus:
                               AudioRecordingState.CANCELLED)
 
 
-_CONFIG = struct.Struct(">BBBBIHHH")
-
-
 def _config_body(config: AudioRecordingConfig) -> bytes:
-    return _CONFIG.pack(1, config.output, config.disconnect_policy, config.channels,
-                        config.bitrate, config.gain_left_q8, config.gain_right_q8,
-                        config.max_duration_ms)
+    return bytes(call(native.recording_config_body, native.RecordingConfig(
+        output=int(config.output), disconnect_policy=int(config.disconnect_policy),
+        channels=config.channels, bitrate=config.bitrate, gain_left_q8=config.gain_left_q8,
+        gain_right_q8=config.gain_right_q8, max_duration_ms=config.max_duration_ms)))
 
 
 def _parse_config(body: bytes) -> AudioRecordingConfig:
-    if len(body) < 2:
-        raise ProtocolError("Truncated audio configuration response")
-    ensure_success(struct.unpack_from(">H", body)[0])
-    if len(body) != 34:
-        raise ProtocolError("Invalid audio configuration response length")
-    version, output, disconnect, channels, bitrate, left, right, duration = _CONFIG.unpack_from(body, 2)
-    if version != 1:
-        raise ProtocolError("Unsupported audio configuration version")
-    rate, frame = struct.unpack_from(">HH", body, 16)
-    profile = struct.unpack_from(">BBBBBBBHBHH", body, 20)
+    # The core validates the fixed firmware Opus profile, then Python re-checks its dataclass.
+    c = call(native.parse_recording_config, bytes(body))
     try:
-        return AudioRecordingConfig(output, disconnect, channels, bitrate, left, right, duration, rate, frame, *profile)
+        return AudioRecordingConfig(c.output, c.disconnect_policy, c.channels, c.bitrate,
+                                    c.gain_left_q8, c.gain_right_q8, c.max_duration_ms)
     except ValueError as exc:
         raise ProtocolError(str(exc)) from exc
 
@@ -157,12 +148,7 @@ async def set_audio_recording_config(
 
 
 def _session_ack(body: bytes) -> int:
-    if len(body) < 2:
-        raise ProtocolError("Truncated recording response")
-    ensure_success(struct.unpack_from(">H", body)[0])
-    if len(body) != 6 or not struct.unpack_from(">I", body, 2)[0]:
-        raise ProtocolError("Invalid recording session response")
-    return struct.unpack_from(">I", body, 2)[0]
+    return call(native.parse_session_ack, bytes(body))
 
 
 async def start_audio_recording(
@@ -196,7 +182,8 @@ async def stop_audio_recording(
         raise ValueError("cancel must be a bool")
     async with client._recording_control_lock:
         packet = await client.request(AudioCommand.STOP_RECORDING, AudioCommand.RECORDING_STOPPED,
-                                      struct.pack(">IB", session_id, cancel), timeout_s=timeout_s)
+                                      call(native.prepare_request, native.DeviceRequest.STOP_RECORDING(
+                                          session_id=session_id, cancel=cancel)).body, timeout_s=timeout_s)
         returned = _session_ack(packet.body)
         if returned != session_id:
             raise ProtocolError("Recording stop response belongs to another session")
@@ -208,21 +195,10 @@ async def get_audio_recording_status(
 ) -> AudioRecordingStatus:
     packet = await client.request(AudioCommand.GET_RECORDING_STATUS, AudioCommand.RECORDING_STATUS,
                                   timeout_s=timeout_s)
-    body = packet.body
-    if len(body) < 2:
-        raise ProtocolError("Truncated recording status")
-    ensure_success(struct.unpack_from(">H", body)[0])
-    if len(body) != 14:
-        raise ProtocolError("Invalid recording status length")
-    _, session, state, saved, error, index = struct.unpack(">HIBBHI", body)
-    if state > 6 or saved > 1 or (state == 0) != (session == 0):
-        raise ProtocolError("Invalid recording status values")
-    if (not saved and index) or (state == 4 and error):
-        raise ProtocolError("Inconsistent recording status")
-    if (state == 5 and not error) or (state in (0, 6) and (saved or error)):
-        raise ProtocolError("Inconsistent terminal recording status")
-    status = AudioRecordingStatus(session, AudioRecordingState(state), bool(saved), error,
-                                  index if saved else None)
+    parsed = call(native.parse_recording_status, bytes(packet.body))
+    status = AudioRecordingStatus(parsed.session_id, AudioRecordingState(parsed.state), parsed.saved,
+                                  parsed.error_code, parsed.file_index)
+    state = parsed.state
     client._recording_active = state in (1, 2, 3)
     return status
 
@@ -242,9 +218,9 @@ async def wait_audio_recording_finished(
         if remaining <= 0:
             raise TimeoutError("Recording completion is unconfirmed")
         status = await get_audio_recording_status(client, timeout_s=min(client.command_timeout_s, remaining))
-        if status.session_id != session_id:
-            raise ProtocolError("Recording status belongs to another session")
-        if status.finished:
-            ensure_success(status.error_code)
+        completion = call(native.recording_completion, native.RecordingStatus(
+            session_id=status.session_id, state=int(status.state), saved=status.saved,
+            error_code=status.error_code, file_index=status.file_index), session_id)
+        if completion != native.RecordingCompletion.PENDING:
             return status
         await asyncio.sleep(min(poll_interval_s, max(0.0, deadline - asyncio.get_running_loop().time())))

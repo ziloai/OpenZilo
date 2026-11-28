@@ -244,7 +244,6 @@ class RecordingControlTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(peer.config.output, sdk.AudioOutput.FLASH if destination == "flash" else sdk.AudioOutput.LIVE_AND_FLASH)
                 self.assertEqual(sum(cmd == 0x0516 for cmd, _ in peer.commands), 1)
 
-    @unittest.skipUnless(importlib.util.find_spec("av"), "PCM extra is optional")
     def test_mono_incremental_pcm_decoder(self):
         from openzilo._pcm import _OpusPcmDecoder
         decoder = _OpusPcmDecoder(channels=1)

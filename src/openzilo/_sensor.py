@@ -7,8 +7,9 @@ from dataclasses import dataclass
 from enum import IntEnum
 
 from ._errors import ProtocolError
-from ._protocol import BinaryReader, ensure_success, read_error, SensorCommand
+from ._protocol import SensorCommand
 from ._client import OpenZiloClient
+from ._core import native, call
 
 
 class SensorGestureId(IntEnum):
@@ -16,14 +17,6 @@ class SensorGestureId(IntEnum):
     ROTATE_BACK = 1
     ROTATE_FRONT = 2
     WAVE = 3
-
-
-_SENSOR_GESTURE_NAMES: dict[int, str] = {
-    int(SensorGestureId.IDLE): "idle",
-    int(SensorGestureId.ROTATE_BACK): "rotate_back",
-    int(SensorGestureId.ROTATE_FRONT): "rotate_front",
-    int(SensorGestureId.WAVE): "wave",
-}
 
 
 @dataclass(frozen=True)
@@ -91,13 +84,7 @@ async def start_sensor_report(
         SensorCommand.START_REPORT_RESP,
         timeout_s=timeout_s,
     )
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
-    return SensorStartInfo(
-        sample_rate_hz=reader.u16(),
-        accel_range_g=reader.u16(),
-        gyro_range_dps=reader.u16(),
-    )
+    return SensorStartInfo(**vars(call(native.parse_imu_config, bytes(packet.body))))
 
 
 async def stop_sensor_report(
@@ -111,8 +98,7 @@ async def stop_sensor_report(
         SensorCommand.STOP_REPORT_RESP,
         timeout_s=timeout_s,
     )
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
+    call(native.parse_success, bytes(packet.body))
     return SensorStopInfo()
 
 
@@ -126,87 +112,35 @@ async def wait_sensor_data(
     return parse_sensor_data_batch(packet.body)
 
 
-def _read_sensor_sample(reader: BinaryReader) -> SensorDataSample:
-    return SensorDataSample(
-        timestamp_ms=reader.u32(),
-        accel_x=reader.i16(),
-        accel_y=reader.i16(),
-        accel_z=reader.i16(),
-        gyro_x=reader.i16(),
-        gyro_y=reader.i16(),
-        gyro_z=reader.i16(),
-    )
-
-
 def parse_sensor_data_batch(body: bytes) -> SensorDataBatch:
-    reader = BinaryReader(body)
-    ensure_success(read_error(reader))
-    sequence_start = reader.u32()
-    # The original single-sample IMU format is exactly 22 bytes; a valid batch is
-    # 10 + N * 16 bytes, so the two wire formats cannot overlap.
-    if len(body) == 22:
-        return SensorDataBatch(
-            sequence_start=sequence_start, frame_count=1, sample_size=16,
-            samples=(_read_sensor_sample(reader),),
-        )
-    frame_count = reader.u16()
-    sample_size = reader.u16()
-    if sample_size != 16:
-        raise ProtocolError(f"Unsupported sensor sample size: {sample_size}")
-    expected_remaining = frame_count * sample_size
-    if reader.remaining != expected_remaining:
-        raise ProtocolError(
-            f"Sensor batch length mismatch: expected {expected_remaining} sample bytes, "
-            f"got {reader.remaining}"
-        )
-    samples = tuple(_read_sensor_sample(reader) for _ in range(frame_count))
+    batch = call(native.parse_imu, bytes(body))
     return SensorDataBatch(
-        sequence_start=sequence_start,
-        frame_count=frame_count,
-        sample_size=sample_size,
-        samples=samples,
+        sequence_start=batch.sequence_start, frame_count=batch.frame_count,
+        sample_size=batch.sample_size,
+        samples=tuple(SensorDataSample(**vars(sample)) for sample in batch.samples),
     )
 
 
 def parse_sensor_double_tap_event(body: bytes) -> SensorDoubleTapEvent:
-    reader = BinaryReader(body)
-    event = SensorDoubleTapEvent(timestamp_ms=reader.u32())
-    if reader.remaining:
-        raise ProtocolError(f"Unexpected trailing double-tap event bytes: {reader.remaining}")
-    return event
+    return SensorDoubleTapEvent(timestamp_ms=call(native.parse_device_event, 0x0701, bytes(body)).timestamp)
 
 
 def parse_sensor_gesture_event(body: bytes) -> SensorGestureEvent:
-    reader = BinaryReader(body)
-    event = SensorGestureEvent(timestamp_ms=reader.u32(), gesture_id=reader.u8())
-    if reader.remaining:
-        raise ProtocolError(f"Unexpected trailing gesture event bytes: {reader.remaining}")
-    return event
+    event = call(native.parse_device_event, 0x0702, bytes(body))
+    return SensorGestureEvent(timestamp_ms=event.timestamp, gesture_id=event.gesture_id)
 
 
 def sensor_gesture_name(gesture_id: int | SensorGestureId) -> str:
     value = int(gesture_id)
-    return _SENSOR_GESTURE_NAMES.get(value, f"unknown({value})")
+    return native.sensor_gesture_name(value) if 0 <= value <= 255 else f"unknown({value})"
 
 
 def parse_sensor_key_double_press_event(body: bytes) -> SensorKeyDoublePressEvent:
-    reader = BinaryReader(body)
-    event = SensorKeyDoublePressEvent(timestamp_ms=reader.u32())
-    if reader.remaining:
-        raise ProtocolError(
-            f"Unexpected trailing key double-press event bytes: {reader.remaining}"
-        )
-    return event
+    return SensorKeyDoublePressEvent(timestamp_ms=call(native.parse_device_event, 0x0703, bytes(body)).timestamp)
 
 
 def parse_sensor_key_single_press_event(body: bytes) -> SensorKeySinglePressEvent:
-    reader = BinaryReader(body)
-    event = SensorKeySinglePressEvent(timestamp_ms=reader.u32())
-    if reader.remaining:
-        raise ProtocolError(
-            f"Unexpected trailing key single-press event bytes: {reader.remaining}"
-        )
-    return event
+    return SensorKeySinglePressEvent(timestamp_ms=call(native.parse_device_event, 0x0704, bytes(body)).timestamp)
 
 
 async def wait_sensor_double_tap_event(

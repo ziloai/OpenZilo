@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "bleak>=0.21",
-    "cryptography>=43",
+    "libopenzilo>=0.2.0",
 ]
 
 [project.scripts]
@@ -34,9 +34,7 @@ Homepage = "https://github.com/ziloai/openzilo"
 Repository = "https://github.com/ziloai/openzilo"
 
 [project.optional-dependencies]
-pcm = [
-    "av>=14",
-]
+pcm = []
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -48,6 +46,10 @@ version = {attr = "openzilo._version.__version__"}
 where = ["src"]
 
 [dependency-groups]
+dev = [
+    "cryptography>=43",
+    "av>=14",
+]
 docs = [
     "markdown-it-py>=3",
     "pyyaml>=6",

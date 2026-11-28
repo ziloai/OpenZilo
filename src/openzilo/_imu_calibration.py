@@ -5,10 +5,10 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass, replace
 import math
-from statistics import mean, pstdev
 from typing import Sequence
 
 from ._client import OpenZiloClient
+from ._core import native, call_value
 from ._sensor import SensorDataBatch, SensorDataSample, SensorStartInfo, wait_sensor_data
 
 
@@ -23,24 +23,55 @@ class ImuCalibration:
     gyro_bias_udps: tuple[int, int, int] = (0, 0, 0)
 
     def __post_init__(self) -> None:
-        if (any(type(v) is not int for v in (self.sensor_type, self.accel_range_g, self.gyro_range_dps)) or
-                self.sensor_type not in (0, 1, 2, 3) or self.accel_range_g not in (2, 4, 8, 16) or
-                self.gyro_range_dps not in (0, 125, 250, 500, 1000, 2000)):
+        if any(type(v) is not int for v in (self.sensor_type, self.accel_range_g, self.gyro_range_dps)):
             raise ValueError('Invalid sensor identity or ranges')
-        for values, low, high in ((self.accel_bias_ug, -200000, 200000),
-                                  (self.accel_scale_ppm, 800000, 1200000),
-                                  (self.gyro_bias_udps, -20000000, 20000000)):
-            if len(values) != 3 or any(type(v) is not int or not low <= v <= high for v in values):
+        for values in (self.accel_bias_ug, self.accel_scale_ppm, self.gyro_bias_udps):
+            if len(values) != 3 or any(type(v) is not int for v in values):
                 raise ValueError('Calibration parameters exceed supported bounds')
         for name in ('accel_bias_ug', 'accel_scale_ppm', 'gyro_bias_udps'):
             object.__setattr__(self, name, tuple(getattr(self, name)))
-        if not self.gyro_range_dps and any(self.gyro_bias_udps):
-            raise ValueError('Accelerometer-only sensor cannot have gyro bias')
+        call_value(native.validate_imu_parameters, _to_native_calibration(self, validate=False))
 
     @classmethod
     def identity(cls, config: SensorStartInfo) -> ImuCalibration:
         """Unknown chip type is 0; never guess a chip identity on legacy firmware."""
-        return cls(0, config.accel_range_g, config.gyro_range_dps)
+        identity = call_value(native.identity_imu_calibration, _native_config(config))
+        return cls(identity.sensor_type, identity.accel_range_g, identity.gyro_range_dps,
+                   tuple(identity.accel_bias_ug), tuple(identity.accel_scale_ppm),
+                   tuple(identity.gyro_bias_udps))
+
+
+def _native_config(config: SensorStartInfo) -> native.ImuConfig:
+    return native.ImuConfig(sample_rate_hz=config.sample_rate_hz, accel_range_g=config.accel_range_g,
+                            gyro_range_dps=config.gyro_range_dps)
+
+
+def _to_native_calibration(c: ImuCalibration, validate: bool = True) -> native.ImuCalibration:
+    return native.ImuCalibration(
+        sensor_type=c.sensor_type, accel_range_g=c.accel_range_g, gyro_range_dps=c.gyro_range_dps,
+        accel_bias_ug=list(c.accel_bias_ug), accel_scale_ppm=list(c.accel_scale_ppm),
+        gyro_bias_udps=list(c.gyro_bias_udps))
+
+
+def _from_native_calibration(c: native.ImuCalibration) -> ImuCalibration:
+    return ImuCalibration(c.sensor_type, c.accel_range_g, c.gyro_range_dps, tuple(c.accel_bias_ug),
+                          tuple(c.accel_scale_ppm), tuple(c.gyro_bias_udps))
+
+
+def _native_sample(s: SensorDataSample) -> native.ImuSample:
+    return native.ImuSample(timestamp_ms=s.timestamp_ms, accel_x=s.accel_x, accel_y=s.accel_y,
+                            accel_z=s.accel_z, gyro_x=s.gyro_x, gyro_y=s.gyro_y, gyro_z=s.gyro_z)
+
+
+def _native_window(w: ImuStaticWindow) -> native.ImuStaticWindow:
+    return native.ImuStaticWindow(accel_g=list(w.accel_g), gyro_dps=list(w.gyro_dps),
+                                  accel_std_g=w.accel_std_g, gyro_std_dps=w.gyro_std_dps,
+                                  samples=w.samples)
+
+
+def _window(w: native.ImuStaticWindow) -> ImuStaticWindow:
+    return ImuStaticWindow(tuple(w.accel_g), tuple(w.gyro_dps), w.accel_std_g, w.gyro_std_dps,
+                           w.samples)
 
 
 @dataclass(frozen=True)
@@ -68,27 +99,21 @@ def apply_imu_calibration(batch: SensorDataBatch, config: SensorStartInfo,
     """
     if not isinstance(batch, SensorDataBatch):
         raise ValueError('Expected raw SensorDataBatch, not already calibrated data')
-    if (config.accel_range_g != calibration.accel_range_g or
-            config.gyro_range_dps != calibration.gyro_range_dps):
-        raise ValueError('Calibration ranges differ from active IMU configuration')
-    if batch.frame_count != len(batch.samples) or batch.sample_size != 16:
-        raise ValueError('Invalid raw IMU batch')
-    converted = []
-    for sample in batch.samples:
-        a = (sample.accel_x, sample.accel_y, sample.accel_z)
-        g = (sample.gyro_x, sample.gyro_y, sample.gyro_z)
-        if any(type(v) is not int or not -32768 <= v <= 32767 for v in (*a, *g)):
-            raise ValueError('Expected signed i16 raw sensor counts')
-        converted.append(CalibratedImuSample(
-            sample.timestamp_ms,
-            tuple((v*config.accel_range_g/32768 - (calibration.accel_bias_ug[i]/1e6 if accel else 0)) *
-                  (calibration.accel_scale_ppm[i]/1e6 if accel else 1) for i, v in enumerate(a)),
-            tuple(v*config.gyro_range_dps/32768 - (calibration.gyro_bias_udps[i]/1e6 if gyro else 0)
-                  for i, v in enumerate(g)),
-        ))
-    components = tuple(name for name, enabled in (('accel', accel), ('gyro', gyro and bool(config.gyro_range_dps)))
-                       if enabled)
-    return CalibratedImuBatch(batch.sequence_start, batch.frame_count, tuple(converted), components)
+    if any(type(v) is not int or not -32768 <= v <= 32767 for sample in batch.samples
+           for v in (sample.accel_x, sample.accel_y, sample.accel_z,
+                     sample.gyro_x, sample.gyro_y, sample.gyro_z)):
+        raise ValueError('Expected signed i16 raw sensor counts')
+    result = call_value(
+        native.apply_imu_calibration,
+        native.ImuBatch(sequence_start=batch.sequence_start, frame_count=batch.frame_count,
+                        sample_size=batch.sample_size,
+                        samples=[_native_sample(s) for s in batch.samples]),
+        _native_config(config), _to_native_calibration(calibration), accel, gyro)
+    return CalibratedImuBatch(
+        result.sequence_start, result.frame_count,
+        tuple(CalibratedImuSample(s.timestamp_ms, tuple(s.accel_g), tuple(s.gyro_dps))
+              for s in result.samples),
+        tuple(result.applied_components))
 
 
 @dataclass(frozen=True)
@@ -112,41 +137,14 @@ class ImuStaticWindow:
 
     @property
     def face(self) -> str:
-        axis = max(range(3), key=lambda i: abs(self.accel_g[i]))
-        norm = math.sqrt(sum(v*v for v in self.accel_g))
-        if not norm or abs(self.accel_g[axis])/norm < 0.8:
-            raise ValueError('Orientation is ambiguous between two axes; adjust the case and let it settle')
-        return 'XYZ'[axis] + ('+' if self.accel_g[axis] > 0 else '-')
+        return call_value(native.imu_window_face, _native_window(self))
 
 
 def analyze_imu_static_window(samples: Sequence[SensorDataSample], config: SensorStartInfo, *,
                               check_gyro: bool = True) -> ImuStaticWindow:
     """Reject motion, clipping and insufficient data; thresholds await ring validation."""
-    if config.sample_rate_hz <= 0 or config.accel_range_g <= 0:
-        raise ValueError('Invalid IMU sampling configuration')
-    if len(samples) < max(20, config.sample_rate_hz * 2):
-        raise ValueError('Not enough valid samples; keep the ring still for longer')
-    axes = [(s.accel_x, s.accel_y, s.accel_z, s.gyro_x, s.gyro_y, s.gyro_z) for s in samples]
-    if any(abs(v) >= 32760 for row in axes for v in (row if check_gyro else row[:3])):
-        raise ValueError('Sensor data is saturated; calibration cannot proceed')
-    acc = [tuple(row[i] * config.accel_range_g/32768 for row in axes) for i in range(3)]
-    gyr = [tuple(row[i+3] * config.gyro_range_dps/32768 for row in axes) for i in range(3)]
-    a, g = tuple(map(mean, acc)), tuple(map(mean, gyr))
-    ast, gst = max(map(pstdev, acc)), max(map(pstdev, gyr))
-    if not 0.7 < math.sqrt(sum(v*v for v in a)) < 1.3:
-        raise ValueError('Acceleration magnitude is not near gravity; check mounting, units and sensor ranges')
-    if check_gyro and max(map(abs, g)) > 20:
-        raise ValueError('Stationary angular velocity exceeds the supported bias range; check mounting, ranges and the sensor')
-    if (ast > 0.008 or (check_gyro and gst > 0.3) or
-            any(max(v)-min(v) > 0.06 for v in acc)):
-        raise ValueError(f'Motion or vibration detected: accel standard deviation {ast:.4f} g, gyro standard deviation {gst:.3f} deg/s, '
-                         f'accel peak-to-peak {max(max(v)-min(v) for v in acc):.4f} g. Keep the ring still and retry')
-    # Detect slow drift/heating within the window, not just high-frequency noise.
-    half = len(samples)//2
-    if any(abs(mean(v[:half])-mean(v[half:])) > 0.003 for v in acc) or (check_gyro and any(
-            abs(mean(v[:half])-mean(v[half:])) > 0.15 for v in gyr)):
-        raise ValueError('Readings are still drifting; wait for them to stabilize and retry')
-    return ImuStaticWindow(a, g, ast, gst, len(samples))
+    return _window(call_value(native.analyze_imu_static_window, [_native_sample(s) for s in samples],
+                              _native_config(config), check_gyro))
 
 
 async def collect_imu_static_window(client: OpenZiloClient, config: SensorStartInfo, *,
@@ -160,52 +158,31 @@ async def collect_imu_static_window(client: OpenZiloClient, config: SensorStartI
     if not 1 <= config.sample_rate_hz <= 1000:
         raise ValueError('Unsupported sampling rate')
     client._drain_queue(0x0605)
-    skip, target = math.ceil(settle_seconds*config.sample_rate_hz), math.ceil(seconds*config.sample_rate_hz)
-    samples: list[SensorDataSample] = []
-    sequence = None
-    deadline = asyncio.get_running_loop().time() + settle_seconds + seconds + 10
-    while len(samples) < target:
-        remaining = deadline - asyncio.get_running_loop().time()
+    collector = call_value(native.ImuStaticCollector, _native_config(config), round(seconds * 1000),
+                           round(settle_seconds * 1000), check_gyro)
+    loop = asyncio.get_running_loop()
+    call_value(collector.begin, int(loop.time() * 1000))
+    while True:
+        deadline = collector.next_deadline()
+        if deadline is None:
+            break
+        remaining = (deadline - int(loop.time() * 1000)) / 1000
         if remaining <= 0:
             raise ValueError('Sampling timed out; check the Bluetooth connection')
         batch = await wait_sensor_data(client, timeout_s=min(remaining, 5))
-        if not batch.samples:
-            raise ValueError('Received an empty sensor batch')
-        if sequence is not None and batch.sequence_start != sequence:
-            raise ValueError('Sample sequence gap detected; ensure a stable connection and retry')
-        sequence = (batch.sequence_start + batch.frame_count) & 0xFFFFFFFF
-        for sample in batch.samples:
-            if skip:
-                skip -= 1
-            elif len(samples) < target:
-                samples.append(sample)
-    return analyze_imu_static_window(samples, config, check_gyro=check_gyro)
+        progress = call_value(collector.accept, native.ImuBatch(
+            sequence_start=batch.sequence_start, frame_count=batch.frame_count,
+            sample_size=batch.sample_size, samples=[_native_sample(s) for s in batch.samples]),
+            int(loop.time() * 1000))
+        if progress.phase == native.ImuCollectionPhase.COMPLETE:
+            break
+    return _window(call_value(collector.finish))
 
 
 def fit_imu_gyro_bias(previous: ImuCalibration, window: ImuStaticWindow) -> ImuCalibration:
     """Input window must contain RAW samples, not previously corrected samples."""
-    if not previous.gyro_range_dps:
-        raise ValueError('This sensor has no gyroscope')
-    result = replace(previous, gyro_bias_udps=tuple(round(v*1000000) for v in window.gyro_dps))
-    return result
-
-
-def _solve(matrix: list[list[float]], rhs: list[float]) -> list[float]:
-    n = len(rhs)
-    m = [list(row)+[value] for row, value in zip(matrix, rhs)]
-    for col in range(n):
-        pivot = max(range(col, n), key=lambda r: abs(m[r][col]))
-        if abs(m[pivot][col]) < 1e-7:
-            raise ValueError('Six-face data does not support a stable fit; collect the faces again')
-        m[col], m[pivot] = m[pivot], m[col]
-        scale = m[col][col]
-        m[col] = [v/scale for v in m[col]]
-        for row in range(n):
-            if row == col:
-                continue
-            factor = m[row][col]
-            m[row] = [a-factor*b for a, b in zip(m[row], m[col])]
-    return [row[-1] for row in m]
+    return _from_native_calibration(call_value(
+        native.fit_imu_gyro_bias, _to_native_calibration(previous), _native_window(window)))
 
 
 def fit_imu_six_face_calibration(previous: ImuCalibration,
@@ -216,36 +193,19 @@ def fit_imu_six_face_calibration(previous: ImuCalibration,
     Uses gravity magnitude, so small fixture tilt is allowed. Six distinct
     dominant signed axes are required; independent validation is mandatory.
     """
-    if len(windows) != 6 or {w.face for w in windows} != {'X+', 'X-', 'Y+', 'Y-', 'Z+', 'Z-'}:
-        raise ValueError('Six distinct orientations are required, each with a stable data window')
-    rows = [[*(v*v for v in w.accel_g), *w.accel_g] for w in windows]
-    q = _solve(rows, [1.0]*6)
-    if any(v <= 0 or not math.isfinite(v) for v in q[:3]):
-        raise ValueError('Calibration fit is invalid; check the six-face recordings')
-    bias = [-q[i+3]/(2*q[i]) for i in range(3)]
-    denominator = 1 + sum(q[i]*bias[i]*bias[i] for i in range(3))
-    gains = [math.sqrt(q[i]/denominator) for i in range(3)]
-    result = replace(previous,
-                     accel_bias_ug=tuple(round(v*1000000) for v in bias),
-                     accel_scale_ppm=tuple(round(v*1000000) for v in gains))
-    return result
+    return _from_native_calibration(call_value(
+        native.fit_imu_six_face_calibration, _to_native_calibration(previous),
+        [_native_window(w) for w in windows]))
 
 
 def validate_imu_calibration(windows: Sequence[ImuStaticWindow], *, full: bool,
                              component: str = "all") -> dict[str, float]:
     """Validate NEW corrected samples, separate from fitting samples."""
-    if component not in ('all', 'accel', 'gyro'):
+    kinds = {'all': native.CalibrationComponent.ALL, 'accel': native.CalibrationComponent.ACCEL,
+             'gyro': native.CalibrationComponent.GYRO}
+    if component not in kinds:
         raise ValueError('Unknown validation component')
-    if len(windows) < (3 if full else 1):
-        raise ValueError('Not enough independent validation data')
-    if full:
-        if len({w.face for w in windows}) < 3:
-            raise ValueError('Use at least three distinct orientations for validation')
-        if len({w.face[0] for w in windows}) < 3:
-            raise ValueError('Validation must cover all three axes')
-    gravity_error = max(abs(math.sqrt(sum(v*v for v in w.accel_g))-1) for w in windows)
-    gyro_error = max(abs(v) for w in windows for v in w.gyro_dps)
-    if ((component != 'gyro' and (full or component == 'accel') and gravity_error > 0.015) or
-            (component != 'accel' and gyro_error > 0.15)):
-        raise ValueError(f'Validation failed: gravity magnitude error {gravity_error:.4f} g, gyro residual {gyro_error:.3f} deg/s')
-    return {'max_gravity_error_g': gravity_error, 'max_gyro_residual_dps': gyro_error}
+    result = call_value(native.validate_imu_calibration, [_native_window(w) for w in windows],
+                        full, kinds[component])
+    return {'max_gravity_error_g': result.max_gravity_error_g,
+            'max_gyro_residual_dps': result.max_gyro_residual_dps}

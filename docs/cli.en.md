@@ -164,3 +164,24 @@ Inspect and verify all signed OTA ZIP metadata offline:
 ```bash
 openzilo ota-inspect firmware.ota.zip --public-key trusted-signing-public.pem --json
 ```
+
+## Connect Host mode (Connect API v2)
+
+Run `openzilo host` to start a local OpenZilo Connect-compatible broker. The host process owns the single BLE connection, handles automatic reconnection and host-side IMU calibration, and exposes Connect API v2 (matching the Android OpenZilo Connect contract) to multiple local clients over NDJSON (defaulting to `127.0.0.1:7420`, with optional `--socket` Unix domain socket and `--stdio` single-client pipe modes).
+
+```sh
+# Run the local Connect Host directly with uvx without pre-installing (listens on 127.0.0.1:7420)
+uvx openzilo host
+
+# Or install persistently with uv tool install
+uv tool install openzilo
+openzilo host
+
+# Listen on a Unix domain socket with explicit authorization and token verification
+openzilo host --socket /tmp/openzilo-connect.sock --require-authorization --token my-secret
+
+# Restrict allowed scopes or supply a trusted public key to enable firmware.upgrade
+openzilo host --scopes info,sensors,audio --firmware-public-key trusted-signing-public.pem
+```
+
+Supported methods are `requestAuthorization`, `getStatus`, `execute`, `subscribe`, `unsubscribe`, `cancel`, and `closeClient`, covering the `status`, `imu`, `gesture`, `live`, `audio`, `recording`, and `time` topics with reference-counted IMU leases and automatic cleanup of exclusive device controls on client disconnect. Python clients can connect via `openzilo.ConnectClient`; see `examples/connect_client_demo.py`.

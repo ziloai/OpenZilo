@@ -12,6 +12,7 @@ from contextvars import ContextVar
 from enum import IntEnum
 from typing import Any, DefaultDict
 
+from ._core import native, call
 from ._errors import CompatibilityError, DeviceError, ProtocolError, TimeoutError, TransportError
 from ._tasks import acquire_before, await_before, start_background_task
 from ._protocol import (
@@ -130,7 +131,12 @@ class OpenZiloClient:
         if feature and self.capabilities is not None and not (
             self.allow_unverified_features and self.capabilities.source == "unknown"
         ):
-            self.capabilities.require(feature)
+            source = {"device": native.CapabilitySource.DEVICE,
+                      "legacy_profile": native.CapabilitySource.VERIFIED_LEGACY_PROFILE}.get(
+                          self.capabilities.source, native.CapabilitySource.UNKNOWN)
+            call(native.check_command_contract, int(command),
+                 [native.FeatureVersion(name=f.name, major=f.major, minor=f.minor) for f in self.capabilities.features],
+                 source, self.allow_unverified_features)
         if (self._firmware_update_active
                 and _ota_context.get() is not self._firmware_update_owner
                 and int(command) != int(TimeCommand.RESPONSE)):
@@ -317,6 +323,12 @@ class OpenZiloClient:
                 if pending is not None and not pending.done():
                     pending.set_result(DeviceError(code,
                         f"Command 0x{failed_command:04X} rejected with error {code}"))
+                # Transfers that own their commands may also observe the rejection.
+                for handler in list(self._handlers.get(int(SystemCommand.ERROR_RESP), [])):
+                    try:
+                        handler(packet)
+                    except Exception:
+                        _logger.exception("Packet handler for 0x%04X failed", packet.command)
                 continue
             if packet.command not in self._callback_only:
                 queue = self._queues[packet.command]

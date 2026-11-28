@@ -12,6 +12,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Literal
 
+from ._core import native, call, native_packet
 from ._errors import AudioDecodeError, ProtocolError, TimeoutError
 from ._protocol import AudioCommand, ensure_success
 from ._client import OpenZiloClient
@@ -97,46 +98,29 @@ async def _set_live_audio_subscription(
             AudioCommand.LIVE_SUBSCRIBE, AudioCommand.LIVE_SUBSCRIBE_RESP,
             bytes([int(enabled)]), timeout_s=timeout_s,
         )
-        if len(packet.body) != 3 or packet.body[2] not in (0, 1):
-            raise ProtocolError("Invalid live subscription response")
-        error = struct.unpack_from(">H", packet.body)[0]
-        client._live_audio_subscribed = bool(packet.body[2])
-        ensure_success(error)
+        if len(packet.body) == 3 and packet.body[2] in (0, 1):
+            error = struct.unpack_from(">H", packet.body)[0]
+            client._live_audio_subscribed = bool(packet.body[2])
+            ensure_success(error)
+        client._live_audio_subscribed = call(native.parse_live_subscription, bytes(packet.body))
         if client._live_audio_subscribed != enabled:
             raise ProtocolError("Live subscription response does not match request")
         return LiveAudioSubscription(client._live_audio_subscribed)
 
 
 def parse_live_audio_start(body: bytes) -> LiveAudioStart:
-    if len(body) != 20:
-        raise ProtocolError("Invalid live START length")
-    session, reserved1, timestamp, reserved2, rate, channels, codec = struct.unpack(">IIIIHBB", body)
-    if not session or reserved1 or reserved2 or rate != 16000 or channels not in (1, 2) or codec != 3:
-        raise ProtocolError("Unsupported live START format")
-    return LiveAudioStart(session, timestamp, rate, channels, codec)
+    return LiveAudioStart(**vars(call(native.parse_live_start, bytes(body))))
 
 
 def parse_live_audio_data(body: bytes, *, channels: int = 2) -> LiveAudioData:
-    if len(body) < 15:
-        raise ProtocolError("Truncated live DATA")
-    session, sequence, offset, length = struct.unpack_from(">IIIH", body)
-    if not session or not 1 <= length <= 100 or len(body) != 14 + length:
-        raise ProtocolError("Invalid live DATA length or session")
-    packet = body[14:]
-    try:
-        _validate_opus_packet(packet, channels=channels)
-    except AudioDecodeError as exc:
-        raise ProtocolError(str(exc)) from exc
-    return LiveAudioData(session, sequence, offset, packet)
+    if isinstance(channels, bool) or channels not in (1, 2):
+        raise ProtocolError("Opus packet channels do not match the recording")
+    value = call(native.parse_live_data, bytes(body), channels)
+    return LiveAudioData(value.session_id, value.sequence, value.byte_offset, bytes(value.data))
 
 
 def parse_live_audio_end(body: bytes) -> LiveAudioEnd:
-    if len(body) != 22:
-        raise ProtocolError("Invalid live END length")
-    error, session, reserved, produced, sent, dropped = struct.unpack(">HIIIII", body)
-    if not session or reserved or sent > produced:
-        raise ProtocolError("Invalid live END counters or session")
-    return LiveAudioEnd(error, session, produced, sent, dropped)
+    return LiveAudioEnd(**vars(call(native.parse_live_end, bytes(body))))
 
 
 @dataclass(frozen=True)
@@ -328,39 +312,31 @@ class LiveAudioStream:
                 first = await inbox.wait(stream._timeout)
                 if first.command != AudioCommand.LIVE_START:
                     raise ProtocolError("Live recording did not begin with START")
-                stream._start = parse_live_audio_start(first.body)
+                validator = native.LiveValidator()
+                started = call(validator.accept, native_packet(first))
+                stream._start = LiveAudioStart(**vars(started.value))
                 if stream._decoder is not None and stream._start.channels == 1:
                     from ._pcm import _OpusPcmDecoder
                     stream._decoder = _OpusPcmDecoder(channels=1)
                 stream._deadline = asyncio.get_running_loop().time() + stream._recording_timeout
                 stream._emit(stream._start)
-                sequence = received = 0
                 while True:
                     remaining = stream._deadline - asyncio.get_running_loop().time()
                     if remaining <= 0:
                         raise TimeoutError("Live recording exceeded its time limit")
                     packet = await inbox.wait(min(5.0, remaining))
-                    if packet.command == AudioCommand.LIVE_DATA:
-                        frame = parse_live_audio_data(packet.body, channels=stream._start.channels)
-                        if (frame.session_id != stream._start.session_id or frame.sequence != sequence
-                                or frame.byte_offset != received):
-                            raise ProtocolError("Live recording session, sequence or offset mismatch")
-                        if sequence >= 3000:
-                            raise ProtocolError("Live recording exceeds firmware's 60-second limit")
-                        sequence += 1
-                        received += len(frame.data)
+                    # The core owns session, sequence, offset, size and END-counter validation.
+                    event = call(validator.accept, native_packet(packet))
+                    if isinstance(event, native.LiveEvent.DATA):
+                        frame = LiveAudioData(event.value.session_id, event.value.sequence,
+                                              event.value.byte_offset, bytes(event.value.data))
                         if stream._decoder is None:
                             stream._emit(frame)
                         else:
                             await stream._decode(stream._decoder.decode, frame.data)
-                    elif packet.command == AudioCommand.LIVE_END:
-                        end = parse_live_audio_end(packet.body)
-                        if end.session_id != stream._start.session_id:
-                            raise ProtocolError("Live END belongs to another recording")
-                        ensure_success(end.error_code)
-                        if end.dropped_frames or end.produced_bytes != received or end.sent_bytes != received:
-                            raise ProtocolError("Live recording is incomplete according to END counters")
-                        if stream._decoder is not None and sequence:
+                    elif isinstance(event, native.LiveEvent.END):
+                        end = LiveAudioEnd(**vars(event.value))
+                        if stream._decoder is not None and end.sent_bytes:
                             await stream._decode(stream._decoder.flush)
                         stream._emit(end)
                         stream._end = end

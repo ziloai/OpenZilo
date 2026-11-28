@@ -28,7 +28,7 @@ OpenZilo is an open development platform for building always-available AI experi
 
 Starting with smart rings, OpenZilo provides developers with hardware, firmware, SDKs, and reference applications for connecting **voice, gestures, physiological signals, AI agents, computers, robots, and the physical world**.
 
-This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex or mono/stereo Opus to WAV, and receiving IMU and gesture events.
+This repository contains the Python SDK and CLI for scanning and connecting to an OpenZilo ring, reading device information, downloading recordings, converting Speex or mono/stereo Opus to WAV, and receiving IMU and gesture events. Protocol parsing, audio codecs (Opus and Speex, pure Rust), IMU calibration and OTA semantics run on [libopenzilo](https://github.com/ziloai/libopenzilo), the unified high-performance OpenZilo interaction library shared with the Android SDK.
 
 Run `openzilo device use` to scan and save a default ring, then `openzilo shell` for an interactive terminal. Device commands also accept `OPENZILO_ADDRESS` or `--address`. Use `sensor-stream --seconds 10 --output imu.jsonl` for timed IMU capture. See the [Chinese CLI guide](https://github.com/ziloai/OpenZilo/blob/main/docs/cli.zh-CN.md); remote recording requires matching extended firmware.
 
@@ -145,16 +145,16 @@ asyncio.run(main())
 
 See the [examples](https://github.com/ziloai/OpenZilo/tree/main/examples) for audio download and IMU streaming.
 
-For live mono/stereo PCM, run `uv add "openzilo[pcm]"` and consume
-`sdk.open_live_audio_stream(ring)` with `async with` / `async for`. It yields
+For live mono/stereo PCM, consume `sdk.open_live_audio_stream(ring)` with `async with` / `async for`. It yields
 `LiveAudioStart`, 20 ms `LivePcmFrame` blocks (16 kHz s16le, with the configured channel count),
 then a verified `LiveAudioEnd`. Slow consumers fail explicitly; leaving the
-context stops an unfinished capture and attempts unsubscribe. This path uses
-PyAV and does not need an ffmpeg executable. See [the live PCM example](https://github.com/ziloai/OpenZilo/blob/main/examples/live_pcm.py)
+context stops an unfinished capture and attempts unsubscribe. Decoding runs natively in
+libopenzilo, so neither PyAV nor an ffmpeg executable is needed (the `openzilo[pcm]` extra is kept for compatibility).
+See [the live PCM example](https://github.com/ziloai/OpenZilo/blob/main/examples/live_pcm.py)
 and [live audio guide](https://github.com/ziloai/OpenZilo/blob/main/docs/sdk-live-audio.en.md#open_live_audio_stream-pcm--opus-events).
-Use `output="opus"` to consume original packets with only the base SDK.
+Use `output="opus"` to consume original packets.
 
-Install `ffmpeg` if you need Speex/Opus-to-WAV conversion. `audio-clear` deletes recordings from the device and requires `--yes`.
+Speex and mono/stereo Opus-to-WAV conversion also runs natively; `ffmpeg` is not required. `audio-clear` deletes recordings from the device and requires `--yes`.
 
 ## Research and partners
 

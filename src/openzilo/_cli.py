@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
-import importlib.util
 import logging
 import math
 import os
@@ -15,7 +14,10 @@ import sys
 from dataclasses import asdict, replace
 from pathlib import Path
 
+from ._core import native
 from ._cli_calibration import cmd_imu_calibration
+from ._connect_host import ConnectHost
+from ._connect_protocol import DEFAULT_HOST, DEFAULT_PORT, SCOPES, require_scopes
 from ._imu_profiles import load_imu_calibration_profile, open_calibrated_imu_stream
 from ._identity import get_sdk_identity
 from ._compatibility import get_device_capabilities
@@ -243,7 +245,8 @@ async def cmd_capabilities(args: argparse.Namespace) -> None:
         capabilities = await get_device_capabilities(client, timeout_s=args.timeout)
     result = {"sdk": asdict(get_sdk_identity()), "device": asdict(capabilities)}
     if args.command == "doctor":
-        result["host"] = {"opus_decoder_installed": importlib.util.find_spec("av") is not None}
+        result["host"] = {"opus_decoder_installed": "opus_pcm_decoder" in native.library_info().features,
+                            "speex_decoder_installed": "speex_pcm_decoder" in native.library_info().features}
         result["notes"] = ["Capabilities describe support, not current busy state or BLE readiness."]
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -540,6 +543,70 @@ async def cmd_log_read(args: argparse.Namespace) -> None:
         print(data.hex(" "))
 
 
+async def _stdio_streams() -> tuple[asyncio.StreamReader, asyncio.StreamWriter]:
+    loop = asyncio.get_running_loop()
+    reader = asyncio.StreamReader(limit=1024 * 1024)
+    read_protocol = asyncio.StreamReaderProtocol(reader)
+    await loop.connect_read_pipe(lambda: read_protocol, sys.stdin)
+    write_transport, write_protocol = await loop.connect_write_pipe(
+        asyncio.streams.FlowControlMixin, sys.stdout
+    )
+    writer = asyncio.StreamWriter(write_transport, write_protocol, reader, loop)
+    return reader, writer
+
+
+async def cmd_host(args: argparse.Namespace) -> None:
+    if args.stdio and args.socket is not None:
+        raise ValueError("--stdio cannot be combined with --socket")
+    if not (0 <= args.port <= 65535):
+        raise ValueError("--port must be between 0 and 65535")
+    requested_scopes = {item.strip() for item in args.scopes.split(",") if item.strip()}
+    allowed_scopes = require_scopes(requested_scopes)
+    token = args.token if args.token is not None else os.environ.get("OPENZILO_HOST_TOKEN")
+    firmware_public_key = args.firmware_public_key.read_bytes() if args.firmware_public_key else None
+
+    host = ConnectHost(
+        address=args.address,
+        scan_timeout_s=args.scan_timeout,
+        connect_timeout_s=args.connect_timeout,
+        allow_unverified_features=getattr(args, "allow_unverified_features", False),
+        allowed_scopes=allowed_scopes,
+        require_authorization=args.require_authorization,
+        token=token,
+        firmware_public_key=firmware_public_key,
+        auto_reconnect=not args.no_reconnect,
+    )
+    try:
+        host.start_connection_supervisor()
+        if args.stdio:
+            print(
+                f"OpenZilo Connect host (API v2) serving stdio for {args.address}",
+                file=sys.stderr,
+                flush=True,
+            )
+            reader, writer = await _stdio_streams()
+            await host.handle_stream(reader, writer)
+            return
+
+        if args.socket is not None:
+            sock_path = await host.start_unix(args.socket)
+            print(
+                f"OpenZilo Connect host (API v2) listening on unix://{sock_path} for {args.address}",
+                file=sys.stderr,
+                flush=True,
+            )
+        else:
+            bound_host, bound_port = await host.start_tcp(args.host, args.port)
+            print(
+                f"OpenZilo Connect host (API v2) listening on tcp://{bound_host}:{bound_port} for {args.address}",
+                file=sys.stderr,
+                flush=True,
+            )
+        await asyncio.Event().wait()
+    finally:
+        await host.stop()
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="OpenZilo device CLI.",
@@ -721,6 +788,43 @@ def build_parser() -> argparse.ArgumentParser:
     log_read.add_argument("--text", action="store_true", help="Decode as text.")
     log_read.add_argument("--encoding", default="utf-8")
     log_read.set_defaults(func=cmd_log_read)
+
+    host_cmd = subparsers.add_parser(
+        "host",
+        help="Run a local Connect API v2 host broker (NDJSON over TCP, Unix socket, or stdio).",
+    )
+    add_connection_args(host_cmd)
+    host_cmd.add_argument("--host", default=DEFAULT_HOST, help=f"TCP bind address (default: {DEFAULT_HOST}).")
+    host_cmd.add_argument("--port", type=int, default=DEFAULT_PORT, help=f"TCP bind port (default: {DEFAULT_PORT}).")
+    host_cmd.add_argument("--socket", type=Path, default=None, help="Listen on a Unix domain socket instead of TCP.")
+    host_cmd.add_argument("--stdio", action="store_true", help="Serve one Connect API client over stdin/stdout.")
+    host_cmd.add_argument(
+        "--scopes",
+        default=",".join(sorted(SCOPES)),
+        help="Comma-separated Connect API scopes allowed for clients.",
+    )
+    host_cmd.add_argument(
+        "--token",
+        default=None,
+        help="Optional shared authorization token (defaults to OPENZILO_HOST_TOKEN if set).",
+    )
+    host_cmd.add_argument(
+        "--require-authorization",
+        action="store_true",
+        help="Require clients to call requestAuthorization before accessing protected operations.",
+    )
+    host_cmd.add_argument(
+        "--firmware-public-key",
+        type=Path,
+        default=None,
+        help="Trusted PEM P-256 public key to enable firmware.upgrade.",
+    )
+    host_cmd.add_argument(
+        "--no-reconnect",
+        action="store_true",
+        help="Do not automatically reconnect if the ring disconnects.",
+    )
+    host_cmd.set_defaults(func=cmd_host)
 
     return parser
 

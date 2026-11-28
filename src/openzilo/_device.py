@@ -9,6 +9,7 @@ import time
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
+from ._core import native, call
 from ._protocol import (
     BinaryReader,
     BinaryWriter,
@@ -123,17 +124,7 @@ async def get_connection_rssi(
             )
             if connection is None or connection is not client._connection_token:
                 raise TransportError("Connection changed during RSSI query")
-            reader = BinaryReader(packet.body)
-            error = reader.u16()
-            if error:
-                if reader.remaining:
-                    raise ProtocolError("Invalid RSSI error response length")
-                ensure_success(error)
-            if reader.remaining != 1:
-                raise ProtocolError("Invalid RSSI response length")
-            rssi = int.from_bytes(reader.bytes(1), "big", signed=True)
-            if not -127 <= rssi <= 20:
-                raise ProtocolError("RSSI is unavailable or outside the supported range")
+            rssi = call(native.parse_connection_rssi, bytes(packet.body))
             return rssi
         except (TimeoutError, ProtocolError, TransportError, asyncio.CancelledError):
             # No transaction ID distinguishes a late reply from a new query.
@@ -142,28 +133,7 @@ async def get_connection_rssi(
 
 
 def parse_system_info(body: bytes) -> SystemInfo:
-    reader = BinaryReader(body)
-    ensure_success(read_error(reader))
-    firmware_version = reader.string_u16()
-    system_time = reader.u32()
-    audio_storage_total = reader.u32()
-    audio_storage_available = reader.u32()
-    battery_percent = reader.u16()
-    battery_charging = bool(reader.u8())
-    sn = reader.string_u16()
-    cpuid = reader.string_u16()
-    model = reader.string_u16()
-    return SystemInfo(
-        firmware_version=firmware_version,
-        system_time=system_time,
-        audio_storage_total=audio_storage_total,
-        audio_storage_available=audio_storage_available,
-        battery_percent=battery_percent,
-        battery_charging=battery_charging,
-        sn=sn,
-        cpuid=cpuid,
-        model=model,
-    )
+    return SystemInfo(**vars(call(native.parse_system_info, bytes(body))))
 
 
 async def send_time_response(
@@ -193,8 +163,7 @@ def enable_time_sync(client: OpenZiloClient) -> None:
     def handle_time_request(packet: Packet) -> Awaitable[None]:
         # Automatic replies consume these requests; do not retain queue copies.
         client._drain_queue(int(TimeCommand.REQUEST))
-        reader = BinaryReader(packet.body)
-        request_time = reader.u32()
+        request_time = call(native.parse_time_request, bytes(packet.body))
         response_time = int(time.time())
 
         def body() -> bytes:
@@ -217,9 +186,7 @@ async def get_log_storage(
         LogCommand.STORAGE_RESP,
         timeout_s=timeout_s,
     )
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
-    return LogStorageInfo(page_size=reader.u32(), total_len=reader.u32())
+    return LogStorageInfo(**vars(call(native.parse_log_storage, bytes(packet.body))))
 
 
 async def read_log_chunk(
@@ -237,7 +204,4 @@ async def read_log_chunk(
         body,
         timeout_s=timeout_s,
     )
-    reader = BinaryReader(packet.body)
-    ensure_success(read_error(reader))
-    data_len = reader.u32()
-    return reader.bytes(min(data_len, reader.remaining))
+    return bytes(call(native.parse_log_chunk, bytes(packet.body), size))
